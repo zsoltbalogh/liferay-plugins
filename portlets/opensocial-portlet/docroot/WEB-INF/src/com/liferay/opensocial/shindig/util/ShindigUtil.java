@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.AutoResetThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -122,8 +123,19 @@ public class ShindigUtil {
 		return securityToken;
 	}
 
-	public static String getColumnUserPrefs(String namespace) {
-		return _COLUMN_USER_PREFS.concat(namespace);
+	public static String getColumnUserPrefs(
+		String namespace, ThemeDisplay themeDisplay) {
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_COLUMN_USER_PREFS);
+		sb.append(namespace);
+
+		Layout layout = themeDisplay.getLayout();
+
+		sb.append(layout.getPlid());
+
+		return sb.toString();
 	}
 
 	public static String getFileEntryURL(String portalURL, long fileEntryId)
@@ -131,7 +143,7 @@ public class ShindigUtil {
 
 		FileEntry fileEntry = DLAppServiceUtil.getFileEntry(fileEntryId);
 
-		StringBuilder sb = new StringBuilder(6);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append(portalURL);
 		sb.append(PortalUtil.getPathContext());

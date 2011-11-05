@@ -16,287 +16,386 @@
 
 <%@ include file="/css_init.jsp" %>
 
-.lfr-menu-list .disabled .taglib-icon {
-	color: #999;
+$border-color: #EBEBEB;
+$section-header-bg: #CCE6F7;
+
+#wrapper .contacts-portlet .panel-page-body {
+	padding: 0;
 }
 
-.lfr-user-profile-preferences {
-	margin-left: 20px;
-}
+.contacts-portlet {
+	.clear {
+		clear: both;
+	}
 
-.contacts-portlet .contact-search {
-	float: right;
-	margin: 0 0 .5em .5em;
-}
+	.aui-column-content, .aui-column-content-center {
+		padding: 0;
+	}
 
-.contacts-portlet .lfr-asset-column-details .lfr-asset-requests {
-	background: url(<%= themeImagesPath %>/common/add_user.png) no-repeat 0 50%;
-}
+	.contact-group-filter {
+		font-size: 14px;
+		padding: 5px 8px;
 
-.contacts-portlet .export-group {
-	margin-top: 1em;
-}
+		select {
+			height: 24px;
+		}
+	}
 
-.contacts-portlet .lfr-user-grid {
-	list-style: none;
-	margin: 0;
-}
+	.contacts-search {
+		float: left;
+		width: 30%;
 
-.contacts-portlet .lfr-user-grid-item {
-	display: inline-block;
-	height: 50px;
-	margin: 0 5px 5px 0;
-	position: relative;
-	width: 50px;
-}
+		.contacts-search-content {
+			height: 28px;
+			padding: 5px 0;
+			position: relative;
 
-.contacts-portlet .lfr-user-grid-item.hover {
-	z-index: 99;
-}
+			.aui-field-label {
+				display: none;
+			}
 
-.contacts-portlet .lfr-user-grid-item .lfr-user-thumb {
-	background: #C8C9CA;
-	border: 1px solid #C8C9CA;
-	height: 50px;
-	width: 50px;
-}
+			.search-input {
+				left: 5px;
+				position: absolute;
+				right: 5px;
+			}
+		}
+	}
 
-.contacts-portlet .lfr-user-grid-item a {
-	clip: rect(0 50px 50px 0);
-	position: absolute;
-}
+	.lfr-contact-grid-item {
+		border-bottom: 1px solid $border-color;
+		display: block;
+		white-space: nowrap;
 
-.contacts-portlet .lfr-user-grid-item img {
-	position: relative;
-	width: 50px;
-}
+		.lfr-contact-thumb {
+			float: left;
+		}
 
-.contacts-portlet .lfr-user-grid-item.hover img {
-	z-index: 100;
-}
+		.lfr-contact-thumb img {
+			width: 100px;
+		}
 
-.contacts-portlet .lfr-user-grid-item .lfr-user-info {
-	background: #D7F1FF;
-	border: 1px solid #88C5D9;
-	display: none;
-	left: -5px;
-	min-height: 50px;
-	padding: 5px 5px 5px 60px;
-	position: absolute;
-	top: -5px;
-	width: 175px;
-}
+		.lfr-contact-info {
+			margin-left: 100px;
 
-.ie .contacts-portlet .lfr-user-grid-item .lfr-user-info {
-	height: 50px;
-}
+			&.no-icon {
+				margin-left: 0;
+			}
+		}
+	}
 
-.contacts-portlet .lfr-user-grid-item.hover .lfr-user-info {
-	display: block;
-}
+	.lfr-contact-info {
+		.lfr-contact-name {
+			font-weight: bold;
+		}
 
-.contacts-portlet .lfr-user-portrait {
-	float: left;
-	height: 50px;
-	margin: 0 .5em .5em 0;
-	overflow: hidden;
-}
+		.lfr-contact-extra {
+			color: #777;
+		}
+	}
 
-.contacts-portlet .lfr-user-portrait img {
-	width: 50px;
-}
+	.contacts-result {
+		bottom: 0;
+		position: absolute;
+		top: 0;
+		width: 30%;
+		overflow-y: scroll;
 
-.contacts-portlet .lfr-user-action,
-.contacts-portlet .lfr-user-data {
-	margin-left: 60px;
-}
+		.lfr-contact-grid-item {
+			cursor: pointer;
+			height: 35px;
+			overflow: hidden;
+			padding: 5px;
 
-.contacts-portlet .lfr-user-data-name,
-.contacts-portlet .lfr-user-data-title {
-	font-size: 1.2em;
-}
+			.lfr-contact-thumb img {
+				width: 35px;
+			}
 
-.contacts-portlet .lfr-user-data-job-title,
-.contacts-portlet .lfr-user-data-title a {
-	font-weight: bold;
-}
+			.lfr-contact-info {
+				margin-left: 40px;
+				font-size: 1em;
+			}
+		}
 
-.contacts-portlet .lfr-user-data-extra {
-	color: #777;
-}
+		.lfr-contact-grid-item:hover {
+			background-color: #E8EFF4;
+		}
 
-.contacts-portlet .lfr-user-action-item a {
-	padding: 0 10px 0 20px ;
-}
+		.more-results {
+			background-color: #E8EFF4;
+			border: 1px solid #CCC;
+			margin: 5px;
+			padding: 2px;
+			text-align: center;
+		}
 
-.contacts-portlet .lfr-user-action-confirm a {
-	background: url(<%= themeImagesPath %>/common/activate.png) no-repeat;
-}
+		.empty {
+			background: url(<%= themeImagesPath %>/messages/alert.png) no-repeat 0 50%;
+			margin: 5px;
+			padding-left: 25px;
+		}
 
-.contacts-portlet .lfr-user-action-ignore a {
-	background: url(<%= themeImagesPath %>/common/deactivate.png) no-repeat;
-}
+		.lastNameAnchor a {
+			background: $section-header-bg;
+			border-bottom: 1px solid $border-color;
+			cursor: default;
+			display: block;
+			padding: 1px 5px;
+		}
 
-.contacts-portlet .lfr-asset-data {
-	margin-bottom: 1.5em;
-}
+		a:hover {
+			text-decoration: none;
+		}
+	}
 
-.contacts-portlet .lfr-asset-metadata .lfr-asset-coworker {
-	background: url(<%= themeImagesPath %>/social/coworker.png) no-repeat;
-}
+	.my-contacts {
+		.lfr-contact-grid-item {
+			height: 35px;
+			overflow: hidden;
+			padding: 5px;
 
-.contacts-portlet .lfr-asset-metadata .lfr-asset-friend {
-	background: url(<%= themeImagesPath %>/social/friend.png) no-repeat;
-}
+			.lfr-contact-thumb img {
+				width: 35px;
+			}
 
-.contacts-portlet .lfr-asset-metadata .lfr-asset-follower {
-	background: url(<%= themeImagesPath %>/social/follower.png) no-repeat;
-}
+			.lfr-contact-info {
+				margin-left: 40px;
+			}
+		}
+	}
 
-.contacts-portlet .lfr-asset-metadata .lfr-asset-following {
-	background: url(<%= themeImagesPath %>/social/following.png) no-repeat;
-}
+	.contacts-home {
+		padding: 5px;
+	}
 
-.contacts-portlet .lfr-asset-data .lfr-user-data-name {
-	color: #777;
-	font-size: 1.5em;
-	font-weight: bold;
-}
+	.contacts-profile {
+		border-bottom-width: 1px;
+		padding: 20px 10px 5px;
+		position: relative;
 
-.contacts-portlet .section {
-	float: left;
-	margin: 0 1em 1em 0;
-	width: 45%;
-}
+		.lfr-contact-grid-item {
+			border-bottom-width: 0;
+			display: inline-block;
+		}
 
-.contacts-portlet .section h3 {
-	color: #555;
-	background: no-repeat 2px 50%;
-	border-bottom: 1px dotted #CCC;
-	font-size: 1.2em;
-	margin-top: 0;
-	padding: 2px 0 2px 25px;
-}
+		.lfr-contact-name a {
+			font-size: 2em;
+		}
 
-.contacts-portlet .lfr-user-phones h3 {
-	background-image: url(<%= themeImagesPath %>/common/telephone.png);
-}
+		.lfr-contact-job-title {
+			color: #777;
+			font-size: 1.25em;
+			font-weight: bold;
+		}
 
-.contacts-portlet .lfr-user-email-addresses h3 {
-	background-image: url(<%= themeImagesPath %>/mail/unread.png);
-}
+		.social-relations {
+			position: absolute;
+			right: 0;
+			text-align: right;
+			top: 30px;
+			width: auto;
 
-.contacts-portlet .lfr-user-instant-messenger h3 {
-	background-image: url(<%= themeImagesPath %>/common/conversation.png);
-}
+			.lfr-asset-metadata {
+				display: none;
+			}
+		}
 
-.contacts-portlet .lfr-user-addresses h3 {
-	background-image: url(<%= themeImagesPath %>/dock/home.png);
-}
+		.aui-column-content {
+			padding: 0 10px;
+		}
 
-.contacts-portlet .lfr-user-websites h3 {
-	background-image: url(<%= themeImagesPath %>/common/history.png);
-}
+		.aui-column:before {
+			border-width: 0;
+		}
+	}
 
-.contacts-portlet .lfr-user-social-network h3 {
-	background-image: url(<%= themeImagesPath %>/common/group.png);
-}
+	.contacts-result-container .contacts-container {
+		margin-left: 30%;
+		min-height: 500px;
 
-.contacts-portlet .lfr-user-sms h3 {
-	background-image: url(<%= themeImagesPath %>/common/telephone_mobile.png);
-}
+		.contacts-profile {
+			border-bottom-width: 0;
+			padding-top: 10px;
+		}
+	}
 
-.contacts-portlet .lfr-user-comments h3 {
-	background-image: url(<%= themeImagesPath %>/dock/welcome_message.png);
-}
+	.contacts-result-container-content {
+		.contacts-profile {
+			.lfr-contact-info {
+				padding: 8px;
+			}
 
-.contacts-portlet .property-list li {
-	list-style: none;
-	margin-bottom: 1em;
-}
+			.social-relations {
+				background: $section-header-bg;
+				position: static;
+				padding: 5px;
+				left: 0;
+				margin: 5px -10px 10px;
+				top: 0;
+			}
+		}
+	}
 
-.contacts-portlet .property-list dt {
-	clear: left;
-	font-weight: bold;
-	min-width: 5em;
-}
+	.contacts-action-content span {
+		padding-right: 5px;
+	}
 
-.contacts-portlet .property-list dt,
-.contacts-portlet .property-list dd {
-	float: left;
-	line-height: 1.5;
-	margin: 0;
-}
+	.lfr-user-info-container {
+		min-height: 10px;
+		margin-bottom: 10px;
+	}
 
-.contacts-portlet .property-list dd {
-	padding-left: 1em;
-}
+	.section {
+		border-bottom: 1px solid #E7E7E7;
+		clear: both;
+		padding: 10px;
+		zoom: 1;
 
-.contacts-portlet .filter-input {
-	margin-bottom: 1em;
-}
+		&:after {
+			content: "";
+			display: block;
+			clear: both;
+		}
 
-.contacts-portlet .members-container {
-	clear: both;
-	margin: 1em 0;
-}
+		h3 {
+			color: #B4BEC8;
+			float: left;
+			font-size: 1em;
+			margin: 0;
+			text-align: right;
+			width: 100px;
+		}
 
-.contacts-portlet .letter-anchors {
-	border-bottom: 1px solid #999;
-	clear: both;
-	font-size: 1.2em;
-	margin-bottom: 1em;
-	padding-left: 5px;
-}
+		ul {
+			margin: 0 0 0 105px;
+			padding: 0;
+		}
+	}
 
-.contacts-portlet .lfr-members-grid-item {
-	float: left;
-	height: 50px;
-	margin-bottom: 10px;
-	max-width: 300px;
-	min-width: 200px;
-	overflow: hidden;
-	width: 25%;
-}
+	.property-type {
+		font-weight: bold;
+	}
 
-.contacts-portlet .lfr-members-grid-item .lfr-members-thumb {
-	float: left;
-	margin: 0 5px;
-}
+	.property-list li {
+		list-style: none;
+	}
 
-.contacts-portlet lfr-members-grid-item .lfr-members-thumb a {
-	clip: rect(0 50px 50px 0);
-	position: absolute;
-}
+	.user-information-title {
+		color: #666;
+		font-size: 1.5em;
+		text-align: right;
+		width: 110px;
+	}
 
-.contacts-portlet .lfr-members-thumb img{
-	width: 50px;
-}
+	.lfr-user-comments {
+		float: none;
+		width: 100%;
+	}
 
-.contacts-portlet .lfr-members-grid-item .lfr-user-data-info {
-	margin-left: 60px;
-}
+	.contacts-center-home {
+		.contacts-center-home-content {
+			padding: 10px;
+		}
 
-.contacts-portlet .lfr-members-grid-item .lfr-user-data-name {
-	font-weight: bold;
-}
+		.header-title {
+			margin: 0px;
+		}
 
-.contacts-portlet .lfr-members-grid-item .lfr-user-data-name,
-.contacts-portlet .lfr-members-grid-item .lfr-user-data-job-title,
-.contacts-portlet .lfr-members-grid-item .lfr-user-data-extra {
-	white-space: nowrap
-}
+		.contacts-count {
+			font-weight: bold;
+		}
 
-.contacts-portlet .edit-profile {
-	cursor: pointer;
-}.contacts-portlet .lfr-panel{
-	margin-bottom: 1em;
-}
+		.contacts-count, .contacts-center-introduction {
+			margin: 5px 0;
+		}
+	}
 
-.contacts-portlet .taglib-header {
-	margin-bottom: 1em;
-}
+	.export-group {
+		margin-top: 1em;
+	}
 
-.contacts-portlet .lfr-search-container {
-	margin-top: 1em;
+	.lfr-user-profile-preferences {
+		margin-left: 20px;
+	}
+
+	.lfr-user-action-confirm a {
+		background: url(<%= themeImagesPath %>/common/activate.png) no-repeat;
+	}
+
+	.lfr-user-action-ignore a {
+		background: url(<%= themeImagesPath %>/common/deactivate.png) no-repeat;
+	}
+
+	.lfr-asset-metadata {
+		margin-bottom: 5px;
+
+		.lfr-asset-coworker, .lfr-asset-follower, .lfr-asset-following {
+			padding: 0 20px
+		}
+
+		.lfr-asset-coworker {
+			background: url(<%= themeImagesPath %>/social/coworker.png) no-repeat;
+		}
+
+		.lfr-asset-follower {
+			background: url(<%= themeImagesPath %>/social/follower.png) no-repeat;
+		}
+
+		.lfr-asset-following {
+			background: url(<%= themeImagesPath %>/social/following.png) no-repeat;
+		}
+	}
+
+	.members-container {
+		clear: both;
+		margin: 1em 0;
+	}
+
+	.lfr-members-grid-item {
+		float: left;
+		height: 50px;
+		margin-bottom: 10px;
+		max-width: 300px;
+		min-width: 200px;
+		overflow: hidden;
+		width: 25%;
+
+		.lfr-members-thumb {
+			float: left;
+			margin: 0 5px;
+
+			a {
+				clip: rect(0 50px 50px 0);
+				position: absolute;
+			}
+
+			img {
+				width: 50px;
+			}
+		}
+
+		.lfr-user-data-info {
+			margin-left: 60px;
+		}
+
+		.lfr-user-data-name {
+			font-weight: bold;
+		}
+
+		.lfr-user-data-name, .lfr-user-data-job-title, .lfr-user-data-extra {
+			white-space: nowrap
+		}
+	}
+
+	.edit-profile {
+		cursor: pointer;
+	}
+
+	.lfr-panel, .taglib-header {
+		margin-bottom: 1em;
+	}
+
+	.lfr-search-container {
+		margin-top: 1em;
+	}
 }

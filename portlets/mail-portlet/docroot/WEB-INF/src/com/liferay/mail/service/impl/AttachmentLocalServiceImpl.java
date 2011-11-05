@@ -32,6 +32,7 @@ import com.liferay.portlet.documentlibrary.NoSuchFileException;
 import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -70,24 +71,24 @@ public class AttachmentLocalServiceImpl extends AttachmentLocalServiceBaseImpl {
 		// File
 
 		if (file != null) {
+			if (!file.exists()) {
+				throw new PortalException(new FileNotFoundException());
+			}
+
 			String directoryPath = getDirectoryPath(attachment.getMessageId());
 
 			try {
 				DLStoreUtil.addDirectory(
 					attachment.getCompanyId(), _REPOSITORY_ID, directoryPath);
 			}
-			catch (DuplicateDirectoryException dde) {
+				catch (DuplicateDirectoryException dde) {
 			}
 
-			String filePath = getFilePath(
-				attachment.getMessageId(), fileName);
-
-			InputStream is = getInputStream(attachmentId);
+			String filePath = getFilePath(attachment.getMessageId(), fileName);
 
 			try {
 				DLStoreUtil.addFile(
-					attachment.getCompanyId(), _REPOSITORY_ID, filePath, false,
-					is);
+					attachment.getCompanyId(), _REPOSITORY_ID, filePath, file);
 			}
 			catch (DuplicateFileException dfe) {
 				if (_log.isDebugEnabled()) {
@@ -99,6 +100,7 @@ public class AttachmentLocalServiceImpl extends AttachmentLocalServiceBaseImpl {
 		return attachment;
 	}
 
+	@Override
 	public void deleteAttachment(long attachmentId)
 		throws PortalException, SystemException {
 

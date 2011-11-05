@@ -16,6 +16,7 @@ package com.liferay.marketplace.store.portlet;
 
 import com.liferay.marketplace.model.App;
 import com.liferay.marketplace.service.AppLocalServiceUtil;
+import com.liferay.marketplace.service.AppServiceUtil;
 import com.liferay.marketplace.util.MarketplaceUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -48,9 +49,6 @@ public class StorePortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		long remoteAppId = ParamUtil.getLong(actionRequest, "appId");
 		String version = ParamUtil.getString(actionRequest, "version");
 		String url = ParamUtil.getString(actionRequest, "url");
@@ -62,12 +60,10 @@ public class StorePortlet extends MVCPortlet {
 		App app = AppLocalServiceUtil.fetchRemoteApp(remoteAppId);
 
 		if (app == null) {
-			app = AppLocalServiceUtil.addApp(
-				themeDisplay.getUserId(), remoteAppId, version,
-				inputStream);
+			app = AppServiceUtil.addApp(remoteAppId, version, inputStream);
 		}
 		else {
-			app = AppLocalServiceUtil.updateApp(
+			app = AppServiceUtil.updateApp(
 				app.getAppId(), version, inputStream);
 		}
 
@@ -121,7 +117,7 @@ public class StorePortlet extends MVCPortlet {
 
 		long remoteAppId = ParamUtil.getLong(actionRequest, "appId");
 
-		AppLocalServiceUtil.installApp(remoteAppId);
+		AppServiceUtil.installApp(remoteAppId);
 
 		JSONObject jsonObject = getAppJSONObject(remoteAppId);
 
@@ -170,9 +166,9 @@ public class StorePortlet extends MVCPortlet {
 
 			App app = AppLocalServiceUtil.fetchRemoteApp(remoteAppId);
 
-			AppLocalServiceUtil.updateApp(app.getAppId(), version, inputStream);
+			AppServiceUtil.updateApp(app.getAppId(), version, inputStream);
 
-			AppLocalServiceUtil.installApp(remoteAppId);
+			AppServiceUtil.installApp(remoteAppId);
 
 			JSONObject jsonObject = getAppJSONObject(remoteAppId);
 
@@ -189,7 +185,7 @@ public class StorePortlet extends MVCPortlet {
 
 		long remoteAppId = ParamUtil.getLong(actionRequest, "appId");
 
-		AppLocalServiceUtil.uninstallApp(remoteAppId);
+		AppServiceUtil.uninstallApp(remoteAppId);
 
 		JSONObject jsonObject = getAppJSONObject(remoteAppId);
 

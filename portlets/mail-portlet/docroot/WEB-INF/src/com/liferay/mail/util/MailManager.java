@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portlet.documentlibrary.FileSizeException;
 
 import java.io.IOException;
 
@@ -635,6 +636,9 @@ public class MailManager {
 			mailbox.sendMessage(accountId, message.getMessageId());
 
 			return createJSONResult("success", "sent-successfully");
+		}
+		catch (FileSizeException fse) {
+			return createJSONResult("failure", "attachment-is-too-large");
 		}
 		catch (MailException me) {
 			if (me.getType() == MailException.MESSAGE_HAS_NO_RECIPIENTS) {
