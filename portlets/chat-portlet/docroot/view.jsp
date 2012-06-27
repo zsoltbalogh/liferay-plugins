@@ -78,6 +78,11 @@
 										<%
 										for (Object[] buddy : buddies) {
 											long userId = (Long)buddy[0];
+
+											if (userId == themeDisplay.getUserId()) {
+												continue;
+											}
+
 											String firstName = (String)buddy[2];
 											String middleName = (String)buddy[3];
 											String lastName = (String)buddy[4];
