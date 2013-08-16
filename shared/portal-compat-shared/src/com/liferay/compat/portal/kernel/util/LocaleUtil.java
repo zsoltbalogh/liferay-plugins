@@ -14,11 +14,6 @@
 
 package com.liferay.compat.portal.kernel.util;
 
-import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.CharPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -87,11 +82,13 @@ public class LocaleUtil {
 	}
 
 	public static Locale fromLanguageId(String languageId) {
-		return fromLanguageId(languageId, true);
+		return com.liferay.portal.kernel.util.LocaleUtil.fromLanguageId(
+			languageId, true);
 	}
 
 	public static Locale fromLanguageId(String languageId, boolean validate) {
-		return fromLanguageId(languageId, validate, true);
+		return com.liferay.portal.kernel.util.LocaleUtil.fromLanguageId(
+			languageId, validate);
 	}
 
 	public static Locale fromLanguageId(
@@ -105,45 +102,8 @@ public class LocaleUtil {
 			return null;
 		}
 
-		if (!validate) {
-			return com.liferay.portal.kernel.util.LocaleUtil.fromLanguageId(
-				languageId);
-		}
-
-		Locale locale = null;
-
-		int pos = languageId.indexOf(CharPool.UNDERLINE);
-
-		if (pos == -1) {
-			locale = new Locale(languageId);
-		}
-		else {
-			String[] languageIdParts = StringUtil.split(
-				languageId, CharPool.UNDERLINE);
-
-			String languageCode = languageIdParts[0];
-			String countryCode = languageIdParts[1];
-
-			String variant = null;
-
-			if (languageIdParts.length > 2) {
-				variant = languageIdParts[2];
-			}
-
-			if (Validator.isNotNull(variant)) {
-				locale = new Locale(languageCode, countryCode, variant);
-			}
-			else {
-				locale = new Locale(languageCode, countryCode);
-			}
-		}
-
-		if (!LanguageUtil.isAvailableLanguageCode(languageId)) {
-			throw new IllegalArgumentException("Invalid locale " + locale);
-		}
-
 		return com.liferay.portal.kernel.util.LocaleUtil.fromLanguageId(
-			languageId);
+			languageId, validate);
 	}
 
 	public static Locale[] fromLanguageIds(List<String> languageIds) {
