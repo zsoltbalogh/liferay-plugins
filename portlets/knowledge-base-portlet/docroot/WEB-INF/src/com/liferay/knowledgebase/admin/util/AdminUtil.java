@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,7 @@ import net.htmlparser.jericho.Source;
 public class AdminUtil {
 
 	public static String[] escapeSections(String[] sections) {
-		if (Validator.isNull(sections)) {
+		if (ArrayUtil.isEmpty(sections)) {
 			return new String[0];
 		}
 

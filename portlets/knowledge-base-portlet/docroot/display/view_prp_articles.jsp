@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -37,16 +37,17 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 	orderByCol="<%= orderByCol %>"
 	orderByType="<%= orderByType %>"
 >
-	<liferay-ui:search-container-results>
 
-		<%
-		AssetEntryQuery assetEntryQuery = new AssetEntryQuery(KBArticle.class.getName(), searchContainer);
+	<%
+	AssetEntryQuery assetEntryQuery = new AssetEntryQuery(KBArticle.class.getName(), searchContainer);
 
-		pageContext.setAttribute("results", AssetEntryServiceUtil.getEntries(assetEntryQuery));
-		pageContext.setAttribute("total", AssetEntryServiceUtil.getEntriesCount(assetEntryQuery));
-		%>
+	searchContainer.setTotal(AssetEntryServiceUtil.getEntriesCount(assetEntryQuery));
 
-	</liferay-ui:search-container-results>
+	assetEntryQuery.setEnd(searchContainer.getEnd());
+	assetEntryQuery.setStart(searchContainer.getStart());
+
+	searchContainer.setResults(AssetEntryServiceUtil.getEntries(assetEntryQuery));
+	%>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.portlet.asset.model.AssetEntry"
@@ -75,24 +76,24 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 		</c:if>
 
 		<c:if test="<%= showKBArticleCreateDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="create-date"
 				orderable="<%= true %>"
 				orderableProperty="createDate"
-				value='<%= dateFormatDate.format(assetEntry.getCreateDate()) + "<br />" + dateFormatTime.format(assetEntry.getCreateDate()) %>'
+				value="<%= assetEntry.getCreateDate() %>"
 			/>
 		</c:if>
 
 		<c:if test="<%= showKBArticleModifiedDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="modified-date"
 				orderable="<%= true %>"
 				orderableProperty="modifiedDate"
-				value='<%= dateFormatDate.format(assetEntry.getModifiedDate()) + "<br />" + dateFormatTime.format(assetEntry.getModifiedDate()) %>'
+				value="<%= assetEntry.getModifiedDate() %>"
 			/>
 		</c:if>
 
@@ -119,7 +120,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 	</liferay-ui:search-container-row>
 
 	<c:if test="<%= (assetCategoryId > 0) || Validator.isNotNull(assetTagName) %>">
-		<div class="portlet-msg-info">
+		<div class="alert alert-info">
 			<c:choose>
 				<c:when test="<%= assetCategoryId > 0 %>">
 

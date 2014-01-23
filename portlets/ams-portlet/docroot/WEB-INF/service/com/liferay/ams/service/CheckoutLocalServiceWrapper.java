@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,12 +17,10 @@ package com.liferay.ams.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link CheckoutLocalService}.
- * </p>
+ * Provides a wrapper for {@link CheckoutLocalService}.
  *
- * @author    Brian Wing Shun Chan
- * @see       CheckoutLocalService
+ * @author Brian Wing Shun Chan
+ * @see CheckoutLocalService
  * @generated
  */
 public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
@@ -39,6 +37,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the checkout that was added
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout addCheckout(
 		com.liferay.ams.model.Checkout checkout)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -51,6 +50,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @param checkoutId the primary key for the new checkout
 	* @return the new checkout
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout createCheckout(long checkoutId) {
 		return _checkoutLocalService.createCheckout(checkoutId);
 	}
@@ -63,6 +63,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @throws PortalException if a checkout with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout deleteCheckout(long checkoutId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -76,12 +77,14 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the checkout that was removed
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout deleteCheckout(
 		com.liferay.ams.model.Checkout checkout)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _checkoutLocalService.deleteCheckout(checkout);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		return _checkoutLocalService.dynamicQuery();
 	}
@@ -93,6 +96,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -104,7 +108,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.ams.model.impl.CheckoutModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -113,6 +117,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -124,7 +129,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.ams.model.impl.CheckoutModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -134,6 +139,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -151,12 +157,30 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _checkoutLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _checkoutLocalService.dynamicQueryCount(dynamicQuery, projection);
+	}
+
+	@Override
 	public com.liferay.ams.model.Checkout fetchCheckout(long checkoutId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _checkoutLocalService.fetchCheckout(checkoutId);
@@ -170,12 +194,14 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @throws PortalException if a checkout with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout getCheckout(long checkoutId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _checkoutLocalService.getCheckout(checkoutId);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -187,7 +213,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* Returns a range of all the checkouts.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.ams.model.impl.CheckoutModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of checkouts
@@ -195,6 +221,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the range of checkouts
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.util.List<com.liferay.ams.model.Checkout> getCheckouts(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -207,6 +234,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the number of checkouts
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public int getCheckoutsCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _checkoutLocalService.getCheckoutsCount();
@@ -219,6 +247,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	* @return the checkout that was updated
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.ams.model.Checkout updateCheckout(
 		com.liferay.ams.model.Checkout checkout)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -230,6 +259,7 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _checkoutLocalService.getBeanIdentifier();
 	}
@@ -239,10 +269,12 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_checkoutLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
@@ -251,24 +283,28 @@ public class CheckoutLocalServiceWrapper implements CheckoutLocalService,
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
+	@Deprecated
 	public CheckoutLocalService getWrappedCheckoutLocalService() {
 		return _checkoutLocalService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
+	@Deprecated
 	public void setWrappedCheckoutLocalService(
 		CheckoutLocalService checkoutLocalService) {
 		_checkoutLocalService = checkoutLocalService;
 	}
 
+	@Override
 	public CheckoutLocalService getWrappedService() {
 		return _checkoutLocalService;
 	}
 
+	@Override
 	public void setWrappedService(CheckoutLocalService checkoutLocalService) {
 		_checkoutLocalService = checkoutLocalService;
 	}

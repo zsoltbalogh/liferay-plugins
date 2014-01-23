@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the w s r p producer local service. This utility wraps {@link com.liferay.wsrp.service.impl.WSRPProducerLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for WSRPProducer. This utility wraps
+ * {@link com.liferay.wsrp.service.impl.WSRPProducerLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Brian Wing Shun Chan
  * @see WSRPProducerLocalService
@@ -114,7 +115,7 @@ public class WSRPProducerLocalServiceUtil {
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.wsrp.model.impl.WSRPProducerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -134,7 +135,7 @@ public class WSRPProducerLocalServiceUtil {
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.wsrp.model.impl.WSRPProducerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -167,10 +168,53 @@ public class WSRPProducerLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	public static long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().dynamicQueryCount(dynamicQuery, projection);
+	}
+
 	public static com.liferay.wsrp.model.WSRPProducer fetchWSRPProducer(
 		long wsrpProducerId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().fetchWSRPProducer(wsrpProducerId);
+	}
+
+	/**
+	* Returns the w s r p producer with the matching UUID and company.
+	*
+	* @param uuid the w s r p producer's UUID
+	* @param companyId the primary key of the company
+	* @return the matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.wsrp.model.WSRPProducer fetchWSRPProducerByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchWSRPProducerByUuidAndCompanyId(uuid, companyId);
+	}
+
+	/**
+	* Returns the w s r p producer matching the UUID and group.
+	*
+	* @param uuid the w s r p producer's UUID
+	* @param groupId the primary key of the group
+	* @return the matching w s r p producer, or <code>null</code> if a matching w s r p producer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.wsrp.model.WSRPProducer fetchWSRPProducerByUuidAndGroupId(
+		java.lang.String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchWSRPProducerByUuidAndGroupId(uuid, groupId);
 	}
 
 	/**
@@ -196,12 +240,28 @@ public class WSRPProducerLocalServiceUtil {
 	}
 
 	/**
-	* Returns the w s r p producer with the UUID in the group.
+	* Returns the w s r p producer with the matching UUID and company.
 	*
-	* @param uuid the UUID of w s r p producer
-	* @param groupId the group id of the w s r p producer
-	* @return the w s r p producer
-	* @throws PortalException if a w s r p producer with the UUID in the group could not be found
+	* @param uuid the w s r p producer's UUID
+	* @param companyId the primary key of the company
+	* @return the matching w s r p producer
+	* @throws PortalException if a matching w s r p producer could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.wsrp.model.WSRPProducer getWSRPProducerByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getWSRPProducerByUuidAndCompanyId(uuid, companyId);
+	}
+
+	/**
+	* Returns the w s r p producer matching the UUID and group.
+	*
+	* @param uuid the w s r p producer's UUID
+	* @param groupId the primary key of the group
+	* @return the matching w s r p producer
+	* @throws PortalException if a matching w s r p producer could not be found
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.wsrp.model.WSRPProducer getWSRPProducerByUuidAndGroupId(
@@ -215,7 +275,7 @@ public class WSRPProducerLocalServiceUtil {
 	* Returns a range of all the w s r p producers.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.wsrp.model.impl.WSRPProducerModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of w s r p producers
@@ -350,8 +410,9 @@ public class WSRPProducerLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
+	@Deprecated
 	public void setService(WSRPProducerLocalService service) {
 	}
 

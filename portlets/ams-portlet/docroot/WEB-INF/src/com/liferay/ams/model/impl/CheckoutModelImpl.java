@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -74,6 +74,8 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		};
 	public static final String TABLE_SQL_CREATE = "create table AMS_Checkout (checkoutId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,assetId LONG,checkOutDate DATE null,expectedCheckInDate DATE null,actualCheckInDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table AMS_Checkout";
+	public static final String ORDER_BY_JPQL = " ORDER BY checkout.checkoutId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY AMS_Checkout.checkoutId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -90,26 +92,32 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 	public CheckoutModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _checkoutId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setCheckoutId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_checkoutId);
+		return _checkoutId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Checkout.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Checkout.class.getName();
 	}
@@ -128,6 +136,9 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		attributes.put("checkOutDate", getCheckOutDate());
 		attributes.put("expectedCheckInDate", getExpectedCheckInDate());
 		attributes.put("actualCheckInDate", getActualCheckInDate());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -195,38 +206,47 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		}
 	}
 
+	@Override
 	public long getCheckoutId() {
 		return _checkoutId;
 	}
 
+	@Override
 	public void setCheckoutId(long checkoutId) {
 		_checkoutId = checkoutId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -236,54 +256,67 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public long getAssetId() {
 		return _assetId;
 	}
 
+	@Override
 	public void setAssetId(long assetId) {
 		_assetId = assetId;
 	}
 
+	@Override
 	public Date getCheckOutDate() {
 		return _checkOutDate;
 	}
 
+	@Override
 	public void setCheckOutDate(Date checkOutDate) {
 		_checkOutDate = checkOutDate;
 	}
 
+	@Override
 	public Date getExpectedCheckInDate() {
 		return _expectedCheckInDate;
 	}
 
+	@Override
 	public void setExpectedCheckInDate(Date expectedCheckInDate) {
 		_expectedCheckInDate = expectedCheckInDate;
 	}
 
+	@Override
 	public Date getActualCheckInDate() {
 		return _actualCheckInDate;
 	}
 
+	@Override
 	public void setActualCheckInDate(Date actualCheckInDate) {
 		_actualCheckInDate = actualCheckInDate;
 	}
@@ -331,6 +364,7 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		return checkoutImpl;
 	}
 
+	@Override
 	public int compareTo(Checkout checkout) {
 		long primaryKey = checkout.getPrimaryKey();
 
@@ -347,18 +381,15 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Checkout)) {
 			return false;
 		}
 
-		Checkout checkout = null;
-
-		try {
-			checkout = (Checkout)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Checkout checkout = (Checkout)obj;
 
 		long primaryKey = checkout.getPrimaryKey();
 
@@ -373,6 +404,16 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -476,6 +517,7 @@ public class CheckoutModelImpl extends BaseModelImpl<Checkout>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(34);
 

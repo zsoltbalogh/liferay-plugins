@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -22,18 +22,22 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
+import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
+import com.liferay.portal.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.asset.service.AssetEntryLocalServiceUtil;
 import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
 import com.liferay.tasks.TasksEntryDueDateException;
+import com.liferay.tasks.TasksEntryTitleException;
 import com.liferay.tasks.model.TasksEntry;
 import com.liferay.tasks.model.TasksEntryConstants;
 import com.liferay.tasks.service.base.TasksEntryLocalServiceBaseImpl;
@@ -53,7 +57,8 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 	public TasksEntry addTasksEntry(
 			long userId, String title, int priority, long assigneeUserId,
 			int dueDateMonth, int dueDateDay, int dueDateYear, int dueDateHour,
-			int dueDateMinute, boolean neverDue, ServiceContext serviceContext)
+			int dueDateMinute, boolean addDueDate,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		// Tasks entry
@@ -62,9 +67,11 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 		long groupId = serviceContext.getScopeGroupId();
 		Date now = new Date();
 
+		validate(title);
+
 		Date dueDate = null;
 
-		if (!neverDue) {
+		if (addDueDate) {
 			dueDate = PortalUtil.getDate(
 				dueDateMonth, dueDateDay, dueDateYear, dueDateHour,
 				dueDateMinute, user.getTimeZone(),
@@ -283,7 +290,7 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 			long tasksEntryId, String title, int priority, long assigneeUserId,
 			long resolverUserId, int dueDateMonth, int dueDateDay,
 			int dueDateYear, int dueDateHour, int dueDateMinute,
-			boolean neverDue, int status, ServiceContext serviceContext)
+			boolean addDueDate, int status, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		// Tasks entry
@@ -295,9 +302,11 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 
 		User user = UserLocalServiceUtil.getUserById(tasksEntry.getUserId());
 
+		validate(title);
+
 		Date dueDate = null;
 
-		if (!neverDue) {
+		if (addDueDate) {
 			dueDate = PortalUtil.getDate(
 				dueDateMonth, dueDateDay, dueDateYear, dueDateHour,
 				dueDateMinute, user.getTimeZone(),
@@ -335,23 +344,7 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 
 		// Social
 
-		int activity = TasksActivityKeys.UPDATE_ENTRY;
-
-		if (status == TasksEntryConstants.STATUS_RESOLVED) {
-			activity = TasksActivityKeys.RESOLVE_ENTRY;
-		}
-		else if (status == TasksEntryConstants.STATUS_REOPENED) {
-			activity = TasksActivityKeys.REOPEN_ENTRY;
-		}
-
-		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
-
-		extraDataJSONObject.put("title", tasksEntry.getTitle());
-
-		SocialActivityLocalServiceUtil.addActivity(
-			serviceContext.getUserId(), tasksEntry.getGroupId(),
-			TasksEntry.class.getName(), tasksEntryId, activity,
-			extraDataJSONObject.toString(), assigneeUserId);
+		addSocialActivity(status, tasksEntry, serviceContext);
 
 		// Notifications
 
@@ -365,6 +358,8 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 			long tasksEntryId, long resolverUserId, int status,
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
+
+		// Tasks entry
 
 		Date now = new Date();
 
@@ -388,6 +383,10 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 
 		tasksEntryPersistence.update(tasksEntry);
 
+		// Social
+
+		addSocialActivity(status, tasksEntry, serviceContext);
+
 		// Notifications
 
 		sendNotificationEvent(
@@ -395,6 +394,29 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 			serviceContext);
 
 		return tasksEntry;
+	}
+
+	protected void addSocialActivity(
+			int status, TasksEntry tasksEntry, ServiceContext serviceContext)
+		throws PortalException, SystemException {
+
+		int activity = TasksActivityKeys.UPDATE_ENTRY;
+
+		if (status == TasksEntryConstants.STATUS_RESOLVED) {
+			activity = TasksActivityKeys.RESOLVE_ENTRY;
+		}
+		else if (status == TasksEntryConstants.STATUS_REOPENED) {
+			activity = TasksActivityKeys.REOPEN_ENTRY;
+		}
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		extraDataJSONObject.put("title", tasksEntry.getTitle());
+
+		SocialActivityLocalServiceUtil.addActivity(
+			serviceContext.getUserId(), tasksEntry.getGroupId(),
+			TasksEntry.class.getName(), tasksEntry.getTasksEntryId(), activity,
+			extraDataJSONObject.toString(), tasksEntry.getAssigneeUserId());
 	}
 
 	protected void sendNotificationEvent(
@@ -422,13 +444,20 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 		JSONObject notificationEventJSONObject =
 			JSONFactoryUtil.createJSONObject();
 
-		notificationEventJSONObject.put("body", tasksEntry.getTitle());
 		notificationEventJSONObject.put(
-			"entryId", tasksEntry.getTasksEntryId());
-		notificationEventJSONObject.put("portletId", PortletKeys.TASKS);
+			"classPK", tasksEntry.getTasksEntryId());
 		notificationEventJSONObject.put("userId", serviceContext.getUserId());
 
 		for (long receiverUserId : receiverUserIds) {
+			if ((receiverUserId == 0) ||
+				!UserNotificationManagerUtil.isDeliver(
+					receiverUserId, PortletKeys.TASKS, 0,
+					TasksEntryConstants.STATUS_ALL,
+					UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
+
+				continue;
+			}
+
 			String title = StringPool.BLANK;
 
 			if (oldStatus == TasksEntryConstants.STATUS_ALL) {
@@ -456,13 +485,19 @@ public class TasksEntryLocalServiceImpl extends TasksEntryLocalServiceBaseImpl {
 
 			NotificationEvent notificationEvent =
 				NotificationEventFactoryUtil.createNotificationEvent(
-					System.currentTimeMillis(), "6_WAR_soportlet",
+					System.currentTimeMillis(), PortletKeys.TASKS,
 					notificationEventJSONObject);
 
 			notificationEvent.setDeliveryRequired(0);
 
-			ChannelHubManagerUtil.sendNotificationEvent(
-				tasksEntry.getCompanyId(), receiverUserId, notificationEvent);
+			UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+				receiverUserId, notificationEvent);
+		}
+	}
+
+	protected void validate(String title) throws PortalException {
+		if (Validator.isNull(title)) {
+			throw new TasksEntryTitleException();
 		}
 	}
 

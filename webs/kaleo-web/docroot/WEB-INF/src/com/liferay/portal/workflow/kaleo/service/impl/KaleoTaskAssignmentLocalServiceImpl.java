@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,6 +42,7 @@ import java.util.List;
 public class KaleoTaskAssignmentLocalServiceImpl
 	extends KaleoTaskAssignmentLocalServiceBaseImpl {
 
+	@Override
 	public KaleoTaskAssignment addKaleoTaskAssignment(
 			String kaleoClassName, long kaleoClassPK, long kaleoDefinitionId,
 			Assignment assignment, ServiceContext serviceContext)
@@ -71,12 +72,14 @@ public class KaleoTaskAssignmentLocalServiceImpl
 		return kaleoTaskAssignment;
 	}
 
+	@Override
 	public void deleteCompanyKaleoTaskAssignments(long companyId)
 		throws SystemException {
 
 		kaleoTaskAssignmentPersistence.removeByCompanyId(companyId);
 	}
 
+	@Override
 	public void deleteKaleoDefinitionKaleoTaskAssignments(
 			long kaleoDefinitionId)
 		throws SystemException {
@@ -85,6 +88,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 			kaleoDefinitionId);
 	}
 
+	@Override
 	public List<KaleoTaskAssignment> getKaleoTaskAssignments(long kaleoTaskId)
 		throws SystemException {
 
@@ -92,6 +96,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 			KaleoTask.class.getName(), kaleoTaskId);
 	}
 
+	@Override
 	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
 			long kaleoTaskId, String assigneeClassName)
 		throws SystemException {
@@ -100,6 +105,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 			KaleoTask.class.getName(), kaleoTaskId, assigneeClassName);
 	}
 
+	@Override
 	public List<KaleoTaskAssignment> getKaleoTaskAssignments(
 			String kaleoClassName, long kaleoClassPK)
 		throws SystemException {
@@ -108,6 +114,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 			kaleoClassName, kaleoClassPK);
 	}
 
+	@Override
 	public int getKaleoTaskAssignmentsCount(long kaleoTaskId)
 		throws SystemException {
 
@@ -115,6 +122,7 @@ public class KaleoTaskAssignmentLocalServiceImpl
 			KaleoTask.class.getName(), kaleoTaskId);
 	}
 
+	@Override
 	public int getKaleoTaskAssignmentsCount(
 			long kaleoTaskId, String assigneeClassName)
 		throws SystemException {

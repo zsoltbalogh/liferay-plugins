@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -181,14 +182,20 @@ public class WSRPConsumerPortletLocalServiceImpl
 			Portlet portlet = _portletsPool.remove(wsrpConsumerPortletUuid);
 
 			if (portlet == null) {
-				return;
+				WSRPConsumerPortlet wsrpConsumerPortlet =
+					getWSRPConsumerPortlet(wsrpConsumerPortletId);
+
+				portlet = PortletLocalServiceUtil.getPortletById(
+					wsrpConsumerPortlet.getCompanyId(),
+					getPortletId(wsrpConsumerPortletUuid));
+			}
+			else {
+				WSRPConsumerManagerFactory.destroyWSRPConsumerManager(url);
+
+				_failedWSRPConsumerPortlets.remove(wsrpConsumerPortletId);
 			}
 
-			WSRPConsumerManagerFactory.destroyWSRPConsumerManager(url);
-
 			PortletInstanceFactoryUtil.destroy(portlet);
-
-			_failedWSRPConsumerPortlets.remove(wsrpConsumerPortletId);
 		}
 		catch (Exception e) {
 			_log.error(
@@ -383,7 +390,7 @@ public class WSRPConsumerPortletLocalServiceImpl
 			Set<String> mimeTypePortletModes = new HashSet<String>();
 
 			for (String portletMode : markupType.getModes()) {
-				portletMode = portletMode.toLowerCase();
+				portletMode = StringUtil.toLowerCase(portletMode);
 
 				if (portletMode.startsWith("wsrp:")) {
 					portletMode = portletMode.substring(5);
@@ -398,7 +405,7 @@ public class WSRPConsumerPortletLocalServiceImpl
 			Set<String> mimeTypeWindowStates = new HashSet<String>();
 
 			for (String windowState : markupType.getWindowStates()) {
-				windowState = windowState.toLowerCase();
+				windowState = StringUtil.toLowerCase(windowState);
 
 				if (windowState.startsWith("wsrp:")) {
 					windowState = windowState.substring(5);
@@ -437,7 +444,7 @@ public class WSRPConsumerPortletLocalServiceImpl
 
 				QName[] qNames = parameterDescription.getNames();
 
-				if ((qNames == null) || (qNames.length == 0)) {
+				if (ArrayUtil.isEmpty(qNames)) {
 					continue;
 				}
 
@@ -504,11 +511,7 @@ public class WSRPConsumerPortletLocalServiceImpl
 			return portlet;
 		}
 
-		String portletId = ConsumerPortlet.PORTLET_NAME_PREFIX.concat(
-			wsrpConsumerPortletUuid);
-
-		portletId = PortalUtil.getJsSafePortletId(
-			PortalUUIDUtil.toJsSafeUuid(portletId));
+		String portletId = getPortletId(wsrpConsumerPortletUuid);
 
 		portlet = PortletLocalServiceUtil.clonePortlet(_CONSUMER_PORTLET_ID);
 
@@ -580,6 +583,16 @@ public class WSRPConsumerPortletLocalServiceImpl
 		return portlet;
 	}
 
+	protected String getPortletId(String wsrpConsumerPortletUuid) {
+		String portletId = ConsumerPortlet.PORTLET_NAME_PREFIX.concat(
+			wsrpConsumerPortletUuid);
+
+		portletId = PortalUtil.getJsSafePortletId(
+			PortalUUIDUtil.toJsSafeUuid(portletId));
+
+		return portletId;
+	}
+
 	protected String getProxyURL(String url) {
 		return "/proxy?url=" + HttpUtil.encodeURL(url);
 	}
@@ -600,6 +613,16 @@ public class WSRPConsumerPortletLocalServiceImpl
 
 		String name = ExtensionHelperUtil.getNameAttribute(messageElement);
 		String value = messageElement.getValue();
+
+		if (Validator.isNull(name)) {
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					"Message element " + messageElement.toString() +
+						" has a null name");
+			}
+
+			return;
+		}
 
 		if (name.equals("css-class-wrapper")) {
 			portlet.setCssClassWrapper(value);

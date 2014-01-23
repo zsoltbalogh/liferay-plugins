@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,8 +39,10 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
 import com.liferay.util.mail.InternetAddressUtil;
@@ -510,6 +512,10 @@ public class IMAPMailbox extends BaseMailbox {
 			sentFolderId = getFolderId("sent");
 		}
 
+		if (sentFolderId <= 0) {
+			sentFolderId = getFolderId("sent-mail");
+		}
+
 		if (trashFolderId <= 0) {
 			trashFolderId = getFolderId("trash");
 		}
@@ -534,20 +540,24 @@ public class IMAPMailbox extends BaseMailbox {
 	protected long getFolderId(String type) throws SystemException {
 		Locale[] locales = LanguageUtil.getAvailableLocales();
 
-		String[] names = new String[locales.length];
+		List<String> words = new ArrayList<String>();
 
-		for (int i = 0; i < locales.length; i++) {
-			names[i] = LanguageUtil.get(locales[i], type).toLowerCase();
+		for (Locale locale : locales) {
+			String translation = StringUtil.toLowerCase(
+				LanguageUtil.get(locale, type));
+
+			words.addAll(ListUtil.toList(translation.split(StringPool.SPACE)));
 		}
 
 		List<Folder> folders = FolderLocalServiceUtil.getFolders(
 			account.getAccountId());
 
-		for (Folder folder : folders) {
-			String folderName = folder.getDisplayName().toLowerCase();
+		for (String word : words) {
+			for (Folder folder : folders) {
+				String folderName = StringUtil.toLowerCase(
+					folder.getDisplayName());
 
-			for (String name : names) {
-				if (folderName.contains(name)) {
+				if (folderName.contains(word)) {
 					return folder.getFolderId();
 				}
 			}

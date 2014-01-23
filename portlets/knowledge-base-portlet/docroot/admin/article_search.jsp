@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -34,10 +34,10 @@ KBArticleDisplayTerms displayTerms = (KBArticleDisplayTerms)searchContainer.getD
 			<aui:input inlineField="<%= true %>" name="<%= displayTerms.CONTENT %>" size="40" value="<%= displayTerms.getContent() %>" />
 
 			<aui:select ignoreRequestValue="<%= true %>" inlineField="<%= true %>" name="<%= displayTerms.STATUS %>">
-				<aui:option label="<%= WorkflowConstants.toLabel(WorkflowConstants.STATUS_ANY) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_ANY %>" value="<%= WorkflowConstants.STATUS_ANY %>" />
-				<aui:option label="<%= WorkflowConstants.toLabel(WorkflowConstants.STATUS_APPROVED) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_APPROVED %>" value="<%= WorkflowConstants.STATUS_APPROVED %>" />
-				<aui:option label="<%= WorkflowConstants.toLabel(WorkflowConstants.STATUS_DRAFT) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_DRAFT %>" value="<%= WorkflowConstants.STATUS_DRAFT %>" />
-				<aui:option label="<%= WorkflowConstants.toLabel(WorkflowConstants.STATUS_PENDING) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_PENDING %>" value="<%= WorkflowConstants.STATUS_PENDING %>" />
+				<aui:option label="<%= WorkflowConstants.getStatusLabel(WorkflowConstants.STATUS_ANY) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_ANY %>" value="<%= WorkflowConstants.STATUS_ANY %>" />
+				<aui:option label="<%= WorkflowConstants.getStatusLabel(WorkflowConstants.STATUS_APPROVED) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_APPROVED %>" value="<%= WorkflowConstants.STATUS_APPROVED %>" />
+				<aui:option label="<%= WorkflowConstants.getStatusLabel(WorkflowConstants.STATUS_DRAFT) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_DRAFT %>" value="<%= WorkflowConstants.STATUS_DRAFT %>" />
+				<aui:option label="<%= WorkflowConstants.getStatusLabel(WorkflowConstants.STATUS_PENDING) %>" selected="<%= displayTerms.getStatus() == WorkflowConstants.STATUS_PENDING %>" value="<%= WorkflowConstants.STATUS_PENDING %>" />
 			</aui:select>
 		</div>
 
@@ -47,7 +47,7 @@ KBArticleDisplayTerms displayTerms = (KBArticleDisplayTerms)searchContainer.getD
 				<aui:option label="between" selected="<%= !displayTerms.isAnytime() %>" value="<%= false %>" />
 			</aui:select>
 
-			<span class='<%= displayTerms.isAnytime() ? "aui-helper-hidden kb-date-field" : "kb-date-field" %>' id="<portlet:namespace />datesOptions">
+			<span class='<%= displayTerms.isAnytime() ? "hide kb-date-field" : "kb-date-field" %>' id="<portlet:namespace />datesOptions">
 				<liferay-ui:input-date
 					dayParam="<%= displayTerms.START_DATE_DAY %>"
 					dayValue="<%= displayTerms.getStartDateDay() %>"
@@ -55,8 +55,6 @@ KBArticleDisplayTerms displayTerms = (KBArticleDisplayTerms)searchContainer.getD
 					monthParam="<%= displayTerms.START_DATE_MONTH %>"
 					monthValue="<%= displayTerms.getStartDateMonth() %>"
 					yearParam="<%= displayTerms.START_DATE_YEAR %>"
-					yearRangeEnd="<%= displayTerms.getYearRangeEnd() %>"
-					yearRangeStart="<%= displayTerms.getYearRangeStart() %>"
 					yearValue="<%= displayTerms.getStartDateYear() %>"
 				/>
 
@@ -67,8 +65,6 @@ KBArticleDisplayTerms displayTerms = (KBArticleDisplayTerms)searchContainer.getD
 					monthParam="<%= displayTerms.END_DATE_MONTH %>"
 					monthValue="<%= displayTerms.getEndDateMonth() %>"
 					yearParam="<%= displayTerms.END_DATE_YEAR %>"
-					yearRangeEnd="<%= displayTerms.getYearRangeEnd() %>"
-					yearRangeStart="<%= displayTerms.getYearRangeStart() %>"
 					yearValue="<%= displayTerms.getEndDateYear() %>"
 				/>
 			</span>

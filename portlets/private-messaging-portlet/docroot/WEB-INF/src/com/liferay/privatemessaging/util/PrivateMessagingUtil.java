@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.CharPool;
-import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Group;
@@ -38,10 +37,12 @@ import com.liferay.portal.util.comparator.UserFirstNameComparator;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
 import com.liferay.portlet.messageboards.util.comparator.MessageCreateDateComparator;
+import com.liferay.portlet.sites.util.SitesUtil;
 import com.liferay.portlet.social.model.SocialRelationConstants;
 import com.liferay.privatemessaging.NoSuchUserThreadException;
 import com.liferay.privatemessaging.model.UserThread;
 import com.liferay.privatemessaging.service.UserThreadLocalServiceUtil;
+import com.liferay.privatemessaging.service.UserThreadServiceUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,18 +66,24 @@ public class PrivateMessagingUtil {
 			new LinkedHashMap<String, Object>();
 
 		if (type.equals("site")) {
-			List<Group> usersGroups = GroupLocalServiceUtil.getUserGroups(
-				userId, true);
+			params.put("inherit", Boolean.TRUE);
 
-			long[] usersGroupsIds = new long[usersGroups.size()];
+			LinkedHashMap<String, Object> groupParams =
+				new LinkedHashMap<String, Object>();
 
-			for (int i = 0; i < usersGroups.size(); i++) {
-				Group group = usersGroups.get(i);
+			groupParams.put("inherit", Boolean.FALSE);
+			groupParams.put("site", Boolean.TRUE);
+			groupParams.put("usersGroups", userId);
 
-				usersGroupsIds[i] = group.getGroupId();
-			}
+			List<Group> groups = GroupLocalServiceUtil.search(
+				user.getCompanyId(), groupParams, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
-			params.put("usersGroups", usersGroupsIds);
+			params.put(
+				"usersGroups",
+				SitesUtil.filterGroups(
+					groups,
+					PortletPropsValues.AUTOCOMPLETE_RECIPIENT_SITE_EXCLUDES));
 		}
 		else if (!type.equals("all")) {
 			params.put(
@@ -91,6 +98,7 @@ public class PrivateMessagingUtil {
 				user.getCompanyId(), RoleConstants.SOCIAL_OFFICE_USER);
 
 			if (role != null) {
+				params.put("inherit", Boolean.TRUE);
 				params.put("usersRoles", new Long(role.getRoleId()));
 			}
 		}
@@ -128,65 +136,6 @@ public class PrivateMessagingUtil {
 		jsonObject.put("users", jsonArray);
 
 		return jsonObject;
-	}
-
-	public static MBMessage getLastThreadMessage(long userId, long mbThreadId)
-		throws PortalException, SystemException {
-
-		List<MBMessage> mbMessages = getThreadMessages(
-			userId, mbThreadId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
-
-		MBMessage lastMBMessage = mbMessages.get(0);
-
-		return lastMBMessage;
-	}
-
-	public static List<MBMessage> getThreadMessages(
-			long userId, long mbThreadId, int start, int end, boolean ascending)
-		throws PortalException, SystemException {
-
-		UserThread userThread = UserThreadLocalServiceUtil.getUserThread(
-			userId, mbThreadId);
-
-		MBMessage topMBMessage = MBMessageLocalServiceUtil.getMBMessage(
-			userThread.getTopMBMessageId());
-
-		List<MBMessage> mbMessages =
-			MBMessageLocalServiceUtil.getThreadMessages(
-				mbThreadId, WorkflowConstants.STATUS_ANY,
-				new MessageCreateDateComparator(ascending));
-
-		List<MBMessage> filteredMBMessages = new ArrayList<MBMessage>();
-
-		for (MBMessage mbMessage : mbMessages) {
-			int compareTo = DateUtil.compareTo(
-				topMBMessage.getCreateDate(), mbMessage.getCreateDate());
-
-			if (compareTo <= 0) {
-				filteredMBMessages.add(mbMessage);
-			}
-		}
-
-		if (filteredMBMessages.isEmpty()) {
-			return filteredMBMessages;
-		}
-		else if ((start == QueryUtil.ALL_POS) || (end == QueryUtil.ALL_POS)) {
-			return filteredMBMessages;
-		}
-		else if (end > filteredMBMessages.size()) {
-			end = filteredMBMessages.size();
-		}
-
-		return filteredMBMessages.subList(start, end);
-	}
-
-	public static int getThreadMessagesCount(long userId, long mbThreadId)
-		throws PortalException, SystemException {
-
-		List<MBMessage> mbMessages = getThreadMessages(
-			userId, mbThreadId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, true);
-
-		return mbMessages.size();
 	}
 
 	/**
@@ -238,8 +187,8 @@ public class PrivateMessagingUtil {
 
 		// Users who have contributed to the thread
 
-		List<MBMessage> mbMessages = getThreadMessages(
-			userId, mbThreadId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+		List<MBMessage> mbMessages = UserThreadServiceUtil.getThreadMessages(
+			mbThreadId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
 
 		for (MBMessage mbMessage : mbMessages) {
 			if (userId == mbMessage.getUserId()) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,20 @@
 
 package com.liferay.marketplace.model;
 
+import com.liferay.marketplace.service.ClpSerializer;
 import com.liferay.marketplace.service.ModuleLocalServiceUtil;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,26 +39,32 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 	public ModuleClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Module.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Module.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setModuleId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_moduleId);
+		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -67,6 +77,9 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		attributes.put("moduleId", getModuleId());
 		attributes.put("appId", getAppId());
 		attributes.put("contextName", getContextName());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -96,38 +109,101 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		if (contextName != null) {
 			setContextName(contextName);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_moduleRemoteModel != null) {
+			try {
+				Class<?> clazz = _moduleRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_moduleRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getModuleId() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setModuleId(long moduleId) {
 		_moduleId = moduleId;
+
+		if (_moduleRemoteModel != null) {
+			try {
+				Class<?> clazz = _moduleRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModuleId", long.class);
+
+				method.invoke(_moduleRemoteModel, moduleId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getAppId() {
 		return _appId;
 	}
 
+	@Override
 	public void setAppId(long appId) {
 		_appId = appId;
+
+		if (_moduleRemoteModel != null) {
+			try {
+				Class<?> clazz = _moduleRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAppId", long.class);
+
+				method.invoke(_moduleRemoteModel, appId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getContextName() {
 		return _contextName;
 	}
 
+	@Override
 	public void setContextName(String contextName) {
 		_contextName = contextName;
+
+		if (_moduleRemoteModel != null) {
+			try {
+				Class<?> clazz = _moduleRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setContextName", String.class);
+
+				method.invoke(_moduleRemoteModel, contextName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getModuleRemoteModel() {
@@ -138,6 +214,48 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		_moduleRemoteModel = moduleRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _moduleRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_moduleRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			ModuleLocalServiceUtil.addModule(this);
@@ -165,6 +283,7 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		return clone;
 	}
 
+	@Override
 	public int compareTo(Module module) {
 		long primaryKey = module.getPrimaryKey();
 
@@ -181,18 +300,15 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof ModuleClp)) {
 			return false;
 		}
 
-		ModuleClp module = null;
-
-		try {
-			module = (ModuleClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		ModuleClp module = (ModuleClp)obj;
 
 		long primaryKey = module.getPrimaryKey();
 
@@ -207,6 +323,16 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -226,6 +352,7 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(16);
 
@@ -260,4 +387,6 @@ public class ModuleClp extends BaseModelImpl<Module> implements Module {
 	private long _appId;
 	private String _contextName;
 	private BaseModel<?> _moduleRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

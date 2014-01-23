@@ -1,4 +1,6 @@
-$microblogs-border-color: #C7D0DA;
+@import "compass";
+
+$microblogs-border-color: #EAEAEA;
 
 .microblogs-portlet {
 	.taglib-header {
@@ -10,52 +12,67 @@ $microblogs-border-color: #C7D0DA;
 	}
 
 	.microblogs-entry-form {
-		border-bottom: 1px solid $microblogs-border-color;
 		padding: 10px 11px;
 		position: relative;
 
-		.aui-field-text {
+		.field-text {
 			display: block;
 			padding: 0 5px;
-		}
 
-		.aui-field-text textarea {
-			height: 1.25em;
-			margin: 0 -10px;
-			overflow: hidden;
-			width: 100%;
-		}
-
-		.aui-field-text-focused {
 			textarea {
-				height: auto;
+				@include box-shadow(none);
+
+				margin: 0 -12px;
+				overflow: hidden;
+				width: 100%;
 			}
 		}
 
-		.aui-button-holder {
-			margin: 5px 0 0;
+		.field-text-focused textarea {
+			height: auto;
 		}
 
-		.aui-field-select {
+		textarea:focus {
+			outline: 0;
+		}
+
+		.button-holder {
+			margin-top: 5px;
+		}
+
+		.microblogs-post {
+			margin-right: 1em;
+		}
+
+		.field-select {
 			display: inline-block;
+			float: left;
+
+			.field-element {
+				position: static;
+			}
 		}
 
-		.button-holder-right {
+		.microblogs-countdown-holder {
 			float: right;
 			line-height: 1em;
 		}
 
 		.microblogs-countdown {
 			background: #CFD8E1;
+
+			@include border-radius(3px);
+
 			color: #FFF;
+			opacity: 0.5;
 			padding: 2px;
 			position: absolute;
 			right: 14px;
 			top: 14px;
 		}
 
-		 .microblogs-countdown-warned {
-			background: #F00;
+		.microblogs-countdown-warned {
+			background: #F89406;
 		}
 
 		&.reply {
@@ -65,27 +82,50 @@ $microblogs-border-color: #C7D0DA;
 	}
 
 	.autocomplete {
-		background-color: #FFF;
-		height: 18px;
-		position: relative;
-		padding: 8px;
+		&, &.textarea {
+			background-color: #FFF;
+			height: 18px;
+			padding: 5px 8px;
+			position: relative;
+		}
+
+		&, &:focus, &.inactive {
+			border: 1px solid #EAEAEA;
+
+			@include border-radius(3px);
+		}
+
+		.textarea {
+			border-width: 0;
+		}
+
+		ul {
+			margin: 0;
+
+			li {
+				line-height: 16px;
+				padding: 10px;
+			}
+		}
 	}
 
 	.microblogs-entry {
 		border-bottom: 1px solid $microblogs-border-color;
 		margin: 0 15px;
-		padding: 1em 0 .5em;
+		padding: 1em 0 0.5em;
 
 		.entry-bubble {
-			margin-left: 50px;
+			@include hyphenation;
+
+			margin-left: 60px;
 		}
 	}
 
 	.thumbnail {
 		float: left;
 		height: 45px;
-		overflow: hidden;
 		margin-right: 2px;
+		overflow: hidden;
 		width: 45px;
 
 		img {
@@ -95,6 +135,10 @@ $microblogs-border-color: #C7D0DA;
 
 	.comments-container {
 		display: none;
+
+		.button-holder {
+			margin-left: 40px;
+		}
 	}
 
 	.microblogs-entry {
@@ -104,7 +148,7 @@ $microblogs-border-color: #C7D0DA;
 
 		.footer {
 			color: #CCC;
-			font-size: .9em;
+			font-size: 0.9em;
 
 			.action {
 				display: none;
@@ -115,16 +159,16 @@ $microblogs-border-color: #C7D0DA;
 				padding: 0 5px;
 				position: relative;
 			}
+
+			.action-container {
+				.comment, .repost {
+					display: inline-block;
+				}
+			}
 		}
 
 		&:hover .footer .action {
 			display: inline-block;
-		}
-
-		.footer .action-container {
-			.comment, .repost {
-				display: inline-block;
-			}
 		}
 
 		&.show-comments {
@@ -153,7 +197,7 @@ $microblogs-border-color: #C7D0DA;
 		margin-left: 50px;
 
 		.entry-bubble {
-			margin-left: 30px;
+			margin-left: 40px;
 		}
 
 		.thumbnail {
@@ -175,15 +219,12 @@ $microblogs-border-color: #C7D0DA;
 			display: inline;
 		}
 
-		.microblogs-entry-form {
-			.button-holder-right {
-				float: none;
-				margin-left: 35px;
-			}
+		.microblogs-entry-form .microblogs-countdown-holder {
+			margin-left: 35px;
 		}
 
 		.microblogs-entry-content, .autocomplete {
-			margin-left: 35px;
+			margin-left: 40px;
 		}
 
 		.microblogs-entry .footer {
@@ -196,52 +237,66 @@ $microblogs-border-color: #C7D0DA;
 	}
 
 	.microblogs-entry-form:after, .microblogs-entry:after {
-		content: "";
 		clear: both;
+		content: "";
 		display: block;
 	}
 
 	.highlighter-content {
 		color: transparent;
-		left: 1px;
-		padding: 5px;
+
+		@include force-wrap;
+
+		left: 3px;
+		line-height: 1.5em;
+		padding: 4px;
 		position: absolute;
-		top: 1px;
+		top: 0;
 		visibility: hidden;
-		word-wrap: break-word;
+		width: 100%;
 		z-index: 998;
+
+		&.textbox {
+			min-height: 20px;
+			padding: 2px;
+			position: static;
+		}
+
+		span {
+			background-color: #97D1FF;
+			border-radius: 3px;
+			color: rgba(0,0,0,0.9);
+			font-weight: normal;
+			padding: 2px 0;
+			visibility: visible;
+			zoom: 1;
+		}
+
+		div {
+			display: inline-block;
+
+			@include force-wrap;
+
+			width: 100%;
+		}
+
+		@media (max-width: 979px) {
+			font-size: 18px;
+		}
 	}
 
-	.highlighter-content.textbox {
-		min-height: 20px;
-		padding: 2px;
-		position: static;
-	}
-
-	.highlighter-content span {
-		background-color: #97D1FF;
-		font-weight: normal;
-		line-height: 1.45em;
-		margin: -2px -2px 0;
-		padding: 2px 2px 0;
-		visibility: visible;
-		zoom: 1;
-	}
-
-	.highlighter-content div {
-		display: inline-block;
-		white-space: pre;
-	}
-
-	.aui-field-input-text {
+	.field-input-text {
 		background: none transparent;
-		border: none;
-		min-width: 99%;
+		border-width: 0;
+
+		@include box-sizing(border-box);
+
+		line-height: 1.5em;
+		min-width: 100%;
+		outline: none;
 		position: absolute;
 		resize: none;
 		top: 0;
-		outline: none;
-		z-index: 999;
 	}
 
 	.microblogs-autocomplete {
@@ -252,7 +307,7 @@ $microblogs-border-color: #C7D0DA;
 			margin: 0 5px 0 0;
 
 			img {
-				float:left;
+				float: left;
 				width: 50px;
 			}
 		}

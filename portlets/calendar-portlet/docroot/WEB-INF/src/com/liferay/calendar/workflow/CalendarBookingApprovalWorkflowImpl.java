@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,6 +36,7 @@ import java.util.Map;
 public class CalendarBookingApprovalWorkflowImpl
 	implements CalendarBookingApprovalWorkflow {
 
+	@Override
 	public Map<Long, List<String>> getActionNames(
 			PermissionChecker permissionChecker, long[] calendarBookingIds)
 		throws PortalException, SystemException {
@@ -69,44 +70,34 @@ public class CalendarBookingApprovalWorkflowImpl
 		return actionNames;
 	}
 
+	@Override
 	public void invokeTransition(
-			long userId, long calendarBookingId, String transitionName,
+			long userId, CalendarBooking calendarBooking, int status,
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
-		int status = CalendarBookingWorkflowConstants.toStatus(transitionName);
-
 		if (status == CalendarBookingWorkflowConstants.STATUS_PENDING) {
-			CalendarBooking calendarBooking =
-				CalendarBookingLocalServiceUtil.getCalendarBooking(
-					calendarBookingId);
-
 			if (isAutoApproveCalendarBooking(userId, calendarBooking)) {
-				CalendarBookingLocalServiceUtil.updateStatus(
-					userId, calendarBookingId,
-					CalendarBookingWorkflowConstants.STATUS_APPROVED,
-					serviceContext);
+				status = CalendarBookingWorkflowConstants.STATUS_APPROVED;
 			}
 			else {
-				CalendarBookingLocalServiceUtil.updateStatus(
-					userId, calendarBooking.getCalendarBookingId(),
-					CalendarBookingWorkflowConstants.STATUS_PENDING,
-					serviceContext);
+				status = CalendarBookingWorkflowConstants.STATUS_PENDING;
 			}
 		}
-		else {
-			CalendarBookingLocalServiceUtil.updateStatus(
-				userId, calendarBookingId, status, serviceContext);
-		}
+
+		CalendarBookingLocalServiceUtil.updateStatus(
+			userId, calendarBooking, status, serviceContext);
 	}
 
+	@Override
 	public void startWorkflow(
-			long userId, long calendarBookingId, ServiceContext serviceContext)
+			long userId, CalendarBooking calendarBooking,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		invokeTransition(
-			userId, calendarBookingId,
-			CalendarBookingWorkflowConstants.LABEL_PENDING, serviceContext);
+			userId, calendarBooking,
+			CalendarBookingWorkflowConstants.STATUS_PENDING, serviceContext);
 	}
 
 	protected boolean isAutoApproveCalendarBooking(

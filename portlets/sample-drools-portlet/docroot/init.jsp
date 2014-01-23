@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,11 +31,13 @@ page import="com.liferay.portal.kernel.bi.rules.RulesLanguage" %><%@
 page import="com.liferay.portal.kernel.bi.rules.RulesResourceRetriever" %><%@
 page import="com.liferay.portal.kernel.resource.StringResourceRetriever" %><%@
 page import="com.liferay.portal.kernel.util.ArrayUtil" %><%@
+page import="com.liferay.portal.kernel.util.ClassResolverUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.KeyValuePair" %><%@
 page import="com.liferay.portal.kernel.util.KeyValuePairComparator" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@
+page import="com.liferay.portal.kernel.util.MethodKey" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalClassInvoker" %><%@
 page import="com.liferay.portal.kernel.util.PortalClassLoaderUtil" %><%@
@@ -47,7 +49,6 @@ page import="com.liferay.portal.model.Portlet" %><%@
 page import="com.liferay.portal.model.User" %><%@
 page import="com.liferay.portal.service.PortletLocalServiceUtil" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
-page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %><%@
 page import="com.liferay.portlet.asset.AssetRendererFactoryRegistryUtil" %><%@
 page import="com.liferay.portlet.asset.model.AssetEntry" %><%@
 page import="com.liferay.portlet.asset.model.AssetRenderer" %><%@
@@ -58,8 +59,6 @@ page import="com.liferay.util.portlet.PortletProps" %>
 page import="java.util.List" %><%@
 page import="java.util.Map" %>
 
-<%@ page import="javax.portlet.PortletPreferences" %>
-
 <portlet:defineObjects />
 
 <liferay-theme:defineObjects />
@@ -67,20 +66,16 @@ page import="java.util.Map" %>
 <%
 String instanceId = portletDisplay.getInstanceId();
 
-PortletPreferences preferences = renderRequest.getPreferences();
-
 String portletResource = ParamUtil.getString(request, "portletResource");
 
 if (Validator.isNotNull(portletResource)) {
 	Portlet selPortlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletResource);
 
 	instanceId = selPortlet.getInstanceId();
-
-	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
 }
 
-String domainName = preferences.getValue("domain-name", "Personalized Content ".concat(instanceId));
-String rules = preferences.getValue("rules", StringUtil.read(getClass().getClassLoader(), PortletProps.get("sample.drools.rules.personalized.content")));
-String userCustomAttributeNames = preferences.getValue("user-custom-attribute-names", StringPool.BLANK);
-long[] classNameIds = GetterUtil.getLongValues(preferences.getValues("class-name-ids", null), AssetRendererFactoryRegistryUtil.getClassNameIds());
+String domainName = portletPreferences.getValue("domain-name", "Personalized Content ".concat(instanceId));
+String rules = portletPreferences.getValue("rules", StringUtil.read(getClass().getClassLoader(), PortletProps.get("sample.drools.rules.personalized.content")));
+String userCustomAttributeNames = portletPreferences.getValue("user-custom-attribute-names", StringPool.BLANK);
+long[] classNameIds = GetterUtil.getLongValues(portletPreferences.getValues("class-name-ids", null), AssetRendererFactoryRegistryUtil.getClassNameIds());
 %>

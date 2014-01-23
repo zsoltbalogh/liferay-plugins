@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.staging.StagingUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -48,6 +49,7 @@ import java.util.Map;
 public class KaleoInstanceLocalServiceImpl
 	extends KaleoInstanceLocalServiceBaseImpl {
 
+	@Override
 	public KaleoInstance addKaleoInstance(
 			long kaleoDefinitionId, String kaleoDefinitionName,
 			int kaleoDefinitionVersion,
@@ -105,6 +107,7 @@ public class KaleoInstanceLocalServiceImpl
 		return kaleoInstance;
 	}
 
+	@Override
 	public KaleoInstance completeKaleoInstance(long kaleoInstanceId)
 		throws PortalException, SystemException {
 
@@ -119,6 +122,7 @@ public class KaleoInstanceLocalServiceImpl
 		return kaleoInstance;
 	}
 
+	@Override
 	public void deleteCompanyKaleoInstances(long companyId)
 		throws SystemException {
 
@@ -141,6 +145,7 @@ public class KaleoInstanceLocalServiceImpl
 			deleteKaleoDefinitionKaleoTaskInstanceTokens(companyId);
 	}
 
+	@Override
 	public void deleteKaleoDefinitionKaleoInstances(long kaleoDefinitionId)
 		throws SystemException {
 
@@ -198,6 +203,7 @@ public class KaleoInstanceLocalServiceImpl
 		return kaleoInstance;
 	}
 
+	@Override
 	public List<KaleoInstance> getKaleoInstances(
 			Long userId, String assetClassName, Long assetClassPK,
 			Boolean completed, int start, int end,
@@ -210,6 +216,7 @@ public class KaleoInstanceLocalServiceImpl
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<KaleoInstance> getKaleoInstances(
 			Long userId, String[] assetClassNames, Boolean completed, int start,
 			int end, OrderByComparator orderByComparator,
@@ -222,6 +229,7 @@ public class KaleoInstanceLocalServiceImpl
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<KaleoInstance> getKaleoInstances(
 			String kaleoDefinitionName, int kaleoDefinitionVersion,
 			boolean completed, int start, int end,
@@ -235,6 +243,7 @@ public class KaleoInstanceLocalServiceImpl
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	@Override
 	public int getKaleoInstancesCount(long kaleoDefinitionId, boolean completed)
 		throws SystemException {
 
@@ -242,6 +251,7 @@ public class KaleoInstanceLocalServiceImpl
 			kaleoDefinitionId, completed);
 	}
 
+	@Override
 	public int getKaleoInstancesCount(
 			Long userId, String assetClassName, Long assetClassPK,
 			Boolean completed, ServiceContext serviceContext)
@@ -253,6 +263,7 @@ public class KaleoInstanceLocalServiceImpl
 		return (int)dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public int getKaleoInstancesCount(
 			Long userId, String[] assetClassNames, Boolean completed,
 			ServiceContext serviceContext)
@@ -264,6 +275,7 @@ public class KaleoInstanceLocalServiceImpl
 		return (int)dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public int getKaleoInstancesCount(
 			String kaleoDefinitionName, int kaleoDefinitionVersion,
 			boolean completed, ServiceContext serviceContext)
@@ -276,6 +288,7 @@ public class KaleoInstanceLocalServiceImpl
 		return (int)dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public KaleoInstance updateKaleoInstance(
 			long kaleoInstanceId, Map<String, Serializable> workflowContext,
 			ServiceContext serviceContext)
@@ -286,6 +299,8 @@ public class KaleoInstanceLocalServiceImpl
 
 		kaleoInstance.setWorkflowContext(
 			WorkflowContextUtil.convert(workflowContext));
+
+		kaleoInstancePersistence.update(kaleoInstance);
 
 		return kaleoInstance;
 	}
@@ -327,11 +342,11 @@ public class KaleoInstanceLocalServiceImpl
 			dynamicQuery.add(userIdProperty.eq(userId));
 		}
 
-		if ((assetClassNames != null) && (assetClassNames.length > 0)) {
+		if (ArrayUtil.isNotEmpty(assetClassNames)) {
 			dynamicQuery.add(getAssetClassNames(assetClassNames));
 		}
 
-		if ((assetClassPKs != null) && (assetClassPKs.length > 0)) {
+		if (ArrayUtil.isNotEmpty(assetClassPKs)) {
 			dynamicQuery.add(getAssetClassPKs(assetClassPKs));
 		}
 

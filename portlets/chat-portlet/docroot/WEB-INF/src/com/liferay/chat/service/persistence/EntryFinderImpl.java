@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,12 +15,14 @@
 package com.liferay.chat.service.persistence;
 
 import com.liferay.chat.model.Entry;
+import com.liferay.chat.model.EntryConstants;
 import com.liferay.chat.model.impl.EntryImpl;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
@@ -41,6 +43,7 @@ public class EntryFinderImpl
 	public static final String FIND_BY_OLD =
 		EntryFinder.class.getName() + ".findByOld";
 
+	@Override
 	public List<Entry> findByEmptyContent(
 			long fromUserId, long toUserId, int start, int end)
 		throws SystemException {
@@ -52,7 +55,7 @@ public class EntryFinderImpl
 
 			String sql = CustomSQLUtil.get(FIND_BY_EMPTY_CONTENT);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("Chat_Entry", EntryImpl.class);
 
@@ -71,6 +74,7 @@ public class EntryFinderImpl
 		}
 	}
 
+	@Override
 	public List<Entry> findByNew(
 			long userId, long createDate, int start, int end)
 		throws SystemException {
@@ -82,7 +86,11 @@ public class EntryFinderImpl
 
 			String sql = CustomSQLUtil.get(FIND_BY_NEW);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			if (createDate > 0) {
+				sql = StringUtil.replace(sql, _FLAG_SQL, _CREATE_DATE_SQL);
+			}
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("Chat_Entry", EntryImpl.class);
 
@@ -90,7 +98,13 @@ public class EntryFinderImpl
 
 			qPos.add(userId);
 			qPos.add(userId);
-			qPos.add(createDate);
+
+			if (createDate > 0) {
+				qPos.add(createDate);
+			}
+			else {
+				qPos.add(EntryConstants.FLAG_UNREAD);
+			}
 
 			return (List<Entry>)QueryUtil.list(q, getDialect(), start, end);
 		}
@@ -102,6 +116,7 @@ public class EntryFinderImpl
 		}
 	}
 
+	@Override
 	public List<Entry> findByOld(long createDate, int start, int end)
 		throws SystemException {
 
@@ -112,7 +127,7 @@ public class EntryFinderImpl
 
 			String sql = CustomSQLUtil.get(FIND_BY_OLD);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("Chat_Entry", EntryImpl.class);
 
@@ -129,5 +144,9 @@ public class EntryFinderImpl
 			closeSession(session);
 		}
 	}
+
+	private static final String _CREATE_DATE_SQL = "(createDate > ?)";
+
+	private static final String _FLAG_SQL = "(flag = ?)";
 
 }

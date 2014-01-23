@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,12 +17,10 @@ package com.liferay.socialcoding.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link SVNRevisionLocalService}.
- * </p>
+ * Provides a wrapper for {@link SVNRevisionLocalService}.
  *
- * @author    Brian Wing Shun Chan
- * @see       SVNRevisionLocalService
+ * @author Brian Wing Shun Chan
+ * @see SVNRevisionLocalService
  * @generated
  */
 public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
@@ -39,6 +37,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the s v n revision that was added
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision addSVNRevision(
 		com.liferay.socialcoding.model.SVNRevision svnRevision)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -51,6 +50,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @param svnRevisionId the primary key for the new s v n revision
 	* @return the new s v n revision
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision createSVNRevision(
 		long svnRevisionId) {
 		return _svnRevisionLocalService.createSVNRevision(svnRevisionId);
@@ -64,6 +64,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @throws PortalException if a s v n revision with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision deleteSVNRevision(
 		long svnRevisionId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -78,12 +79,14 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the s v n revision that was removed
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision deleteSVNRevision(
 		com.liferay.socialcoding.model.SVNRevision svnRevision)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.deleteSVNRevision(svnRevision);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		return _svnRevisionLocalService.dynamicQuery();
 	}
@@ -95,6 +98,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -106,7 +110,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.SVNRevisionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -115,6 +119,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -126,7 +131,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.SVNRevisionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -136,6 +141,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -153,12 +159,31 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _svnRevisionLocalService.dynamicQueryCount(dynamicQuery,
+			projection);
+	}
+
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision fetchSVNRevision(
 		long svnRevisionId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -173,6 +198,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @throws PortalException if a s v n revision with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision getSVNRevision(
 		long svnRevisionId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -180,6 +206,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 		return _svnRevisionLocalService.getSVNRevision(svnRevisionId);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -191,7 +218,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* Returns a range of all the s v n revisions.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.SVNRevisionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of s v n revisions
@@ -199,6 +226,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the range of s v n revisions
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.SVNRevision> getSVNRevisions(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -211,6 +239,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the number of s v n revisions
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public int getSVNRevisionsCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.getSVNRevisionsCount();
@@ -223,6 +252,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	* @return the s v n revision that was updated
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision updateSVNRevision(
 		com.liferay.socialcoding.model.SVNRevision svnRevision)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -234,6 +264,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _svnRevisionLocalService.getBeanIdentifier();
 	}
@@ -243,10 +274,12 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_svnRevisionLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
@@ -254,6 +287,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 			arguments);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision addSVNRevision(
 		java.lang.String svnUserId, java.util.Date createDate,
 		long svnRepositoryId, long revisionNumber, java.lang.String comments)
@@ -263,6 +297,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 			svnRepositoryId, revisionNumber, comments);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision getFirstSVNRevision(
 		java.lang.String svnUserId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -270,6 +305,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 		return _svnRevisionLocalService.getFirstSVNRevision(svnUserId);
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.SVNRevision getLastSVNRevision(
 		java.lang.String svnUserId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -277,6 +313,7 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 		return _svnRevisionLocalService.getLastSVNRevision(svnUserId);
 	}
 
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.SVNRevision> getSVNRevisions(
 		long svnRepositoryId, int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -284,12 +321,14 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 			end);
 	}
 
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.SVNRevision> getSVNRevisions(
 		java.lang.String svnUserId, int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.getSVNRevisions(svnUserId, start, end);
 	}
 
+	@Override
 	public java.util.List<com.liferay.socialcoding.model.SVNRevision> getSVNRevisions(
 		java.lang.String svnUserId, long svnRepositoryId, int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -297,16 +336,19 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 			svnRepositoryId, start, end);
 	}
 
+	@Override
 	public int getSVNRevisionsCount(long svnRepositoryId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.getSVNRevisionsCount(svnRepositoryId);
 	}
 
+	@Override
 	public int getSVNRevisionsCount(java.lang.String svnUserId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _svnRevisionLocalService.getSVNRevisionsCount(svnUserId);
 	}
 
+	@Override
 	public int getSVNRevisionsCount(java.lang.String svnUserId,
 		long svnRepositoryId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -315,24 +357,28 @@ public class SVNRevisionLocalServiceWrapper implements SVNRevisionLocalService,
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
+	@Deprecated
 	public SVNRevisionLocalService getWrappedSVNRevisionLocalService() {
 		return _svnRevisionLocalService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
+	@Deprecated
 	public void setWrappedSVNRevisionLocalService(
 		SVNRevisionLocalService svnRevisionLocalService) {
 		_svnRevisionLocalService = svnRevisionLocalService;
 	}
 
+	@Override
 	public SVNRevisionLocalService getWrappedService() {
 		return _svnRevisionLocalService;
 	}
 
+	@Override
 	public void setWrappedService(
 		SVNRevisionLocalService svnRevisionLocalService) {
 		_svnRevisionLocalService = svnRevisionLocalService;

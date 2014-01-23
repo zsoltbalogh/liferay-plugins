@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,30 +32,24 @@ double priority = BeanParamUtil.getDouble(kbArticle, request, "priority");
 	title="<%= kbArticle.getTitle() %>"
 />
 
-<liferay-portlet:actionURL name="moveKBArticle" var="moveKBArticleURL">
-	<portlet:param name="mvcPath" value='<%= templatePath + "move_article.jsp" %>' />
-	<portlet:param name="redirect" value="<%= redirect %>" />
-	<portlet:param name="resourcePrimKey" value="<%= String.valueOf(resourcePrimKey) %>" />
-	<portlet:param name="status" value="<%= String.valueOf(status) %>" />
-</liferay-portlet:actionURL>
+<liferay-portlet:actionURL name="moveKBArticle" var="moveKBArticleURL" />
 
 <aui:form action="<%= moveKBArticleURL %>" method="post" name="fm">
+	<aui:input name="mvcPath" type="hidden" value='<%= templatePath + "move_article.jsp" %>' />
+	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+	<aui:input name="resourcePrimKey" type="hidden" value="<%= String.valueOf(resourcePrimKey) %>" />
 	<aui:input name="parentResourcePrimKey" type="hidden" value="<%= parentResourcePrimKey %>" />
+	<aui:input name="status" type="hidden" value="<%= String.valueOf(status) %>" />
 
 	<liferay-ui:error exception="<%= KBArticlePriorityException.class %>" message='<%= LanguageUtil.format(pageContext, "please-enter-a-priority-that-is-greater-than-x", "0", false) %>' translateMessage="<%= false %>" />
 
 	<aui:fieldset>
 		<aui:field-wrapper label="current-parent">
-			<c:choose>
-				<c:when test="<%= !kbArticle.isRoot() %>">
-					<%= BeanPropertiesUtil.getString(KBArticleServiceUtil.getLatestKBArticle(kbArticle.getParentResourcePrimKey(), status), "title") %>
-				</c:when>
-				<c:otherwise>
-					(<liferay-ui:message key="none" />)
-				</c:otherwise>
-			</c:choose>
+			<div class="input-append">
+				<liferay-ui:input-resource url='<%= !kbArticle.isRoot() ? BeanPropertiesUtil.getString(KBArticleServiceUtil.getLatestKBArticle(kbArticle.getParentResourcePrimKey(), status), "title") : "(" + LanguageUtil.get(pageContext, "none") + ")" %>' />
 
-			<span class="kb-priority"><%= BigDecimal.valueOf(priority).toPlainString() %></span>
+				<liferay-ui:input-resource cssClass="input-mini" url="<%= BigDecimal.valueOf(priority).toPlainString() %>" />
+			</div>
 		</aui:field-wrapper>
 
 		<aui:field-wrapper label="new-parent">

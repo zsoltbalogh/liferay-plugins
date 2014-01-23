@@ -7,6 +7,8 @@
 <head>
 	<title>${the_title} - ${company_name}</title>
 
+	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
+
 	${theme.include(top_head_include)}
 </head>
 
@@ -22,13 +24,13 @@
 	<div id="banner" role="banner">
 		<div id="heading">
 			<h1 class="company-title">
-				<a class="${logo_css_class}" href="${company_url}" title="<@liferay.language key="go-to" /> ${company_name}">
+				<a class="${logo_css_class}" href="${company_url}" title="<@liferay.language_format arguments="${company_name}" key="go-to-x" />">
 					<span>${company_name}</span>
 				</a>
 			</h1>
 
 			<h2 class="community-title">
-				<a href="${community_default_url}" title="<@liferay.language key="go-to" /> ${community_name}">
+				<a href="${community_default_url}" title="<@liferay.language_format arguments="${community_name}" key="go-to-x" />">
 					<span>${community_name}</span>
 				</a>
 			</h2>
@@ -74,8 +76,8 @@
 	</div>
 </div>
 
-</body>
-
 ${theme.include(bottom_include)}
+
+</body>
 
 </html>

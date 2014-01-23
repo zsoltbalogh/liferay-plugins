@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * This class is used by SOAP remote services.
  *
- * @author    Brian Wing Shun Chan
+ * @author Brian Wing Shun Chan
  * @generated
  */
 public class WSRPConsumerSoap implements Serializable {
@@ -42,6 +42,7 @@ public class WSRPConsumerSoap implements Serializable {
 		soapModel.setRegistrationPropertiesString(model.getRegistrationPropertiesString());
 		soapModel.setForwardCookies(model.getForwardCookies());
 		soapModel.setForwardHeaders(model.getForwardHeaders());
+		soapModel.setMarkupCharacterSets(model.getMarkupCharacterSets());
 
 		return soapModel;
 	}
@@ -191,6 +192,14 @@ public class WSRPConsumerSoap implements Serializable {
 		_forwardHeaders = forwardHeaders;
 	}
 
+	public String getMarkupCharacterSets() {
+		return _markupCharacterSets;
+	}
+
+	public void setMarkupCharacterSets(String markupCharacterSets) {
+		_markupCharacterSets = markupCharacterSets;
+	}
+
 	private String _uuid;
 	private long _wsrpConsumerId;
 	private long _companyId;
@@ -203,4 +212,5 @@ public class WSRPConsumerSoap implements Serializable {
 	private String _registrationPropertiesString;
 	private String _forwardCookies;
 	private String _forwardHeaders;
+	private String _markupCharacterSets;
 }

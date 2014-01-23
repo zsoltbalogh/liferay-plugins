@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -17,37 +17,25 @@
  */
 --%>
 
-<aui:layout cssClass="controls">
-	<aui:column columnWidth="85" cssClass="col-1">
-		<aui:button cssClass="check-all" name="checkAll" type="checkbox" />
+<aui:button-row cssClass="controls">
+	<aui:input cssClass="check-all" inline="<%= true %>" label="" name="checkAllMessages" title='<%= LanguageUtil.get(pageContext, "check-all-messages") %>' type="checkbox" />
 
-		<aui:button cssClass="mark-messages-as-unread" name="markAsUnread" value="mark-as-unread" />
+	<aui:button name="markMessagesAsUnread" value="mark-as-unread" />
 
-		<aui:button cssClass="mark-messages-as-read" name="markAsRead" value="mark-as-read" />
+	<aui:button name="markMessagesAsRead" value="mark-as-read" />
 
-		<aui:button cssClass="delete-messages" name="deleteMessage" value="delete" />
-	</aui:column>
+	<aui:button name="deleteMessages" value="delete" />
 
-	<aui:column columnWidth="15" cssClass="col-2">
-		<aui:button cssClass="new-message" name="newMessage" value="new-message" />
-	</aui:column>
-</aui:layout>
+	<aui:button cssClass="pull-right" name="newMessage" primary="<%= true %>" value="new-message" />
+</aui:button-row>
 
 <liferay-ui:search-container
-	delta="10"
 	emptyResultsMessage="no-messages-found"
+	total="<%= UserThreadLocalServiceUtil.getUserUserThreadCount(themeDisplay.getUserId(), false) %>"
 >
-	<liferay-ui:search-container-results>
-
-		<%
-		results = UserThreadLocalServiceUtil.getUserUserThreads(themeDisplay.getUserId(), false, searchContainer.getStart(), searchContainer.getEnd());
-		total = UserThreadLocalServiceUtil.getUserUserThreadCount(themeDisplay.getUserId(), false);
-
-		pageContext.setAttribute("results", results);
-		pageContext.setAttribute("total", total);
-		%>
-
-	</liferay-ui:search-container-results>
+	<liferay-ui:search-container-results
+		results="<%= UserThreadLocalServiceUtil.getUserUserThreads(themeDisplay.getUserId(), false, searchContainer.getStart(), searchContainer.getEnd()) %>"
+	/>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.privatemessaging.model.UserThread"
@@ -61,7 +49,7 @@
 		%>
 
 		<liferay-ui:search-container-column-text align="center">
-			<aui:input data-mbThreadId="<%= userThread.getMbThreadId() %>" label="" name="mbThread" type="checkbox" />
+			<aui:input data-mbThreadId="<%= userThread.getMbThreadId() %>" id='<%= "mbThread" + index++ %>' label="" name="mbThread" type="checkbox" />
 		</liferay-ui:search-container-column-text>
 
 		<liferay-ui:search-container-column-text valign="top">
@@ -69,7 +57,7 @@
 			<%
 			long userId = PrivateMessagingUtil.getThreadRepresentativeUserId(user.getUserId(), userThread.getMbThreadId());
 
-			MBMessage mbMessage = PrivateMessagingUtil.getLastThreadMessage(user.getUserId(), userThread.getMbThreadId());
+			MBMessage mbMessage = UserThreadServiceUtil.getLastThreadMessage(userThread.getMbThreadId());
 			%>
 
 			<liferay-ui:user-display
@@ -101,9 +89,12 @@
 								<span class="author-sender"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
 							</c:when>
 							<c:otherwise>
-								<liferay-ui:icon-help message="deleted-user">
-									<span class="author-sender line-through"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
-								</liferay-ui:icon-help>
+								<span class="author-sender line-through"><%= HtmlUtil.escape(curUser.getFullName()) %></span>
+
+								<liferay-ui:icon
+									image="../aui/question-sign"
+									message="deleted-user"
+								/>
 							</c:otherwise>
 						</c:choose>
 
@@ -125,9 +116,7 @@
 
 					<div class="body">
 						<c:if test="<%= user.getUserId() == mbMessage.getUserId() %>">
-							<liferay-ui:icon
-								src="/html/themes/classic/images/mail/replied.png"
-							/>
+							<i class="icon-reply"></i>
 						</c:if>
 
 						<%= HtmlUtil.escape(StringUtil.shorten(mbMessage.getBody(), 100)) %>

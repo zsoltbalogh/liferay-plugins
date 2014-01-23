@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,14 +16,18 @@ package com.liferay.socialcoding.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
+import com.liferay.socialcoding.service.ClpSerializer;
 import com.liferay.socialcoding.service.JIRAChangeItemLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,26 +40,32 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 	public JIRAChangeItemClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return JIRAChangeItem.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return JIRAChangeItem.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setJiraChangeItemId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_jiraChangeItemId);
+		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -71,6 +81,9 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 		attributes.put("oldString", getOldString());
 		attributes.put("newValue", getNewValue());
 		attributes.put("newString", getNewString());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -118,62 +131,172 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 		if (newString != null) {
 			setNewString(newString);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getJiraChangeItemId() {
 		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setJiraChangeItemId(long jiraChangeItemId) {
 		_jiraChangeItemId = jiraChangeItemId;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setJiraChangeItemId",
+						long.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, jiraChangeItemId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getJiraChangeGroupId() {
 		return _jiraChangeGroupId;
 	}
 
+	@Override
 	public void setJiraChangeGroupId(long jiraChangeGroupId) {
 		_jiraChangeGroupId = jiraChangeGroupId;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setJiraChangeGroupId",
+						long.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, jiraChangeGroupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getField() {
 		return _field;
 	}
 
+	@Override
 	public void setField(String field) {
 		_field = field;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setField", String.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, field);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getOldValue() {
 		return _oldValue;
 	}
 
+	@Override
 	public void setOldValue(String oldValue) {
 		_oldValue = oldValue;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOldValue", String.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, oldValue);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getOldString() {
 		return _oldString;
 	}
 
+	@Override
 	public void setOldString(String oldString) {
 		_oldString = oldString;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setOldString", String.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, oldString);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getNewValue() {
 		return _newValue;
 	}
 
+	@Override
 	public void setNewValue(String newValue) {
 		_newValue = newValue;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setNewValue", String.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, newValue);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getNewString() {
 		return _newString;
 	}
 
+	@Override
 	public void setNewString(String newString) {
 		_newString = newString;
+
+		if (_jiraChangeItemRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraChangeItemRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setNewString", String.class);
+
+				method.invoke(_jiraChangeItemRemoteModel, newString);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getJIRAChangeItemRemoteModel() {
@@ -185,6 +308,48 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 		_jiraChangeItemRemoteModel = jiraChangeItemRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _jiraChangeItemRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_jiraChangeItemRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			JIRAChangeItemLocalServiceUtil.addJIRAChangeItem(this);
@@ -216,6 +381,7 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(JIRAChangeItem jiraChangeItem) {
 		long primaryKey = jiraChangeItem.getPrimaryKey();
 
@@ -232,18 +398,15 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof JIRAChangeItemClp)) {
 			return false;
 		}
 
-		JIRAChangeItemClp jiraChangeItem = null;
-
-		try {
-			jiraChangeItem = (JIRAChangeItemClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		JIRAChangeItemClp jiraChangeItem = (JIRAChangeItemClp)obj;
 
 		long primaryKey = jiraChangeItem.getPrimaryKey();
 
@@ -258,6 +421,16 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -283,6 +456,7 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(25);
 
@@ -332,4 +506,6 @@ public class JIRAChangeItemClp extends BaseModelImpl<JIRAChangeItem>
 	private String _newValue;
 	private String _newString;
 	private BaseModel<?> _jiraChangeItemRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

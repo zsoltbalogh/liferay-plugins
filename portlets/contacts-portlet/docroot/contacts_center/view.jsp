@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -33,6 +33,8 @@ if (group.isUser() && layout.isPublicLayout()) {
 }
 
 LinkedHashMap<String, Object> params = new LinkedHashMap<String, Object>();
+
+params.put("inherit", Boolean.TRUE);
 
 if (userPublicPage) {
 	params.put("socialRelation", new Long[] {group.getClassPK()});
@@ -71,7 +73,7 @@ portletURL.setWindowState(WindowState.NORMAL);
 	<c:when test="<%= userPublicPage && (contactsCount <= 0) %>">
 		<aui:layout cssClass="contacts-center-home">
 			<h3 class="header-title">
-				<liferay-ui:message arguments="<%= new Object[] {group.getDescriptiveName(locale), String.valueOf(contactsCount)} %>" key="x-has-no-contacts" />
+				<liferay-ui:message arguments="<%= new Object[] {HtmlUtil.escape(group.getDescriptiveName(locale)), String.valueOf(contactsCount)} %>" key="x-has-no-contacts" />
 			</h3>
 		</aui:layout>
 	</c:when>
@@ -83,29 +85,18 @@ portletURL.setWindowState(WindowState.NORMAL);
 			<aui:input name="type" type="hidden" value="" />
 
 			<aui:layout cssClass="toolbar">
-				<aui:column columnWidth="30" cssClass="search-column">
-					<div class="lfr-search-column contacts-search aui-search-bar">
-						<aui:input cssClass="search-input" id="name" label="" name="name" size="30" type="text" value="<%= HtmlUtil.escape(name) %>" />
-					</div>
-				</aui:column>
-
-				<aui:column columnWidth="70" cssClass="button-column">
-					<div id="<portlet:namespace/>userToolbarButtons"><!-- --></div>
-
-					<div class="aui-helper-hidden" id="<portlet:namespace/>contactCenterToolbarButtons">
-						<liferay-util:include page="/contacts_center/contacts_center_toolbar.jsp" servletContext="<%= application %>" />
-					</div>
-				</aui:column>
-			</aui:layout>
-
-			<aui:layout cssClass="contacts-result-container lfr-app-column-view">
-				<aui:column columnWidth="30" cssClass="contacts-list" first="<%= true %>">
+				<div class="filter-container">
 					<aui:layout cssClass="contact-group-filter">
-						<aui:button name="checkAll" type="checkbox" />
+						<aui:input label="" name="checkAll" type="checkbox" />
 
 						<c:if test="<%= !userPublicPage %>">
 							<aui:select cssClass="contact-group-filter-select" inlineField="true" label="" name="filterBy">
 								<aui:option label="all" selected="<%= filterBy.equals(ContactsConstants.FILTER_BY_DEFAULT) %>" value="<%= ContactsConstants.FILTER_BY_DEFAULT %>" />
+
+								<c:if test="<%= showOnlySiteMembers %>">
+									<aui:option label="administrators" selected="<%= filterBy.equals(ContactsConstants.FILTER_BY_ADMINS) %>" value="<%= ContactsConstants.FILTER_BY_ADMINS %>" />
+								</c:if>
+
 								<aui:option label="connections" selected="<%= filterBy.equals(ContactsConstants.FILTER_BY_TYPE_BI_CONNECTION) %>" value="<%= ContactsConstants.FILTER_BY_TYPE_BI_CONNECTION %>" />
 								<aui:option label="following" selected="<%= filterBy.equals(ContactsConstants.FILTER_BY_TYPE_UNI_FOLLOWER) %>" value="<%= ContactsConstants.FILTER_BY_TYPE_UNI_FOLLOWER %>" />
 
@@ -133,255 +124,276 @@ portletURL.setWindowState(WindowState.NORMAL);
 									</optgroup>
 								</c:if>
 							</aui:select>
-
-							<c:if test="<%= !showOnlySiteMembers %>">
-								<span class="add-contact">
-									<aui:a href="javascript:;" label="add" />
-								</span>
-							</c:if>
 						</c:if>
 					</aui:layout>
+				</div>
 
-					<aui:layout cssClass='<%= userPublicPage ? "contacts-result personal-contact-list" : "contacts-result" %>'>
-
-						<%
-						String lastNameAnchor = StringPool.SPACE;
-
-						for (BaseModel<?> curContact : contacts) {
-						%>
-
-							<c:choose>
-								<c:when test="<%= curContact instanceof User %>">
-
-									<%
-									User user2 = (User)curContact;
-
-									String lastName = user2.getLastName();
-
-									String curLastNameAnchor = LanguageUtil.get(pageContext, "no-last-name");
-
-									if (Validator.isNotNull(lastName)) {
-										curLastNameAnchor = StringUtil.upperCase(lastName.substring(0, 1));
-									}
-									%>
-
-									<c:if test="<%= !curLastNameAnchor.equals(lastNameAnchor) %>">
-
-										<%
-										lastNameAnchor = curLastNameAnchor;
-										%>
-
-										<div class="lastNameAnchor">
-											<a><liferay-ui:message key="<%= lastNameAnchor %>" /></a>
-										</div>
-									</c:if>
-
-									<liferay-portlet:renderURL var="viewUserSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-										<portlet:param name="mvcPath" value="/contacts_center/view_resources.jsp" />
-										<portlet:param name="userId" value="<%= String.valueOf(user2.getUserId()) %>" />
-										<portlet:param name="portalUser" value="<%= Boolean.TRUE.toString() %>" />
-									</liferay-portlet:renderURL>
-
-									<div class="lfr-contact">
-										<div class="lfr-contact-checkbox">
-											<input class="contact-ids" <%= themeDisplay.getUserId() == user2.getUserId() ? "disabled=\"true\"" : StringPool.BLANK %> name="contact-ids-<%= user2.getUserId() %>" type="checkbox" value="<%= user2.getUserId() %>" />
-										</div>
-
-										<div class="lfr-contact-grid-item" data-userId="<%= user2.getUserId() %>" data-viewSummaryURL="<%= viewUserSummaryURL %>">
-											<div class="lfr-contact-thumb">
-												<img alt="<%= HtmlUtil.escape(user2.getFullName()) %>" src="<%= user2.getPortraitURL(themeDisplay) %>" />
-											</div>
-
-											<div class="lfr-contact-info">
-												<div class="lfr-contact-name">
-													<a>
-														<c:if test="<%= Validator.isNotNull(user2.getLastName()) %>">
-															<%= HtmlUtil.escape(user2.getLastName()) %>,
-														</c:if>
-
-														<%= HtmlUtil.escape(user2.getFirstName()) %>
-													</a>
-												</div>
-
-												<div class="lfr-contact-extra">
-													<%= HtmlUtil.escape(user2.getEmailAddress()) %>
-												</div>
-											</div>
-
-											<div class="clear"><!-- --></div>
-										</div>
-									</div>
-								</c:when>
-								<c:otherwise>
-
-									<%
-									Entry entry = (Entry)curContact;
-
-									String fullName = entry.getFullName();
-
-									String curLastNameAnchor = LanguageUtil.get(pageContext, "no-last-name");
-
-									if (Validator.isNotNull(fullName)) {
-										curLastNameAnchor = StringUtil.upperCase(fullName.substring(0, 1));
-									}
-									%>
-
-									<c:if test="<%= !curLastNameAnchor.equals(lastNameAnchor) %>">
-
-										<%
-										lastNameAnchor = curLastNameAnchor;
-										%>
-
-										<div class="lastNameAnchor">
-											<a><liferay-ui:message key="<%= lastNameAnchor %>" /></a>
-										</div>
-									</c:if>
-
-									<liferay-portlet:renderURL var="viewContactSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
-										<portlet:param name="mvcPath" value="/contacts_center/view_resources.jsp" />
-										<portlet:param name="redirect" value="<%= currentURL %>" />
-										<portlet:param name="entryId" value="<%= String.valueOf(entry.getEntryId()) %>" />
-										<portlet:param name="portalUser" value="<%= Boolean.FALSE.toString() %>" />
-									</liferay-portlet:renderURL>
-
-									<div class="lfr-contact">
-										<div class="lfr-contact-checkbox">
-											<input class="contact-ids" disabled="true" label="" name="contact-ids-<%= entry.getEntryId() %>" type="checkbox" value="<%= entry.getEntryId() %>" />
-										</div>
-
-										<div class="lfr-contact-grid-item" data-userId="" data-viewSummaryURL="<%= viewContactSummaryURL %>">
-											<div class="lfr-contact-thumb">
-												<img alt="<%= HtmlUtil.escape(fullName) %>" src='<%= themeDisplay.getPathImage() + "/user_male_portrait?img_id=0&t=" %>' />
-											</div>
-
-											<div class="lfr-contact-info">
-												<div class="lfr-contact-name">
-													<a><%= HtmlUtil.escape(fullName) %></a>
-												</div>
-
-												<div class="lfr-contact-extra">
-													<%= HtmlUtil.escape(entry.getEmailAddress()) %>
-												</div>
-											</div>
-
-											<div class="clear"><!-- --></div>
-										</div>
-									</div>
-								</c:otherwise>
-							</c:choose>
-
-						<%
-						}
-						%>
-
-						<c:if test="<%= contactsCount > ContactsConstants.MAX_RESULT_COUNT %>">
-							<div class="more-results">
-								<a data-end="<%= ContactsConstants.MAX_RESULT_COUNT %>" data-lastNameAnchor="<%= lastNameAnchor %>" href="javascript:;"><liferay-ui:message key="view-more" /> (<%= contactsCount - ContactsConstants.MAX_RESULT_COUNT %>)</a>
-							</div>
-						</c:if>
-					</aui:layout>
-				</aui:column>
-
-				<aui:column columnWidth="70" cssClass="contacts-container">
-					<div id="<portlet:namespace/>messageContainer"></div>
-
-					<div id="<portlet:namespace/>detailUserView">
-						<c:choose>
-							<c:when test="<%= userPublicPage %>">
-
-								<%
-								request.setAttribute(WebKeys.CONTACTS_USER, contacts.get(0));
-								%>
-
-								<liferay-util:include page="/contacts_center/view_user.jsp" servletContext="<%= application %>" />
-							</c:when>
-							<c:otherwise>
-								<aui:layout cssClass="contacts-center-home">
-									<c:choose>
-										<c:when test="<%= !showOnlySiteMembers %>">
-											<liferay-ui:header title="contacts-center" />
-										</c:when>
-										<c:otherwise>
-											<liferay-ui:header title="members" />
-										</c:otherwise>
-									</c:choose>
-
-									<%
-									int allUsersCount = 0;
-
-									if (userPublicPage || showOnlySiteMembers || !filterBy.equals(ContactsConstants.FILTER_BY_DEFAULT)) {
-										allUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), StringPool.BLANK, WorkflowConstants.STATUS_APPROVED, params);
-									}
-									else {
-										allUsersCount = EntryLocalServiceUtil.searchUsersAndContactsCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), StringPool.BLANK);
-									}
-
-									params.put("socialRelationType", new Long[] {themeDisplay.getUserId(), new Long(SocialRelationConstants.TYPE_BI_CONNECTION)});
-
-									int connectionUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED, params);
-
-									params.put("socialRelationType", new Long[] {themeDisplay.getUserId(), new Long(SocialRelationConstants.TYPE_UNI_FOLLOWER)});
-
-									int followingUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED, params);
-									%>
-
-									<aui:layout cssClass="contacts-count connections">
-										<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(connectionUsersCount) %>" key='<%= showOnlySiteMembers ? "you-have-x-connections-in-this-site" : "you-have-x-connections" %>' /></a>
-									</aui:layout>
-
-									<aui:layout cssClass="contacts-count followings">
-										<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(followingUsersCount) %>" key='<%= showOnlySiteMembers ? "you-are-following-x-people-in-this-site" : "you-are-following-x-people" %>' /></a>
-									</aui:layout>
-
-									<c:if test="<%= !showOnlySiteMembers %>">
-
-										<%
-										int myContactsCount = EntryLocalServiceUtil.getEntriesCount(user.getUserId());
-										%>
-
-										<aui:layout cssClass="contacts-count contacts">
-											<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(myContactsCount) %>" key="view-my-x-contacts" /></a>
-										</aui:layout>
-									</c:if>
-
-									<aui:layout cssClass="contacts-count all">
-										<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(allUsersCount) %>" key="view-all-x-users" /></a>
-									</aui:layout>
-
-									<c:if test="<%= !showOnlySiteMembers && (connectionUsersCount <= 0) && (followingUsersCount <= 0) %>">
-										<aui:layout cssClass="contacts-center-introduction">
-											<liferay-ui:message key="contacts-center-allows-you-to-search-view-and-establish-social-relations-with-other-users" />
-										</aui:layout>
-									</c:if>
-								</aui:layout>
-							</c:otherwise>
-						</c:choose>
-					</div>
-
-					<div id="<portlet:namespace/>selectedUsersView"><!-- --></div>
-				</aui:column>
+				<c:if test="<%= !showOnlySiteMembers %>">
+					<aui:button cssClass="add-contact btn-primary" icon="icon-plus-sign" id='<%= renderResponse.getNamespace() + "addContact" %>' value="add-contact" />
+				</c:if>
 			</aui:layout>
 		</aui:form>
 
-		<aui:script use="aui-dialog,aui-io,aui-io-plugin,datatype-number,liferay-contacts-center,liferay-form">
+		<aui:layout cssClass="contacts-result-container lfr-app-column-view">
+			<aui:column columnWidth="30" cssClass="contacts-list" first="<%= true %>">
+				<div class="lfr-search-column contacts-search search-bar">
+					<aui:input cssClass="search-input" id="name" label="" name="name" size="30" type="text" value="<%= HtmlUtil.escape(name) %>" />
+
+					<i class="icon-search"></i>
+				</div>
+
+				<aui:layout cssClass='<%= userPublicPage ? "contacts-result personal-contact-list" : "contacts-result" %>'>
+
+					<%
+					String lastNameAnchor = StringPool.SPACE;
+
+					for (BaseModel<?> curContact : contacts) {
+					%>
+
+						<c:choose>
+							<c:when test="<%= curContact instanceof User %>">
+
+								<%
+								User user2 = (User)curContact;
+
+								String lastName = user2.getLastName();
+
+								String curLastNameAnchor = LanguageUtil.get(pageContext, "no-last-name");
+
+								if (Validator.isNotNull(lastName)) {
+									curLastNameAnchor = StringUtil.upperCase(lastName.substring(0, 1));
+								}
+								%>
+
+								<c:if test="<%= !curLastNameAnchor.equals(lastNameAnchor) %>">
+
+									<%
+									lastNameAnchor = curLastNameAnchor;
+									%>
+
+									<div class="last-name-anchor">
+										<a><liferay-ui:message key="<%= lastNameAnchor %>" /></a>
+									</div>
+								</c:if>
+
+								<liferay-portlet:renderURL var="viewUserSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
+									<portlet:param name="mvcPath" value="/contacts_center/view_resources.jsp" />
+									<portlet:param name="userId" value="<%= String.valueOf(user2.getUserId()) %>" />
+									<portlet:param name="portalUser" value="<%= Boolean.TRUE.toString() %>" />
+								</liferay-portlet:renderURL>
+
+								<div class="lfr-contact">
+									<div class="lfr-contact-checkbox">
+										<input class="contact-ids" <%= themeDisplay.getUserId() == user2.getUserId() ? "disabled=\"true\"" : StringPool.BLANK %> name="contact-ids-<%= user2.getUserId() %>" type="checkbox" value="<%= user2.getUserId() %>" />
+									</div>
+
+									<div class="lfr-contact-grid-item" data-userId="<%= user2.getUserId() %>" data-viewSummaryURL="<%= viewUserSummaryURL %>">
+										<div class="lfr-contact-thumb">
+											<img alt="<%= HtmlUtil.escape(user2.getFullName()) %>" src="<%= user2.getPortraitURL(themeDisplay) %>" />
+										</div>
+
+										<div class="lfr-contact-info">
+											<div class="lfr-contact-name">
+												<a>
+													<c:if test="<%= Validator.isNotNull(user2.getLastName()) %>">
+														<%= HtmlUtil.escape(user2.getLastName()) %>,
+													</c:if>
+
+													<%= HtmlUtil.escape(user2.getFirstName()) %>
+												</a>
+											</div>
+
+											<div class="lfr-contact-extra">
+												<%= HtmlUtil.escape(user2.getEmailAddress()) %>
+											</div>
+										</div>
+
+										<div class="clear"><!-- --></div>
+									</div>
+								</div>
+							</c:when>
+							<c:otherwise>
+
+								<%
+								Entry entry = (Entry)curContact;
+
+								String fullName = entry.getFullName();
+
+								String curLastNameAnchor = LanguageUtil.get(pageContext, "no-last-name");
+
+								if (Validator.isNotNull(fullName)) {
+									curLastNameAnchor = StringUtil.upperCase(fullName.substring(0, 1));
+								}
+								%>
+
+								<c:if test="<%= !curLastNameAnchor.equals(lastNameAnchor) %>">
+
+									<%
+									lastNameAnchor = curLastNameAnchor;
+									%>
+
+									<div class="last-name-anchor">
+										<a><liferay-ui:message key="<%= lastNameAnchor %>" /></a>
+									</div>
+								</c:if>
+
+								<liferay-portlet:renderURL var="viewContactSummaryURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
+									<portlet:param name="mvcPath" value="/contacts_center/view_resources.jsp" />
+									<portlet:param name="redirect" value="<%= currentURL %>" />
+									<portlet:param name="entryId" value="<%= String.valueOf(entry.getEntryId()) %>" />
+									<portlet:param name="portalUser" value="<%= Boolean.FALSE.toString() %>" />
+								</liferay-portlet:renderURL>
+
+								<div class="lfr-contact">
+									<div class="lfr-contact-checkbox">
+										<input class="contact-ids" disabled="true" label="" name="contact-ids-<%= entry.getEntryId() %>" type="checkbox" value="<%= entry.getEntryId() %>" />
+									</div>
+
+									<div class="lfr-contact-grid-item" data-userId="" data-viewSummaryURL="<%= viewContactSummaryURL %>">
+										<div class="lfr-contact-thumb">
+											<img alt="<%= HtmlUtil.escape(fullName) %>" src='<%= themeDisplay.getPathImage() + "/user_male_portrait?img_id=0&t=" %>' />
+										</div>
+
+										<div class="lfr-contact-info">
+											<div class="lfr-contact-name">
+												<a><%= HtmlUtil.escape(fullName) %></a>
+											</div>
+
+											<div class="lfr-contact-extra">
+												<%= HtmlUtil.escape(entry.getEmailAddress()) %>
+											</div>
+										</div>
+
+										<div class="clear"><!-- --></div>
+									</div>
+								</div>
+							</c:otherwise>
+						</c:choose>
+
+					<%
+					}
+					%>
+
+					<c:if test="<%= contactsCount > ContactsConstants.MAX_RESULT_COUNT %>">
+						<div class="more-results">
+							<a data-end="<%= ContactsConstants.MAX_RESULT_COUNT %>" data-lastNameAnchor="<%= lastNameAnchor %>" href="javascript:;"><liferay-ui:message key="view-more" /> (<%= contactsCount - ContactsConstants.MAX_RESULT_COUNT %>)</a>
+						</div>
+					</c:if>
+				</aui:layout>
+			</aui:column>
+
+			<aui:column columnWidth="70" cssClass="contacts-container">
+				<div id="<portlet:namespace />userToolbarButtons"><!-- --></div>
+
+				<div class="hide" id="<portlet:namespace />contactCenterToolbarButtons">
+					<liferay-util:include page="/contacts_center/contacts_center_toolbar.jsp" servletContext="<%= application %>" />
+				</div>
+
+				<div id="<portlet:namespace />messageContainer"></div>
+
+				<div id="<portlet:namespace />detailUserView">
+					<c:choose>
+						<c:when test="<%= userPublicPage %>">
+
+							<%
+							request.setAttribute(WebKeys.CONTACTS_USER, contacts.get(0));
+							%>
+
+							<liferay-util:include page="/contacts_center/view_user.jsp" servletContext="<%= application %>" />
+						</c:when>
+						<c:otherwise>
+							<aui:layout cssClass="contacts-center-home">
+								<c:choose>
+									<c:when test="<%= !showOnlySiteMembers %>">
+										<liferay-ui:header title="contacts-center" />
+									</c:when>
+									<c:otherwise>
+										<liferay-ui:header title="members" />
+									</c:otherwise>
+								</c:choose>
+
+								<%
+								int allUsersCount = 0;
+
+								if (userPublicPage || showOnlySiteMembers || !filterBy.equals(ContactsConstants.FILTER_BY_DEFAULT)) {
+									allUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), StringPool.BLANK, WorkflowConstants.STATUS_APPROVED, params);
+								}
+								else {
+									allUsersCount = EntryLocalServiceUtil.searchUsersAndContactsCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), StringPool.BLANK);
+								}
+
+								params.put("socialRelationType", new Long[] {themeDisplay.getUserId(), new Long(SocialRelationConstants.TYPE_BI_CONNECTION)});
+
+								int connectionUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED, params);
+
+								params.put("socialRelationType", new Long[] {themeDisplay.getUserId(), new Long(SocialRelationConstants.TYPE_UNI_FOLLOWER)});
+
+								int followingUsersCount = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED, params);
+								%>
+
+								<aui:layout cssClass="contacts-count connections">
+									<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(connectionUsersCount) %>" key='<%= showOnlySiteMembers ? "you-have-x-connections-in-this-site" : "you-have-x-connections" %>' /></a>
+								</aui:layout>
+
+								<aui:layout cssClass="contacts-count followings">
+									<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(followingUsersCount) %>" key='<%= showOnlySiteMembers ? "you-are-following-x-people-in-this-site" : "you-are-following-x-people" %>' /></a>
+								</aui:layout>
+
+								<c:if test="<%= !showOnlySiteMembers %>">
+
+									<%
+									int myContactsCount = EntryLocalServiceUtil.getEntriesCount(user.getUserId());
+									%>
+
+									<aui:layout cssClass="contacts-count contacts">
+										<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(myContactsCount) %>" key="view-my-x-contacts" /></a>
+									</aui:layout>
+								</c:if>
+
+								<aui:layout cssClass="contacts-count all">
+									<a href="javascript:;"><liferay-ui:message arguments="<%= String.valueOf(allUsersCount) %>" key="view-all-x-users" /></a>
+								</aui:layout>
+
+								<c:if test="<%= !showOnlySiteMembers && (connectionUsersCount <= 0) && (followingUsersCount <= 0) %>">
+									<aui:layout cssClass="contacts-center-introduction">
+										<liferay-ui:message key="contacts-center-allows-you-to-search-view-and-establish-social-relations-with-other-users" />
+									</aui:layout>
+								</c:if>
+							</aui:layout>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<div id="<portlet:namespace />selectedUsersView"><!-- --></div>
+			</aui:column>
+		</aui:layout>
+
+		<aui:script use="aui-io-deprecated,aui-loading-mask-deprecated,datatype-number,liferay-contacts-center">
 			var searchInput = A.one('.contacts-portlet #<portlet:namespace />name');
 
-			var contactsCenter = new Liferay.ContactsCenter(
-				{
-					contactsResult: '.contacts-portlet .contacts-result-content',
-					contactsResultContainer: '.contacts-portlet .contacts-result',
-					contactsResultURL: '<portlet:resourceURL id="getContacts"><portlet:param name="portletResource" value="<%= portletResource %>" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:resourceURL>',
-					contactsSearchInput: '#<portlet:namespace />name',
-					defaultMessageError: '<liferay-ui:message key="an-error-occurred-while-retrieving-the-users-information" unicode="<%= true %>" />',
-					defaultMessageSuccess: '<liferay-ui:message key="your-request-completed-successfully" unicode="<%= true %>" />',
-					getSelectedContactsURL: '<portlet:resourceURL id="getSelectedContacts" />',
-					maxResultCount: <%= ContactsConstants.MAX_RESULT_COUNT %>,
-					namespace: '<portlet:namespace />',
-					showIcon: '<%= showIcon %>'
+			Liferay.component(
+				'contactsCenter',
+				function() {
+					return new Liferay.ContactsCenter(
+						{
+							baseActionURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.ACTION_PHASE) %>',
+							baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
+							contactsResult: '.contacts-portlet .contacts-result-content',
+							contactsResultContainer: '.contacts-portlet .contacts-result',
+							contactsResultURL: '<portlet:resourceURL id="getContacts"><portlet:param name="portletResource" value="<%= portletResource %>" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:resourceURL>',
+							contactsSearchInput: '#<portlet:namespace />name',
+							defaultMessageError: '<liferay-ui:message key="an-error-occurred-while-retrieving-the-users-information" unicode="<%= true %>" />',
+							defaultMessageSuccess: '<liferay-ui:message key="your-request-completed-successfully" unicode="<%= true %>" />',
+							getSelectedContactsURL: '<portlet:resourceURL id="getSelectedContacts" />',
+							maxResultCount: <%= ContactsConstants.MAX_RESULT_COUNT %>,
+							namespace: '<portlet:namespace />',
+							showIcon: '<%= showIcon %>'
+						}
+					);
 				}
 			);
 
-			Liferay.ContactsCenter = contactsCenter;
+			var contactsCenter = Liferay.component('contactsCenter');
 
 			<c:if test="<%= !userPublicPage %>">
 				var contactFilterSelect = A.one('#<portlet:namespace />filterBy');
@@ -401,6 +413,12 @@ portletURL.setWindowState(WindowState.NORMAL);
 			contactsResult.delegate(
 				'click',
 				function(event) {
+					var contactsContainer = A.one('.contacts-portlet .contacts-container');
+
+					contactsContainer.plug(A.LoadingMask);
+
+					contactsContainer.loadingmask.show();
+
 					var node = event.currentTarget;
 
 					A.io.request(
@@ -408,9 +426,13 @@ portletURL.setWindowState(WindowState.NORMAL);
 						{
 							after: {
 								failure: function(event, id, obj) {
+									contactsContainer.loadingmask.hide();
+
 									contactsCenter.showMessage(false);
 								},
 								success: function(event, id, obj) {
+									contactsContainer.loadingmask.hide();
+
 									contactsCenter.renderContent(this.get('responseData'), true);
 								}
 							}
@@ -441,10 +463,10 @@ portletURL.setWindowState(WindowState.NORMAL);
 								}
 							},
 							data: {
-								end: end,
-								filterBy: contactFilterSelect.get('value') || '<%= ContactsConstants.FILTER_BY_DEFAULT %>',
-								keywords: searchInput.get('value'),
-								start: start
+								<portlet:namespace />end: end,
+								<portlet:namespace />filterBy: contactFilterSelect.get('value') || '<%= ContactsConstants.FILTER_BY_DEFAULT %>',
+								<portlet:namespace />keywords: searchInput.get('value'),
+								<portlet:namespace />start: start
 							},
 							dataType: 'json'
 						}
@@ -477,7 +499,7 @@ portletURL.setWindowState(WindowState.NORMAL);
 									}
 								},
 								data: {
-									userId: userId
+									<portlet:namespace />userId: userId
 								},
 								dataType: 'json'
 							}
@@ -511,8 +533,8 @@ portletURL.setWindowState(WindowState.NORMAL);
 								}
 							},
 							data: {
-								showDetailView: true,
-								userId: userId
+								<portlet:namespace />showDetailView: true,
+								<portlet:namespace />userId: userId
 							}
 						}
 					);
@@ -524,55 +546,75 @@ portletURL.setWindowState(WindowState.NORMAL);
 				var contactsCenterHome = A.one('.contacts-portlet .contacts-center-home');
 
 				<c:if test="<%= !showOnlySiteMembers %>">
-					A.one('.contacts-portlet .add-contact').on(
-						'click',
-						function(event) {
-							contactsCenter.showPopup('<%= LanguageUtil.get(pageContext, "add-contact") %>', '<portlet:renderURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>"><portlet:param name="mvcPath" value="/contacts_center/edit_entry.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:renderURL>');
-						}
-					);
+					var addContact = A.one('#<portlet:namespace />addContact');
 
-					contactsCenterHome.one('.contacts').on(
+					if (addContact) {
+						addContact.on(
+							'click',
+							function(event) {
+								contactsCenter.showPopup('<%= LanguageUtil.get(pageContext, "add-contact") %>', '<portlet:renderURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>"><portlet:param name="mvcPath" value="/contacts_center/edit_entry.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:renderURL>');
+							}
+						);
+					}
+
+					var contacts = contactsCenterHome.one('.contacts');
+
+					if (contacts) {
+						contacts.on(
+							'click',
+							function(event) {
+								contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_MY_CONTACTS %>');
+
+								contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
+							},
+							'a'
+						);
+					}
+				</c:if>
+
+				var connections = contactsCenterHome.one('.connections');
+
+				if (connections) {
+					connections.on(
 						'click',
 						function(event) {
-							contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_MY_CONTACTS %>');
+							contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_BI_CONNECTION %>');
 
 							contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
 						},
 						'a'
 					);
-				</c:if>
+				}
 
-				contactsCenterHome.one('.connections').on(
-					'click',
-					function(event) {
-						contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_BI_CONNECTION %>');
+				var following = contactsCenterHome.one('.followings');
 
-						contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
-					},
-					'a'
-				);
+				if (following) {
+					following.on(
+						'click',
+						function(event) {
+							contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_UNI_FOLLOWER %>');
 
-				contactsCenterHome.one('.followings').on(
-					'click',
-					function(event) {
-						contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_TYPE_UNI_FOLLOWER %>');
+							contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
+						},
+						'a'
+					);
+				}
 
-						contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
-					},
-					'a'
-				);
+				var all = contactsCenterHome.one('.all');
 
-				contactsCenterHome.one('.all').on(
-					'click',
-					function(event) {
-						contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_DEFAULT %>');
+				if (all) {
+					all.on(
+						'click',
+						function(event) {
+							contactFilterSelect.set('value', '<%= ContactsConstants.FILTER_BY_DEFAULT %>');
 
-						searchInput.set('value', '');
+							searchInput.set('value', '');
 
-						contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
-					},
-					'a'
-				);
+							contactsCenter.updateContacts(searchInput.get('value'), contactFilterSelect.get('value'));
+						},
+						'a'
+					);
+				}
 			</c:if>
 		</aui:script>
 	</c:otherwise>

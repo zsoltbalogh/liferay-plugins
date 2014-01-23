@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -23,29 +23,28 @@
 String tabs1 = ParamUtil.getString(request, "tabs1", "my-sites");
 
 String name = ParamUtil.getString(request, "name");
-String searchName = DAOParamUtil.getLike(request, "name");
 
 List<Group> groups = null;
 int groupsCount = 0;
 
 if (tabs1.equals("my-sites")) {
-	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, true, 0, maxResultSize);
-	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, true);
+	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, true, 0, maxResultSize);
+	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, true);
 
 	if (groupsCount == 0) {
 		tabs1 = "all-sites";
 
-		groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, false, 0, maxResultSize);
-		groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, false);
+		groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, false, 0, maxResultSize);
+		groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, false);
 	}
 }
 else if (tabs1.equals("my-favorites")) {
-	groups = SitesUtil.getFavoriteSitesGroups(themeDisplay.getUserId(), searchName, 0, maxResultSize);
-	groupsCount = SitesUtil.getFavoriteSitesGroupsCount(themeDisplay.getUserId(), searchName);
+	groups = SitesUtil.getFavoriteSitesGroups(themeDisplay.getUserId(), name, 0, maxResultSize);
+	groupsCount = SitesUtil.getFavoriteSitesGroupsCount(themeDisplay.getUserId(), name);
 }
 else {
-	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, false, 0, maxResultSize);
-	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), searchName, false);
+	groups = SitesUtil.getVisibleSites(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, false, 0, maxResultSize);
+	groupsCount = SitesUtil.getVisibleSitesCount(themeDisplay.getCompanyId(), themeDisplay.getUserId(), name, false);
 }
 
 PortletURL portletURL = renderResponse.createRenderURL();
@@ -55,7 +54,7 @@ portletURL.setWindowState(WindowState.NORMAL);
 pageContext.setAttribute("portletURL", portletURL);
 %>
 
-<div id="<portlet:namespace/>messages"><!-- --></div>
+<div id="<portlet:namespace />messages"><!-- --></div>
 
 <form action="<%= portletURL.toString() %>" method="get" name="<portlet:namespace />fm">
 <liferay-portlet:renderURLParams varImpl="portletURL" />
@@ -69,129 +68,13 @@ pageContext.setAttribute("portletURL", portletURL);
 </div>
 
 <div class="search">
-	<input class="search-input" id="<portlet:namespace />name" name="<portlet:namespace />name" size="30" type="text" value="<%= HtmlUtil.escape(name) %>" />
+	<input class="search-input" id="<portlet:namespace />name" name="<portlet:namespace />name" placeholder="<liferay-ui:message key="go-to" />" size="30" type="text" value="<%= HtmlUtil.escape(name) %>" />
 
 	<input src="<%= themeDisplay.getPathThemeImages() %>/common/search.png" type="image" value='<liferay-ui:message key="search" />' />
 </div>
 
 <div class="site-list-container">
-
-	<%
-	boolean hideNotice = GetterUtil.getBoolean(preferences.getValue("hide-notice", StringPool.BLANK), false);
-	%>
-
-	<c:if test="<%= !hideNotice %>">
-		<div class="portlet-msg-info favorite-msg-info <%= hideNotice %>">
-			<liferay-ui:message key="favorite-some-sites-to-customize-this-list" />
-
-			<span class="hide-notice">
-				<liferay-portlet:actionURL name="hideNotice" var="hideNoticeURL">
-					<portlet:param name="redirect" value="<%= currentURL %>" />
-				</liferay-portlet:actionURL>
-
-				<a href="<%= hideNoticeURL %>"><liferay-ui:message key="hide" /></a>
-			</span>
-		</div>
-	</c:if>
-
 	<ul class="site-list">
-		<c:choose>
-			<c:when test="<%= !groups.isEmpty() %>">
-
-				<%
-				boolean alternate = false;
-
-				for (Group group : groups) {
-					String className = StringPool.BLANK;
-
-					ExpandoBridge expandoBridge = group.getExpandoBridge();
-
-					if (SocialOfficeServiceUtil.isSocialOfficeGroup(group.getGroupId())) {
-						className += "social-office-enabled ";
-					}
-
-					boolean member = GroupLocalServiceUtil.hasUserGroup(themeDisplay.getUserId(), group.getGroupId());
-
-					if (member) {
-						className += "member ";
-					}
-
-					if (alternate) {
-						className += "alt";
-					}
-				%>
-
-					<li class="<%= className %>">
-						<c:choose>
-							<c:when test="<%= !FavoriteSiteLocalServiceUtil.isFavoriteSite(themeDisplay.getUserId(), group.getGroupId()) %>">
-								<span class="action favorite">
-									<liferay-portlet:actionURL name="updateFavorites" var="favoriteURL">
-										<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
-										<portlet:param name="redirect" value="<%= currentURL %>" />
-										<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-									</liferay-portlet:actionURL>
-
-									<a href="<%= favoriteURL %>"><liferay-ui:message key="favorite" /></a>
-								</span>
-							</c:when>
-							<c:otherwise>
-								<span class="action unfavorite">
-									<liferay-portlet:actionURL name="updateFavorites" var="unfavoriteURL">
-										<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
-										<portlet:param name="redirect" value="<%= currentURL %>" />
-										<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-									</liferay-portlet:actionURL>
-
-									<a href="<%= unfavoriteURL %>"><liferay-ui:message key="unfavorite" /></a>
-								</span>
-							</c:otherwise>
-						</c:choose>
-
-						<span class="name">
-							<c:choose>
-								<c:when test="<%= group.hasPrivateLayouts() || group.hasPublicLayouts() %>">
-									<liferay-portlet:actionURL portletName="<%= PortletKeys.SITE_REDIRECTOR %>" var="siteURL" windowState="<%= LiferayWindowState.NORMAL.toString() %>">
-										<portlet:param name="struts_action" value="/my_sites/view" />
-										<portlet:param name="groupId" value="<%= String.valueOf(group.getGroupId()) %>" />
-										<portlet:param name="privateLayout" value="<%= String.valueOf(!group.hasPublicLayouts()) %>" />
-									</liferay-portlet:actionURL>
-
-									<a href="<%= siteURL %>"><%= HtmlUtil.escape(group.getDescriptiveName(locale)) %></a>
-								</c:when>
-								<c:otherwise>
-									<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>
-								</c:otherwise>
-							</c:choose>
-						</span>
-					</li>
-
-				<%
-					alternate = !alternate;
-				}
-				%>
-
-				<c:if test="<%= groupsCount > maxResultSize %>">
-					<li class="more">
-						<a href="javascript:;"><liferay-ui:message key="view-all" /> (<%= groupsCount %>)</a>
-					</li>
-				</c:if>
-			</c:when>
-			<c:otherwise>
-				<li class="empty">
-					<c:choose>
-						<c:when test='<%= tabs1.equals("my-sites") %>'>
-							<liferay-ui:message key="you-are-not-a-member-of-any-sites.-search-or-open-the-directory-to-get-started" />
-						</c:when>
-						<c:when test='<%= tabs1.equals("my-favorites") %>'>
-							<liferay-ui:message key="you-do-not-have-a-favorite-site" />
-						</c:when>
-						<c:otherwise>
-							<liferay-ui:message key="there-are-no-results" />
-						</c:otherwise>
-					</c:choose>
-				</li>
-			</c:otherwise>
-		</c:choose>
 	</ul>
 </div>
 
@@ -200,16 +83,19 @@ pageContext.setAttribute("portletURL", portletURL);
 
 </form>
 
-<aui:script use="aui-base,aui-io,aui-toolbar">
+<aui:script use="aui-base,aui-io-deprecated,aui-toolbar,liferay-so-user-menu">
 	Liferay.SO.Sites.init(
 		{
 			messages: '#<portlet:namespace />messages',
+			namespace: '<portlet:namespace />',
 			siteList: '.so-portlet-sites .site-list',
 			siteListContainer: '.so-portlet-sites .site-list-container',
 			siteListURL: '<portlet:resourceURL id="getSites"><portlet:param name="portletResource" value="<%= portletResource %>" /></portlet:resourceURL>',
 			siteSearchInput: '#<portlet:namespace />name'
 		}
 	);
+
+	Liferay.SO.Sites.updateSites();
 
 	var controlContainer = A.one('.so-portlet-sites .control-container');
 
@@ -260,16 +146,6 @@ pageContext.setAttribute("portletURL", portletURL);
 		function(event) {
 			searchInput.set('value', '');
 
-			Liferay.SO.Sites.init(
-				{
-					messages: '#<portlet:namespace />messages',
-					siteList: '.so-portlet-sites .site-list',
-					siteListContainer: '.so-portlet-sites .site-list-container',
-					siteListURL: '<portlet:resourceURL id="getSites"><portlet:param name="portletResource" value="<%= portletResource %>" /></portlet:resourceURL>',
-					siteSearchInput: '#<portlet:namespace />name'
-				}
-			);
-
 			Liferay.SO.Sites.updateSites();
 		}
 	);
@@ -280,8 +156,8 @@ pageContext.setAttribute("portletURL", portletURL);
 			var keywords = searchInput.get('value');
 
 			var data = {
-				keywords: keywords,
-				tabs1: sitesTabsSelect.get('value')
+				<portlet:namespace />keywords: keywords,
+				<portlet:namespace />tabs1: sitesTabsSelect.get('value')
 			};
 
 			<liferay-portlet:renderURL var="viewSitesURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>">
@@ -312,25 +188,25 @@ pageContext.setAttribute("portletURL", portletURL);
 		'.action a'
 	);
 
-	<c:if test="<%= groups.isEmpty() && !hideNotice %>">
-		A.one('.so-portlet-sites .favorite-msg-info .hide-notice a').on(
+	var dockBar = A.one('.portlet-dockbar');
+
+	if (dockBar) {
+		var html = A.one('html');
+
+		html.on(
 			'click',
 			function(event) {
-				event.preventDefault();
-
-				var link = event.currentTarget;
-
-				A.io.request(
-					link.get('href'),
-					{
-						after: {
-							success: function(event, id, obj) {
-								link.ancestor('.favorite-msg-info').hide();
-							}
-						}
-					}
-				);
+				A.fire('close-menus');
 			}
 		);
-	</c:if>
+
+		new Liferay.SO.UserMenu(
+			{
+				node: '.portlet-dockbar .go-to',
+				showClass: 'search-focus',
+				showOn: 'focus',
+				trigger: '.portlet-dockbar .go-to .so-portlet-sites .search-input'
+			}
+		);
+	}
 </aui:script>

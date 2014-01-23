@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -27,7 +27,7 @@ User selUser = (User)request.getAttribute("user.selUser");
 
 <h3><liferay-ui:message key="details" /></h3>
 
-<aui:fieldset column="<%= true %>" cssClass="aui-w50">
+<aui:fieldset column="<%= true %>" cssClass="w50">
 	<aui:input name="screenName" />
 
 	<aui:input bean="<%= user %>" model="<%= User.class %>" name="emailAddress">
@@ -45,8 +45,8 @@ User selUser = (User)request.getAttribute("user.selUser");
 	<aui:input name="jobTitle" />
 </aui:fieldset>
 
-<aui:fieldset column="<%= true %>" cssClass="aui-w50">
-	<div class="user-porfile-image" id="<portlet:namespace />userProfileImage">
+<aui:fieldset column="<%= true %>" cssClass="w50">
+	<div class="user-profile-image" id="<portlet:namespace />userProfileImage">
 		<c:if test="<%= selUser != null %>">
 
 			<%
@@ -74,7 +74,7 @@ User selUser = (User)request.getAttribute("user.selUser");
 </aui:fieldset>
 
 <aui:script use="aui-base">
-	window['<%= PortalUtil.getPortletNamespace(PortletKeys.MY_ACCOUNT) %>changeLogo'] = function (logoURL) {
+	window['<%= PortalUtil.getPortletNamespace(PortletKeys.MY_ACCOUNT) %>changeLogo'] = function(logoURL) {
 		var avatarDialog = A.one('#<portlet:namespace />userProfileImage .avatar');
 
 		if (avatarDialog) {

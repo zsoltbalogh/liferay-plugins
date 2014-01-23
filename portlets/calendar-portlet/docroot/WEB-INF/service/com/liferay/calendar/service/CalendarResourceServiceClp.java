@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,6 +18,7 @@ import com.liferay.portal.service.InvokableService;
 
 /**
  * @author Eduardo Lundgren
+ * @generated
  */
 public class CalendarResourceServiceClp implements CalendarResourceService {
 	public CalendarResourceServiceClp(InvokableService invokableService) {
@@ -34,9 +35,8 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		_methodName3 = "addCalendarResource";
 
 		_methodParameterTypes3 = new String[] {
-				"long", "java.lang.String", "long", "java.lang.String",
-				"java.lang.String", "java.util.Map", "java.util.Map",
-				"java.lang.String", "boolean",
+				"long", "long", "long", "java.lang.String", "java.lang.String",
+				"java.util.Map", "java.util.Map", "boolean",
 				"com.liferay.portal.service.ServiceContext"
 			};
 
@@ -64,9 +64,8 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 
 		_methodParameterTypes8 = new String[] {
 				"long", "long[][]", "long[][]", "java.lang.String",
-				"java.lang.String", "java.lang.String", "java.lang.String",
-				"boolean", "boolean", "int", "int",
-				"com.liferay.portal.kernel.util.OrderByComparator"
+				"java.lang.String", "java.lang.String", "boolean", "boolean",
+				"int", "int", "com.liferay.portal.kernel.util.OrderByComparator"
 			};
 
 		_methodName9 = "searchCount";
@@ -79,18 +78,18 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 
 		_methodParameterTypes10 = new String[] {
 				"long", "long[][]", "long[][]", "java.lang.String",
-				"java.lang.String", "java.lang.String", "java.lang.String",
-				"boolean", "boolean"
+				"java.lang.String", "java.lang.String", "boolean", "boolean"
 			};
 
 		_methodName11 = "updateCalendarResource";
 
 		_methodParameterTypes11 = new String[] {
-				"long", "java.util.Map", "java.util.Map", "java.lang.String",
-				"boolean", "com.liferay.portal.service.ServiceContext"
+				"long", "java.util.Map", "java.util.Map", "boolean",
+				"com.liferay.portal.service.ServiceContext"
 			};
 	}
 
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		Object returnObj = null;
 
@@ -113,6 +112,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (java.lang.String)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		try {
 			_invokableService.invokeMethod(_methodName1,
@@ -132,19 +132,20 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		}
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public com.liferay.calendar.model.CalendarResource addCalendarResource(
-		long groupId, java.lang.String className, long classPK,
+		long groupId, long classNameId, long classPK,
 		java.lang.String classUuid, java.lang.String code,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		java.lang.String type, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
@@ -155,7 +156,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 					new Object[] {
 						groupId,
 						
-					ClpSerializer.translateInput(className),
+					classNameId,
 						
 					classPK,
 						
@@ -166,8 +167,6 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 					ClpSerializer.translateInput(nameMap),
 						
 					ClpSerializer.translateInput(descriptionMap),
-						
-					ClpSerializer.translateInput(type),
 						
 					active,
 						
@@ -197,6 +196,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (com.liferay.calendar.model.CalendarResource)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.calendar.model.CalendarResource deleteCalendarResource(
 		long calendarResourceId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -230,6 +230,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (com.liferay.calendar.model.CalendarResource)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.calendar.model.CalendarResource fetchCalendarResource(
 		long classNameId, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -264,6 +265,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (com.liferay.calendar.model.CalendarResource)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public com.liferay.calendar.model.CalendarResource getCalendarResource(
 		long calendarResourceId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -297,6 +299,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (com.liferay.calendar.model.CalendarResource)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public java.util.List<com.liferay.calendar.model.CalendarResource> search(
 		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String keywords, boolean active, boolean andOperator,
@@ -347,11 +350,12 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (java.util.List<com.liferay.calendar.model.CalendarResource>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public java.util.List<com.liferay.calendar.model.CalendarResource> search(
 		long companyId, long[] groupIds, long[] classNameIds,
 		java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator, int start, int end,
+		java.lang.String description, boolean active, boolean andOperator,
+		int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
@@ -371,8 +375,6 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 					ClpSerializer.translateInput(name),
 						
 					ClpSerializer.translateInput(description),
-						
-					ClpSerializer.translateInput(type),
 						
 					active,
 						
@@ -404,6 +406,7 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return (java.util.List<com.liferay.calendar.model.CalendarResource>)ClpSerializer.translateOutput(returnObj);
 	}
 
+	@Override
 	public int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String keywords, boolean active)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -443,10 +446,10 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return ((Integer)returnObj).intValue();
 	}
 
+	@Override
 	public int searchCount(long companyId, long[] groupIds,
 		long[] classNameIds, java.lang.String code, java.lang.String name,
-		java.lang.String description, java.lang.String type, boolean active,
-		boolean andOperator)
+		java.lang.String description, boolean active, boolean andOperator)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
 
@@ -465,8 +468,6 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 					ClpSerializer.translateInput(name),
 						
 					ClpSerializer.translateInput(description),
-						
-					ClpSerializer.translateInput(type),
 						
 					active,
 						
@@ -492,12 +493,12 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 		return ((Integer)returnObj).intValue();
 	}
 
+	@Override
 	public com.liferay.calendar.model.CalendarResource updateCalendarResource(
 		long calendarResourceId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		java.lang.String type, boolean active,
-		com.liferay.portal.service.ServiceContext serviceContext)
+		boolean active, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		Object returnObj = null;
@@ -511,8 +512,6 @@ public class CalendarResourceServiceClp implements CalendarResourceService {
 					ClpSerializer.translateInput(nameMap),
 						
 					ClpSerializer.translateInput(descriptionMap),
-						
-					ClpSerializer.translateInput(type),
 						
 					active,
 						

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -55,7 +55,8 @@ public class WSRPHTTPSender extends HTTPSender {
 
 	public WSRPHTTPSender(String forwardCookies, String forwardHeaders) {
 		if (Validator.isNotNull(forwardCookies)) {
-			_forwardCookies = StringUtil.split(forwardCookies.toLowerCase());
+			_forwardCookies = StringUtil.split(
+				StringUtil.toLowerCase(forwardCookies));
 		}
 
 		if (Validator.isNotNull(forwardHeaders)) {
@@ -106,7 +107,7 @@ public class WSRPHTTPSender extends HTTPSender {
 		for (String cookie : cookies) {
 			String name = cookie.substring(0, cookie.indexOf(StringPool.EQUAL));
 
-			cookiesMap.put(name.toLowerCase(), cookie);
+			cookiesMap.put(StringUtil.toLowerCase(name), cookie);
 		}
 
 		for (String forwardCookie : _forwardCookies) {
@@ -135,11 +136,12 @@ public class WSRPHTTPSender extends HTTPSender {
 			return;
 		}
 
-		Hashtable requestHeaders = (Hashtable)messageContext.getProperty(
-			HTTPConstants.REQUEST_HEADERS);
+		Hashtable<String, Object> requestHeaders =
+			(Hashtable<String, Object>)messageContext.getProperty(
+				HTTPConstants.REQUEST_HEADERS);
 
 		if (requestHeaders == null) {
-			requestHeaders = new Hashtable();
+			requestHeaders = new Hashtable<String, Object>();
 
 			messageContext.setProperty(
 				HTTPConstants.REQUEST_HEADERS, requestHeaders);
@@ -162,7 +164,9 @@ public class WSRPHTTPSender extends HTTPSender {
 				messageContext.getStrProp(HTTPConstants.HEADER_COOKIE));
 		}
 		catch (Throwable t) {
-			_log.warn(t, t);
+			if (_log.isWarnEnabled()) {
+				_log.warn(t, t);
+			}
 		}
 
 		_currentCookie.set(cookie);

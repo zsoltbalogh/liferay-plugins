@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,12 +17,10 @@ package com.liferay.calendar.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link CalendarLocalService}.
- * </p>
+ * Provides a wrapper for {@link CalendarLocalService}.
  *
- * @author    Eduardo Lundgren
- * @see       CalendarLocalService
+ * @author Eduardo Lundgren
+ * @see CalendarLocalService
  * @generated
  */
 public class CalendarLocalServiceWrapper implements CalendarLocalService,
@@ -39,6 +37,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the calendar that was added
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar addCalendar(
 		com.liferay.calendar.model.Calendar calendar)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -51,6 +50,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @param calendarId the primary key for the new calendar
 	* @return the new calendar
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar createCalendar(long calendarId) {
 		return _calendarLocalService.createCalendar(calendarId);
 	}
@@ -63,6 +63,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @throws PortalException if a calendar with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar deleteCalendar(long calendarId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
@@ -77,6 +78,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @throws PortalException
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar deleteCalendar(
 		com.liferay.calendar.model.Calendar calendar)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -84,6 +86,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 		return _calendarLocalService.deleteCalendar(calendar);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		return _calendarLocalService.dynamicQuery();
 	}
@@ -95,6 +98,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -106,7 +110,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -115,6 +119,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -126,7 +131,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -136,6 +141,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -153,15 +159,64 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarLocalService.dynamicQueryCount(dynamicQuery, projection);
+	}
+
+	@Override
 	public com.liferay.calendar.model.Calendar fetchCalendar(long calendarId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.fetchCalendar(calendarId);
+	}
+
+	/**
+	* Returns the calendar with the matching UUID and company.
+	*
+	* @param uuid the calendar's UUID
+	* @param companyId the primary key of the company
+	* @return the matching calendar, or <code>null</code> if a matching calendar could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public com.liferay.calendar.model.Calendar fetchCalendarByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarLocalService.fetchCalendarByUuidAndCompanyId(uuid,
+			companyId);
+	}
+
+	/**
+	* Returns the calendar matching the UUID and group.
+	*
+	* @param uuid the calendar's UUID
+	* @param groupId the primary key of the group
+	* @return the matching calendar, or <code>null</code> if a matching calendar could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public com.liferay.calendar.model.Calendar fetchCalendarByUuidAndGroupId(
+		java.lang.String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _calendarLocalService.fetchCalendarByUuidAndGroupId(uuid, groupId);
 	}
 
 	/**
@@ -172,12 +227,14 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @throws PortalException if a calendar with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar getCalendar(long calendarId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.getCalendar(calendarId);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -186,14 +243,33 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	}
 
 	/**
-	* Returns the calendar with the UUID in the group.
+	* Returns the calendar with the matching UUID and company.
 	*
-	* @param uuid the UUID of calendar
-	* @param groupId the group id of the calendar
-	* @return the calendar
-	* @throws PortalException if a calendar with the UUID in the group could not be found
+	* @param uuid the calendar's UUID
+	* @param companyId the primary key of the company
+	* @return the matching calendar
+	* @throws PortalException if a matching calendar could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
+	public com.liferay.calendar.model.Calendar getCalendarByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _calendarLocalService.getCalendarByUuidAndCompanyId(uuid,
+			companyId);
+	}
+
+	/**
+	* Returns the calendar matching the UUID and group.
+	*
+	* @param uuid the calendar's UUID
+	* @param groupId the primary key of the group
+	* @return the matching calendar
+	* @throws PortalException if a matching calendar could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
 	public com.liferay.calendar.model.Calendar getCalendarByUuidAndGroupId(
 		java.lang.String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -205,7 +281,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* Returns a range of all the calendars.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.calendar.model.impl.CalendarModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of calendars
@@ -213,6 +289,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the range of calendars
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.util.List<com.liferay.calendar.model.Calendar> getCalendars(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -225,6 +302,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the number of calendars
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public int getCalendarsCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.getCalendarsCount();
@@ -237,6 +315,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	* @return the calendar that was updated
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.calendar.model.Calendar updateCalendar(
 		com.liferay.calendar.model.Calendar calendar)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -248,6 +327,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _calendarLocalService.getBeanIdentifier();
 	}
@@ -257,10 +337,12 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_calendarLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
@@ -268,19 +350,28 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			arguments);
 	}
 
+	@Override
 	public com.liferay.calendar.model.Calendar addCalendar(long userId,
 		long groupId, long calendarResourceId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		int color, boolean defaultCalendar,
+		int color, boolean defaultCalendar, boolean enableComments,
+		boolean enableRatings,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.addCalendar(userId, groupId,
 			calendarResourceId, nameMap, descriptionMap, color,
-			defaultCalendar, serviceContext);
+			defaultCalendar, enableComments, enableRatings, serviceContext);
 	}
 
+	@Override
+	public java.lang.String exportCalendar(long calendarId,
+		java.lang.String type) throws java.lang.Exception {
+		return _calendarLocalService.exportCalendar(calendarId, type);
+	}
+
+	@Override
 	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
 		long groupId, long calendarResourceId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -288,6 +379,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			calendarResourceId);
 	}
 
+	@Override
 	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
 		long groupId, long calendarResourceId, boolean defaultCalendar)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -295,6 +387,13 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			calendarResourceId, defaultCalendar);
 	}
 
+	@Override
+	public void importCalendar(long calendarId, java.lang.String data,
+		java.lang.String type) throws java.lang.Exception {
+		_calendarLocalService.importCalendar(calendarId, data, type);
+	}
+
+	@Override
 	public java.util.List<com.liferay.calendar.model.Calendar> search(
 		long companyId, long[] groupIds, long[] calendarResourceIds,
 		java.lang.String keywords, boolean andOperator, int start, int end,
@@ -305,6 +404,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			orderByComparator);
 	}
 
+	@Override
 	public java.util.List<com.liferay.calendar.model.Calendar> search(
 		long companyId, long[] groupIds, long[] calendarResourceIds,
 		java.lang.String name, java.lang.String description,
@@ -316,6 +416,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			orderByComparator);
 	}
 
+	@Override
 	public int searchCount(long companyId, long[] groupIds,
 		long[] calendarResourceIds, java.lang.String keywords,
 		boolean andOperator)
@@ -324,6 +425,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			calendarResourceIds, keywords, andOperator);
 	}
 
+	@Override
 	public int searchCount(long companyId, long[] groupIds,
 		long[] calendarResourceIds, java.lang.String name,
 		java.lang.String description, boolean andOperator)
@@ -332,23 +434,28 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			calendarResourceIds, name, description, andOperator);
 	}
 
+	@Override
 	public void updateCalendar(long calendarId, boolean defaultCalendar)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		_calendarLocalService.updateCalendar(calendarId, defaultCalendar);
 	}
 
+	@Override
 	public com.liferay.calendar.model.Calendar updateCalendar(long calendarId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
-		int color, boolean defaultCalendar,
+		int color, boolean defaultCalendar, boolean enableComments,
+		boolean enableRatings,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
 		return _calendarLocalService.updateCalendar(calendarId, nameMap,
-			descriptionMap, color, defaultCalendar, serviceContext);
+			descriptionMap, color, defaultCalendar, enableComments,
+			enableRatings, serviceContext);
 	}
 
+	@Override
 	public com.liferay.calendar.model.Calendar updateCalendar(long calendarId,
 		java.util.Map<java.util.Locale, java.lang.String> nameMap,
 		java.util.Map<java.util.Locale, java.lang.String> descriptionMap,
@@ -359,6 +466,7 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			descriptionMap, color, serviceContext);
 	}
 
+	@Override
 	public com.liferay.calendar.model.Calendar updateColor(long calendarId,
 		int color, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -368,24 +476,28 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
+	@Deprecated
 	public CalendarLocalService getWrappedCalendarLocalService() {
 		return _calendarLocalService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
+	@Deprecated
 	public void setWrappedCalendarLocalService(
 		CalendarLocalService calendarLocalService) {
 		_calendarLocalService = calendarLocalService;
 	}
 
+	@Override
 	public CalendarLocalService getWrappedService() {
 		return _calendarLocalService;
 	}
 
+	@Override
 	public void setWrappedService(CalendarLocalService calendarLocalService) {
 		_calendarLocalService = calendarLocalService;
 	}

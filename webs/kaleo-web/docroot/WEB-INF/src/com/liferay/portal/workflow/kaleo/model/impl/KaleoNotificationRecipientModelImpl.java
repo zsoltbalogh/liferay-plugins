@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -93,32 +93,39 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long KALEODEFINITIONID_COLUMN_BITMASK = 2L;
 	public static long KALEONOTIFICATIONID_COLUMN_BITMASK = 4L;
+	public static long KALEONOTIFICATIONRECIPIENTID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoNotificationRecipient"));
 
 	public KaleoNotificationRecipientModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoNotificationRecipientId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoNotificationRecipientId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoNotificationRecipientId);
+		return _kaleoNotificationRecipientId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoNotificationRecipient.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoNotificationRecipient.class.getName();
 	}
@@ -141,6 +148,9 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		attributes.put("recipientClassPK", getRecipientClassPK());
 		attributes.put("recipientRoleType", getRecipientRoleType());
 		attributes.put("address", getAddress());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -227,10 +237,12 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		}
 	}
 
+	@Override
 	public long getKaleoNotificationRecipientId() {
 		return _kaleoNotificationRecipientId;
 	}
 
+	@Override
 	public void setKaleoNotificationRecipientId(
 		long kaleoNotificationRecipientId) {
 		_columnBitmask = -1L;
@@ -238,18 +250,22 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		_kaleoNotificationRecipientId = kaleoNotificationRecipientId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -266,22 +282,27 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		return _originalCompanyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -291,30 +312,37 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_columnBitmask |= KALEODEFINITIONID_COLUMN_BITMASK;
 
@@ -331,10 +359,12 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		return _originalKaleoDefinitionId;
 	}
 
+	@Override
 	public long getKaleoNotificationId() {
 		return _kaleoNotificationId;
 	}
 
+	@Override
 	public void setKaleoNotificationId(long kaleoNotificationId) {
 		_columnBitmask |= KALEONOTIFICATIONID_COLUMN_BITMASK;
 
@@ -351,6 +381,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		return _originalKaleoNotificationId;
 	}
 
+	@Override
 	public String getRecipientClassName() {
 		if (_recipientClassName == null) {
 			return StringPool.BLANK;
@@ -360,26 +391,32 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		}
 	}
 
+	@Override
 	public void setRecipientClassName(String recipientClassName) {
 		_recipientClassName = recipientClassName;
 	}
 
+	@Override
 	public long getRecipientClassPK() {
 		return _recipientClassPK;
 	}
 
+	@Override
 	public void setRecipientClassPK(long recipientClassPK) {
 		_recipientClassPK = recipientClassPK;
 	}
 
+	@Override
 	public int getRecipientRoleType() {
 		return _recipientRoleType;
 	}
 
+	@Override
 	public void setRecipientRoleType(int recipientRoleType) {
 		_recipientRoleType = recipientRoleType;
 	}
 
+	@Override
 	public String getAddress() {
 		if (_address == null) {
 			return StringPool.BLANK;
@@ -389,6 +426,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		}
 	}
 
+	@Override
 	public void setAddress(String address) {
 		_address = address;
 	}
@@ -443,6 +481,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		return kaleoNotificationRecipientImpl;
 	}
 
+	@Override
 	public int compareTo(KaleoNotificationRecipient kaleoNotificationRecipient) {
 		int value = 0;
 
@@ -465,18 +504,15 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoNotificationRecipient)) {
 			return false;
 		}
 
-		KaleoNotificationRecipient kaleoNotificationRecipient = null;
-
-		try {
-			kaleoNotificationRecipient = (KaleoNotificationRecipient)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoNotificationRecipient kaleoNotificationRecipient = (KaleoNotificationRecipient)obj;
 
 		long primaryKey = kaleoNotificationRecipient.getPrimaryKey();
 
@@ -491,6 +527,16 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -613,6 +659,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(43);
 

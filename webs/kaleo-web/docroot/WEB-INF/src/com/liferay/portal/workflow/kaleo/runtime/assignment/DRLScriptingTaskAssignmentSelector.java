@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,6 +24,9 @@ import com.liferay.portal.kernel.resource.StringResourceRetriever;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.runtime.util.RulesContextBuilder;
+import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
+
+import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +38,7 @@ import java.util.Map;
 public class DRLScriptingTaskAssignmentSelector
 	extends BaseTaskAssignmentSelector {
 
+	@Override
 	public Collection<KaleoTaskAssignment> calculateTaskAssignments(
 			KaleoTaskAssignment kaleoTaskAssignment,
 			ExecutionContext executionContext, ClassLoader... classLoaders)
@@ -53,6 +57,13 @@ public class DRLScriptingTaskAssignmentSelector
 
 		Map<String, ?> results = RulesEngineUtil.execute(
 			rulesResourceRetriever, facts, query, classLoaders);
+
+		Map<String, Serializable> resultsWorkflowContext =
+			(Map<String, Serializable>)results.get(
+				WorkflowContextUtil.WORKFLOW_CONTEXT_NAME);
+
+		WorkflowContextUtil.mergeWorkflowContexts(
+			executionContext, resultsWorkflowContext);
 
 		return getKaleoTaskAssignments(results);
 	}

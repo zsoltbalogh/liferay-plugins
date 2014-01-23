@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -61,10 +61,10 @@ if (DLStoreUtil.hasDirectory(company.getCompanyId(), CompanyConstants.SYSTEM, di
 			delta="<%= fileNames.length %>"
 			emptyResultsMessage="there-are-no-attachments"
 			id="attachmentsSearchContainer"
+			total="<%= fileNames.length %>"
 		>
 			<liferay-ui:search-container-results
 				results="<%= ListUtil.fromArray(fileNames) %>"
-				total="<%= fileNames.length %>"
 			/>
 
 			<liferay-ui:search-container-row
@@ -116,7 +116,7 @@ if (DLStoreUtil.hasDirectory(company.getCompanyId(), CompanyConstants.SYSTEM, di
 </aui:form>
 
 <liferay-util:buffer var="html">
-	<liferay-util:include page="/admin/attachments.jsp" servletContext="<%= application %>" />
+	<liferay-util:include page="/admin/temp_attachments.jsp" servletContext="<%= application %>" />
 </liferay-util:buffer>
 
 <aui:script>

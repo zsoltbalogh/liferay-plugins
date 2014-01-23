@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,6 +20,7 @@ import com.liferay.opensocial.model.GadgetSoap;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.json.JSON;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
@@ -92,6 +94,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long URL_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long NAME_COLUMN_BITMASK = 8L;
 
 	/**
 	 * Converts the soap model instance into a normal model instance.
@@ -144,26 +147,32 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	public GadgetModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _gadgetId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setGadgetId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_gadgetId);
+		return _gadgetId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Gadget.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Gadget.class.getName();
 	}
@@ -180,6 +189,9 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		attributes.put("name", getName());
 		attributes.put("url", getUrl());
 		attributes.put("portletCategoryNames", getPortletCategoryNames());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -237,6 +249,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@JSON
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -246,6 +259,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -259,19 +273,23 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@JSON
+	@Override
 	public long getGadgetId() {
 		return _gadgetId;
 	}
 
+	@Override
 	public void setGadgetId(long gadgetId) {
 		_gadgetId = gadgetId;
 	}
 
 	@JSON
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -289,24 +307,29 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@JSON
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
 	@JSON
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
 	@JSON
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return StringPool.BLANK;
@@ -316,6 +339,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		}
 	}
 
+	@Override
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
@@ -323,6 +347,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@JSON
+	@Override
 	public String getUrl() {
 		if (_url == null) {
 			return StringPool.BLANK;
@@ -332,6 +357,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		}
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_columnBitmask |= URL_COLUMN_BITMASK;
 
@@ -347,6 +373,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	}
 
 	@JSON
+	@Override
 	public String getPortletCategoryNames() {
 		if (_portletCategoryNames == null) {
 			return StringPool.BLANK;
@@ -356,8 +383,15 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		}
 	}
 
+	@Override
 	public void setPortletCategoryNames(String portletCategoryNames) {
 		_portletCategoryNames = portletCategoryNames;
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(PortalUtil.getClassNameId(
+				Gadget.class.getName()));
 	}
 
 	public long getColumnBitmask() {
@@ -405,6 +439,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		return gadgetImpl;
 	}
 
+	@Override
 	public int compareTo(Gadget gadget) {
 		int value = 0;
 
@@ -419,18 +454,15 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Gadget)) {
 			return false;
 		}
 
-		Gadget gadget = null;
-
-		try {
-			gadget = (Gadget)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Gadget gadget = (Gadget)obj;
 
 		long primaryKey = gadget.getPrimaryKey();
 
@@ -445,6 +477,16 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -549,6 +591,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 

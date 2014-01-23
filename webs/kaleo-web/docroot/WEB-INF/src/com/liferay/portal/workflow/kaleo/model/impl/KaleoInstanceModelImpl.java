@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -99,32 +99,39 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	public static long KALEODEFINITIONID_COLUMN_BITMASK = 8L;
 	public static long KALEODEFINITIONNAME_COLUMN_BITMASK = 16L;
 	public static long KALEODEFINITIONVERSION_COLUMN_BITMASK = 32L;
+	public static long KALEOINSTANCEID_COLUMN_BITMASK = 64L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoInstance"));
 
 	public KaleoInstanceModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoInstanceId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoInstanceId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoInstanceId);
+		return _kaleoInstanceId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoInstance.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoInstance.class.getName();
 	}
@@ -149,6 +156,9 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		attributes.put("completed", getCompleted());
 		attributes.put("completionDate", getCompletionDate());
 		attributes.put("workflowContext", getWorkflowContext());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -255,28 +265,34 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		}
 	}
 
+	@Override
 	public long getKaleoInstanceId() {
 		return _kaleoInstanceId;
 	}
 
+	@Override
 	public void setKaleoInstanceId(long kaleoInstanceId) {
 		_columnBitmask = -1L;
 
 		_kaleoInstanceId = kaleoInstanceId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -293,22 +309,27 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return _originalCompanyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -318,30 +339,37 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_columnBitmask |= KALEODEFINITIONID_COLUMN_BITMASK;
 
@@ -358,6 +386,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return _originalKaleoDefinitionId;
 	}
 
+	@Override
 	public String getKaleoDefinitionName() {
 		if (_kaleoDefinitionName == null) {
 			return StringPool.BLANK;
@@ -367,6 +396,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		}
 	}
 
+	@Override
 	public void setKaleoDefinitionName(String kaleoDefinitionName) {
 		_columnBitmask |= KALEODEFINITIONNAME_COLUMN_BITMASK;
 
@@ -381,10 +411,12 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return GetterUtil.getString(_originalKaleoDefinitionName);
 	}
 
+	@Override
 	public int getKaleoDefinitionVersion() {
 		return _kaleoDefinitionVersion;
 	}
 
+	@Override
 	public void setKaleoDefinitionVersion(int kaleoDefinitionVersion) {
 		_columnBitmask |= KALEODEFINITIONVERSION_COLUMN_BITMASK;
 
@@ -401,14 +433,17 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return _originalKaleoDefinitionVersion;
 	}
 
+	@Override
 	public long getRootKaleoInstanceTokenId() {
 		return _rootKaleoInstanceTokenId;
 	}
 
+	@Override
 	public void setRootKaleoInstanceTokenId(long rootKaleoInstanceTokenId) {
 		_rootKaleoInstanceTokenId = rootKaleoInstanceTokenId;
 	}
 
+	@Override
 	public String getClassName() {
 		if (_className == null) {
 			return StringPool.BLANK;
@@ -418,26 +453,32 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		}
 	}
 
+	@Override
 	public void setClassName(String className) {
 		_className = className;
 	}
 
+	@Override
 	public long getClassPK() {
 		return _classPK;
 	}
 
+	@Override
 	public void setClassPK(long classPK) {
 		_classPK = classPK;
 	}
 
+	@Override
 	public boolean getCompleted() {
 		return _completed;
 	}
 
+	@Override
 	public boolean isCompleted() {
 		return _completed;
 	}
 
+	@Override
 	public void setCompleted(boolean completed) {
 		_columnBitmask |= COMPLETED_COLUMN_BITMASK;
 
@@ -454,10 +495,12 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return _originalCompleted;
 	}
 
+	@Override
 	public Date getCompletionDate() {
 		return _completionDate;
 	}
 
+	@Override
 	public void setCompletionDate(Date completionDate) {
 		_columnBitmask |= COMPLETIONDATE_COLUMN_BITMASK;
 
@@ -472,6 +515,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return _originalCompletionDate;
 	}
 
+	@Override
 	public String getWorkflowContext() {
 		if (_workflowContext == null) {
 			return StringPool.BLANK;
@@ -481,6 +525,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		}
 	}
 
+	@Override
 	public void setWorkflowContext(String workflowContext) {
 		_workflowContext = workflowContext;
 	}
@@ -538,6 +583,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return kaleoInstanceImpl;
 	}
 
+	@Override
 	public int compareTo(KaleoInstance kaleoInstance) {
 		int value = 0;
 
@@ -560,18 +606,15 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoInstance)) {
 			return false;
 		}
 
-		KaleoInstance kaleoInstance = null;
-
-		try {
-			kaleoInstance = (KaleoInstance)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoInstance kaleoInstance = (KaleoInstance)obj;
 
 		long primaryKey = kaleoInstance.getPrimaryKey();
 
@@ -586,6 +629,16 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -741,6 +794,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(52);
 

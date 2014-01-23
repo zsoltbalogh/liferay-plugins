@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,13 +22,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import java.rmi.RemoteException;
 
 /**
- * <p>
- * This class provides a SOAP utility for the
+ * Provides the SOAP utility for the
  * {@link com.liferay.knowledgebase.service.KBArticleServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
- * </p>
  *
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
@@ -57,10 +55,10 @@ import java.rmi.RemoteException;
  * The SOAP utility is only generated for remote services.
  * </p>
  *
- * @author    Brian Wing Shun Chan
- * @see       KBArticleServiceHttp
- * @see       com.liferay.knowledgebase.model.KBArticleSoap
- * @see       com.liferay.knowledgebase.service.KBArticleServiceUtil
+ * @author Brian Wing Shun Chan
+ * @see KBArticleServiceHttp
+ * @see com.liferay.knowledgebase.model.KBArticleSoap
+ * @see com.liferay.knowledgebase.service.KBArticleServiceUtil
  * @generated
  */
 public class KBArticleServiceSoap {
@@ -192,6 +190,24 @@ public class KBArticleServiceSoap {
 	}
 
 	public static com.liferay.knowledgebase.model.KBArticleSoap[] getKBArticles(
+		long groupId, long[] resourcePrimKeys, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.knowledgebase.model.KBArticle> returnValue =
+				KBArticleServiceUtil.getKBArticles(groupId, resourcePrimKeys,
+					status, start, end, orderByComparator);
+
+			return com.liferay.knowledgebase.model.KBArticleSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.knowledgebase.model.KBArticleSoap[] getKBArticles(
 		long groupId, long[] resourcePrimKeys, int status,
 		com.liferay.portal.kernel.util.OrderByComparator orderByComparator)
 		throws RemoteException {
@@ -201,6 +217,21 @@ public class KBArticleServiceSoap {
 					status, orderByComparator);
 
 			return com.liferay.knowledgebase.model.KBArticleSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int getKBArticlesCount(long groupId, long[] resourcePrimKeys,
+		int status) throws RemoteException {
+		try {
+			int returnValue = KBArticleServiceUtil.getKBArticlesCount(groupId,
+					resourcePrimKeys, status);
+
+			return returnValue;
 		}
 		catch (Exception e) {
 			_log.error(e, e);

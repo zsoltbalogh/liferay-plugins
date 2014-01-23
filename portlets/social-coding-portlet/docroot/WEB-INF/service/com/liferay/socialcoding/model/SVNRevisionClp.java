@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,14 +16,18 @@ package com.liferay.socialcoding.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
+import com.liferay.socialcoding.service.ClpSerializer;
 import com.liferay.socialcoding.service.SVNRevisionLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +41,32 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 	public SVNRevisionClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return SVNRevision.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return SVNRevision.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _svnRevisionId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setSvnRevisionId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_svnRevisionId);
+		return _svnRevisionId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -71,6 +81,9 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		attributes.put("svnRepositoryId", getSvnRepositoryId());
 		attributes.put("revisionNumber", getRevisionNumber());
 		attributes.put("comments", getComments());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -112,66 +125,204 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		if (comments != null) {
 			setComments(comments);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getSvnRevisionId() {
 		return _svnRevisionId;
 	}
 
+	@Override
 	public void setSvnRevisionId(long svnRevisionId) {
 		_svnRevisionId = svnRevisionId;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSvnRevisionId", long.class);
+
+				method.invoke(_svnRevisionRemoteModel, svnRevisionId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getSvnUserId() {
 		return _svnUserId;
 	}
 
+	@Override
 	public void setSvnUserId(String svnUserId) {
 		_svnUserId = svnUserId;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSvnUserId", String.class);
+
+				method.invoke(_svnRevisionRemoteModel, svnUserId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_svnRevisionRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getSvnRepositoryId() {
 		return _svnRepositoryId;
 	}
 
+	@Override
 	public void setSvnRepositoryId(long svnRepositoryId) {
 		_svnRepositoryId = svnRepositoryId;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSvnRepositoryId", long.class);
+
+				method.invoke(_svnRevisionRemoteModel, svnRepositoryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getRevisionNumber() {
 		return _revisionNumber;
 	}
 
+	@Override
 	public void setRevisionNumber(long revisionNumber) {
 		_revisionNumber = revisionNumber;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setRevisionNumber", long.class);
+
+				method.invoke(_svnRevisionRemoteModel, revisionNumber);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getComments() {
 		return _comments;
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
+
+		if (_svnRevisionRemoteModel != null) {
+			try {
+				Class<?> clazz = _svnRevisionRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setComments", String.class);
+
+				method.invoke(_svnRevisionRemoteModel, comments);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public java.lang.Object[] getJIRAIssueAndComments() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getJIRAIssueAndComments";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.Object[] returnObj = (java.lang.Object[])invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public java.lang.String getWebRevisionNumberURL() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getWebRevisionNumberURL";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			java.lang.String returnObj = (java.lang.String)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
+	@Override
 	public com.liferay.socialcoding.model.SVNRepository getSVNRepository() {
-		throw new UnsupportedOperationException();
+		try {
+			String methodName = "getSVNRepository";
+
+			Class<?>[] parameterTypes = new Class<?>[] {  };
+
+			Object[] parameterValues = new Object[] {  };
+
+			com.liferay.socialcoding.model.SVNRepository returnObj = (com.liferay.socialcoding.model.SVNRepository)invokeOnRemoteModel(methodName,
+					parameterTypes, parameterValues);
+
+			return returnObj;
+		}
+		catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
 	}
 
 	public BaseModel<?> getSVNRevisionRemoteModel() {
@@ -182,6 +333,48 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		_svnRevisionRemoteModel = svnRevisionRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _svnRevisionRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_svnRevisionRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			SVNRevisionLocalServiceUtil.addSVNRevision(this);
@@ -211,6 +404,7 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(SVNRevision svnRevision) {
 		int value = 0;
 
@@ -235,18 +429,15 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof SVNRevisionClp)) {
 			return false;
 		}
 
-		SVNRevisionClp svnRevision = null;
-
-		try {
-			svnRevision = (SVNRevisionClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		SVNRevisionClp svnRevision = (SVNRevisionClp)obj;
 
 		long primaryKey = svnRevision.getPrimaryKey();
 
@@ -261,6 +452,16 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -284,6 +485,7 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(22);
 
@@ -328,4 +530,6 @@ public class SVNRevisionClp extends BaseModelImpl<SVNRevision>
 	private long _revisionNumber;
 	private String _comments;
 	private BaseModel<?> _svnRevisionRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

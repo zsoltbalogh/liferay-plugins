@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,10 +31,10 @@ import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.CompanyLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
+import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.service.persistence.UserActionableDynamicQuery;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.PortletPreferencesThreadLocal;
 import com.liferay.portlet.expando.DuplicateColumnNameException;
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.model.ExpandoColumnConstants;
@@ -52,16 +52,11 @@ public class InstanceUtil implements PortletPropsKeys {
 
 	public static void initInstance(long companyId) {
 		try {
-			PortletPreferencesThreadLocal.setStrict(false);
-
 			_localizeRoleNames(companyId);
 			_localizeUsers(companyId);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
-		}
-		finally {
-			PortletPreferencesThreadLocal.setStrict(true);
 		}
 	}
 
@@ -73,6 +68,8 @@ public class InstanceUtil implements PortletPropsKeys {
 
 	private static void _localizeRoleNames(long companyId, String languageId)
 		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
 
 		// Regular roles
 
@@ -107,7 +104,7 @@ public class InstanceUtil implements PortletPropsKeys {
 
 			RoleLocalServiceUtil.updateRole(
 				role.getRoleId(), name, titleMap, descriptionMap,
-				RoleConstants.TYPE_REGULAR_LABEL);
+				RoleConstants.TYPE_REGULAR_LABEL, serviceContext);
 		}
 
 		// Organization roles
@@ -140,7 +137,7 @@ public class InstanceUtil implements PortletPropsKeys {
 
 			RoleLocalServiceUtil.updateRole(
 				role.getRoleId(), name, titleMap, descriptionMap,
-				RoleConstants.TYPE_ORGANIZATION_LABEL);
+				RoleConstants.TYPE_ORGANIZATION_LABEL, serviceContext);
 		}
 
 		// Site roles
@@ -170,7 +167,7 @@ public class InstanceUtil implements PortletPropsKeys {
 
 			RoleLocalServiceUtil.updateRole(
 				role.getRoleId(), name, titleMap, descriptionMap,
-				RoleConstants.TYPE_SITE_LABEL);
+				RoleConstants.TYPE_SITE_LABEL, serviceContext);
 		}
 	}
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -52,6 +52,7 @@ import java.util.Map;
 public class KaleoTaskInstanceTokenLocalServiceImpl
 	extends KaleoTaskInstanceTokenLocalServiceBaseImpl {
 
+	@Override
 	public KaleoTaskInstanceToken addKaleoTaskInstanceToken(
 			long kaleoInstanceTokenId, long kaleoTaskId, String kaleoTaskName,
 			Collection<KaleoTaskAssignment> kaleoTaskAssignments, Date dueDate,
@@ -120,6 +121,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return kaleoTaskInstanceToken;
 	}
 
+	@Override
 	public KaleoTaskInstanceToken assignKaleoTaskInstanceToken(
 			long kaleoTaskInstanceTokenId, String assigneeClassName,
 			long assigneeClassPK, Map<String, Serializable> workflowContext,
@@ -144,6 +146,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return kaleoTaskInstanceToken;
 	}
 
+	@Override
 	public KaleoTaskInstanceToken completeKaleoTaskInstanceToken(
 			long kaleoTaskInstanceTokenId, ServiceContext serviceContext)
 		throws PortalException, SystemException {
@@ -173,6 +176,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return kaleoTaskInstanceToken;
 	}
 
+	@Override
 	public void deleteCompanyKaleoTaskInstanceTokens(long companyId)
 		throws SystemException {
 
@@ -186,6 +190,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			deleteCompanyKaleoTaskAssignmentInstances(companyId);
 	}
 
+	@Override
 	public void deleteKaleoDefinitionKaleoTaskInstanceTokens(
 			long kaleoDefinitionId)
 		throws SystemException {
@@ -202,6 +207,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 				kaleoDefinitionId);
 	}
 
+	@Override
 	public void deleteKaleoInstanceKaleoTaskInstanceTokens(long kaleoInstanceId)
 		throws SystemException {
 
@@ -216,6 +222,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			deleteKaleoInstanceKaleoTaskAssignmentInstances(kaleoInstanceId);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> getCompanyKaleoTaskInstanceTokens(
 			long companyId, int start, int end)
 		throws SystemException {
@@ -224,12 +231,14 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			companyId, start, end);
 	}
 
+	@Override
 	public int getCompanyKaleoTaskInstanceTokensCount(long companyId)
 		throws SystemException {
 
 		return kaleoTaskInstanceTokenPersistence.countByCompanyId(companyId);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 			Boolean completed, int start, int end,
 			OrderByComparator orderByComparator, ServiceContext serviceContext)
@@ -241,6 +250,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 			List<Long> roleIds, Boolean completed, int start, int end,
 			OrderByComparator orderByComparator, ServiceContext serviceContext)
@@ -259,6 +269,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 			long kaleoInstanceId, Boolean completed, int start, int end,
 			OrderByComparator orderByComparator, ServiceContext serviceContext)
@@ -272,25 +283,24 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 
 			return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 		}
-		else {
-			KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
-				new KaleoTaskInstanceTokenQuery(serviceContext);
 
-			kaleoTaskInstanceTokenQuery.setAssigneeClassName(
-				User.class.getName());
-			kaleoTaskInstanceTokenQuery.setAssigneeClassPK(
-				serviceContext.getUserId());
-			kaleoTaskInstanceTokenQuery.setCompleted(completed);
-			kaleoTaskInstanceTokenQuery.setEnd(end);
-			kaleoTaskInstanceTokenQuery.setKaleoInstanceId(kaleoInstanceId);
-			kaleoTaskInstanceTokenQuery.setOrderByComparator(orderByComparator);
-			kaleoTaskInstanceTokenQuery.setStart(start);
+		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
+			new KaleoTaskInstanceTokenQuery(serviceContext);
 
-			return kaleoTaskInstanceTokenFinder.findKaleoTaskInstanceTokens(
-				kaleoTaskInstanceTokenQuery);
-		}
+		kaleoTaskInstanceTokenQuery.setAssigneeClassName(User.class.getName());
+		kaleoTaskInstanceTokenQuery.setAssigneeClassPK(
+			serviceContext.getUserId());
+		kaleoTaskInstanceTokenQuery.setCompleted(completed);
+		kaleoTaskInstanceTokenQuery.setEnd(end);
+		kaleoTaskInstanceTokenQuery.setKaleoInstanceId(kaleoInstanceId);
+		kaleoTaskInstanceTokenQuery.setOrderByComparator(orderByComparator);
+		kaleoTaskInstanceTokenQuery.setStart(start);
+
+		return kaleoTaskInstanceTokenFinder.findKaleoTaskInstanceTokens(
+			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public KaleoTaskInstanceToken getKaleoTaskInstanceTokens(
 			long kaleoInstanceId, long kaleoTaskId)
 		throws PortalException, SystemException {
@@ -299,6 +309,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoInstanceId, kaleoTaskId);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> getKaleoTaskInstanceTokens(
 			String assigneeClassName, long assigneeClassPK, Boolean completed,
 			int start, int end, OrderByComparator orderByComparator,
@@ -319,6 +330,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public int getKaleoTaskInstanceTokensCount(
 			Boolean completed, ServiceContext serviceContext)
 		throws SystemException {
@@ -329,6 +341,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return (int)dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public int getKaleoTaskInstanceTokensCount(
 			List<Long> roleIds, Boolean completed,
 			ServiceContext serviceContext)
@@ -346,6 +359,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public int getKaleoTaskInstanceTokensCount(
 			long kaleoInstanceId, Boolean completed,
 			ServiceContext serviceContext)
@@ -359,21 +373,20 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 
 			return (int)dynamicQueryCount(dynamicQuery);
 		}
-		else {
-			KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
-				new KaleoTaskInstanceTokenQuery(serviceContext);
 
-			kaleoTaskInstanceTokenQuery.setAssigneeClassName(
-				User.class.getName());
-			kaleoTaskInstanceTokenQuery.setAssigneeClassPK(
-				serviceContext.getUserId());
-			kaleoTaskInstanceTokenQuery.setCompleted(completed);
+		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
+			new KaleoTaskInstanceTokenQuery(serviceContext);
 
-			return kaleoTaskInstanceTokenFinder.countKaleoTaskInstanceTokens(
-				kaleoTaskInstanceTokenQuery);
-		}
+		kaleoTaskInstanceTokenQuery.setAssigneeClassName(User.class.getName());
+		kaleoTaskInstanceTokenQuery.setAssigneeClassPK(
+			serviceContext.getUserId());
+		kaleoTaskInstanceTokenQuery.setCompleted(completed);
+
+		return kaleoTaskInstanceTokenFinder.countKaleoTaskInstanceTokens(
+			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public int getKaleoTaskInstanceTokensCount(
 			String assigneeClassName, long assigneeClassPK, Boolean completed,
 			ServiceContext serviceContext)
@@ -390,6 +403,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken>
 			getSubmittingUserKaleoTaskInstanceTokens(
 				long userId, Boolean completed, int start, int end,
@@ -414,6 +428,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	@Override
 	public int getSubmittingUserKaleoTaskInstanceTokensCount(
 			long userId, Boolean completed, ServiceContext serviceContext)
 		throws SystemException {
@@ -435,6 +450,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		return (int)dynamicQueryCount(dynamicQuery);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> search(
 			String keywords, Boolean completed, Boolean searchByUserRoles,
 			int start, int end, OrderByComparator orderByComparator,
@@ -446,6 +462,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			false, start, end, orderByComparator, serviceContext);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> search(
 			String taskName, String assetType, Long[] assetPrimaryKeys,
 			Date dueDateGT, Date dueDateLT, Boolean completed,
@@ -459,6 +476,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			orderByComparator, serviceContext);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> search(
 			String keywords, String[] assetTypes, Boolean completed,
 			Boolean searchByUserRoles, int start, int end,
@@ -471,6 +489,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			serviceContext);
 	}
 
+	@Override
 	public List<KaleoTaskInstanceToken> search(
 			String taskName, String[] assetTypes, Long[] assetPrimaryKeys,
 			Date dueDateGT, Date dueDateLT, Boolean completed,
@@ -497,6 +516,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public int searchCount(
 			String keywords, Boolean completed, Boolean searchByUserRoles,
 			ServiceContext serviceContext)
@@ -507,6 +527,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			false, serviceContext);
 	}
 
+	@Override
 	public int searchCount(
 			String taskName, String assetType, Long[] assetPrimaryKeys,
 			Date dueDateGT, Date dueDateLT, Boolean completed,
@@ -520,6 +541,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			serviceContext);
 	}
 
+	@Override
 	public int searchCount(
 			String keywords, String[] assetTypes, Boolean completed,
 			Boolean searchByUserRoles, ServiceContext serviceContext)
@@ -530,6 +552,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			searchByUserRoles, true, serviceContext);
 	}
 
+	@Override
 	public int searchCount(
 			String taskName, String[] assetTypes, Long[] assetPrimaryKeys,
 			Date dueDateGT, Date dueDateLT, Boolean completed,
@@ -553,6 +576,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 			kaleoTaskInstanceTokenQuery);
 	}
 
+	@Override
 	public KaleoTaskInstanceToken updateDueDate(
 			long kaleoTaskInstanceTokenId, Date dueDate,
 			ServiceContext serviceContext)

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,6 +16,7 @@ package com.liferay.privatemessaging.model.impl;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -31,13 +32,16 @@ import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
 
 import com.liferay.privatemessaging.model.UserThread;
 import com.liferay.privatemessaging.model.UserThreadModel;
+import com.liferay.privatemessaging.model.UserThreadSoap;
 
 import java.io.Serializable;
 
 import java.sql.Types;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,6 +57,7 @@ import java.util.Map;
  * @see com.liferay.privatemessaging.model.UserThreadModel
  * @generated
  */
+@JSON(strict = true)
 public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 	implements UserThreadModel {
 	/*
@@ -93,32 +98,87 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 	public static long MBTHREADID_COLUMN_BITMASK = 2L;
 	public static long READ_COLUMN_BITMASK = 4L;
 	public static long USERID_COLUMN_BITMASK = 8L;
+	public static long MODIFIEDDATE_COLUMN_BITMASK = 16L;
+
+	/**
+	 * Converts the soap model instance into a normal model instance.
+	 *
+	 * @param soapModel the soap model instance to convert
+	 * @return the normal model instance
+	 */
+	public static UserThread toModel(UserThreadSoap soapModel) {
+		if (soapModel == null) {
+			return null;
+		}
+
+		UserThread model = new UserThreadImpl();
+
+		model.setUserThreadId(soapModel.getUserThreadId());
+		model.setCompanyId(soapModel.getCompanyId());
+		model.setUserId(soapModel.getUserId());
+		model.setUserName(soapModel.getUserName());
+		model.setCreateDate(soapModel.getCreateDate());
+		model.setModifiedDate(soapModel.getModifiedDate());
+		model.setMbThreadId(soapModel.getMbThreadId());
+		model.setTopMBMessageId(soapModel.getTopMBMessageId());
+		model.setRead(soapModel.getRead());
+		model.setDeleted(soapModel.getDeleted());
+
+		return model;
+	}
+
+	/**
+	 * Converts the soap model instances into normal model instances.
+	 *
+	 * @param soapModels the soap model instances to convert
+	 * @return the normal model instances
+	 */
+	public static List<UserThread> toModels(UserThreadSoap[] soapModels) {
+		if (soapModels == null) {
+			return null;
+		}
+
+		List<UserThread> models = new ArrayList<UserThread>(soapModels.length);
+
+		for (UserThreadSoap soapModel : soapModels) {
+			models.add(toModel(soapModel));
+		}
+
+		return models;
+	}
+
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.privatemessaging.model.UserThread"));
 
 	public UserThreadModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _userThreadId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setUserThreadId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_userThreadId);
+		return _userThreadId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return UserThread.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return UserThread.class.getName();
 	}
@@ -137,6 +197,9 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		attributes.put("topMBMessageId", getTopMBMessageId());
 		attributes.put("read", getRead());
 		attributes.put("deleted", getDeleted());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -204,26 +267,35 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		}
 	}
 
+	@JSON
+	@Override
 	public long getUserThreadId() {
 		return _userThreadId;
 	}
 
+	@Override
 	public void setUserThreadId(long userThreadId) {
 		_userThreadId = userThreadId;
 	}
 
+	@JSON
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@JSON
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -236,10 +308,12 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -248,6 +322,8 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		return _originalUserId;
 	}
 
+	@JSON
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -257,32 +333,42 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@JSON
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@JSON
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_columnBitmask = -1L;
 
 		_modifiedDate = modifiedDate;
 	}
 
+	@JSON
+	@Override
 	public long getMbThreadId() {
 		return _mbThreadId;
 	}
 
+	@Override
 	public void setMbThreadId(long mbThreadId) {
 		_columnBitmask |= MBTHREADID_COLUMN_BITMASK;
 
@@ -299,22 +385,29 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		return _originalMbThreadId;
 	}
 
+	@JSON
+	@Override
 	public long getTopMBMessageId() {
 		return _topMBMessageId;
 	}
 
+	@Override
 	public void setTopMBMessageId(long topMBMessageId) {
 		_topMBMessageId = topMBMessageId;
 	}
 
+	@JSON
+	@Override
 	public boolean getRead() {
 		return _read;
 	}
 
+	@Override
 	public boolean isRead() {
 		return _read;
 	}
 
+	@Override
 	public void setRead(boolean read) {
 		_columnBitmask |= READ_COLUMN_BITMASK;
 
@@ -331,14 +424,18 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		return _originalRead;
 	}
 
+	@JSON
+	@Override
 	public boolean getDeleted() {
 		return _deleted;
 	}
 
+	@Override
 	public boolean isDeleted() {
 		return _deleted;
 	}
 
+	@Override
 	public void setDeleted(boolean deleted) {
 		_columnBitmask |= DELETED_COLUMN_BITMASK;
 
@@ -402,6 +499,7 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		return userThreadImpl;
 	}
 
+	@Override
 	public int compareTo(UserThread userThread) {
 		int value = 0;
 
@@ -419,18 +517,15 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof UserThread)) {
 			return false;
 		}
 
-		UserThread userThread = null;
-
-		try {
-			userThread = (UserThread)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		UserThread userThread = (UserThread)obj;
 
 		long primaryKey = userThread.getPrimaryKey();
 
@@ -445,6 +540,16 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -546,6 +651,7 @@ public class UserThreadModelImpl extends BaseModelImpl<UserThread>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(34);
 

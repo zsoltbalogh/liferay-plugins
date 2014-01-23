@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,12 +16,12 @@ package com.liferay.opensocial.shindig.servlet;
 
 import com.google.inject.Injector;
 
+import com.liferay.opensocial.shindig.util.HttpServletRequestThreadLocal;
 import com.liferay.opensocial.shindig.util.ShindigUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
@@ -65,9 +65,9 @@ public class ShindigFilter extends InjectedFilter {
 			FilterChain filterChain)
 		throws IOException, ServletException {
 
-		if (injector == null) {
-			HttpServletRequest request = (HttpServletRequest)servletRequest;
+		HttpServletRequest request = (HttpServletRequest)servletRequest;
 
+		if (injector == null) {
 			HttpSession session = request.getSession();
 
 			_init(session.getServletContext());
@@ -80,6 +80,8 @@ public class ShindigFilter extends InjectedFilter {
 			setPermissionChecker(servletRequest);
 		}
 
+		ShindigUtil.setScheme(servletRequest.getScheme());
+
 		String serverName = servletRequest.getServerName();
 
 		String host = serverName.concat(StringPool.COLON).concat(
@@ -87,20 +89,22 @@ public class ShindigFilter extends InjectedFilter {
 
 		ShindigUtil.setHost(host);
 
-		filterChain.doFilter(servletRequest, servletResponse);
+		HttpServletRequestThreadLocal.setHttpServletRequest(request);
+
+		try {
+			filterChain.doFilter(servletRequest, servletResponse);
+		}
+		finally {
+			HttpServletRequestThreadLocal.setHttpServletRequest(null);
+		}
 	}
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 
-		// LPS-23577
+		// LPS-23577 and LPS-41715
 
-		if (ServerDetector.isWebSphere()) {
-			injector = null;
-		}
-		else {
-			super.init(filterConfig);
-		}
+		injector = null;
 	}
 
 	protected boolean setPermissionChecker(ServletRequest servletRequest) {

@@ -10,10 +10,12 @@
 			<param>
 				<name>request</name>
 				<type>javax.servlet.http.HttpServletRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>response</name>
 				<type>javax.servlet.http.HttpServletResponse</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 	</javadoc>
@@ -26,6 +28,7 @@
 			<param>
 				<name>session</name>
 				<type>javax.servlet.http.HttpSession</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 	</javadoc>
@@ -39,6 +42,7 @@
 			<param>
 				<name>user</name>
 				<type>com.liferay.portal.model.User</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -46,6 +50,7 @@
 			<param>
 				<name>user</name>
 				<type>com.liferay.portal.model.User</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<field>
@@ -61,6 +66,7 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -68,39 +74,55 @@
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getScreenName</name>
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getStatuses</name>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>buddies</name>
 				<type>java.util.List</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>login</name>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -108,14 +130,17 @@
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>content</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -123,10 +148,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -134,10 +161,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>online</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 	</javadoc>
@@ -150,10 +179,12 @@
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -161,10 +192,12 @@
 			<param>
 				<name>chat</name>
 				<type>org.jivesoftware.smack.Chat</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>createdLocally</name>
 				<type>boolean</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<field>
@@ -183,6 +216,7 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -190,39 +224,55 @@
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getScreenName</name>
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getStatuses</name>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>buddies</name>
 				<type>java.util.List</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>login</name>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -230,14 +280,17 @@
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>content</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -245,10 +298,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -256,25 +311,23 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>online</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
 			<name>connect</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
-				<name>PortalException</name>
-				<type>com.liferay.portal.kernel.exception.PortalException</type>
-			</throws>
-			<throws>
-				<name>SystemException</name>
-				<type>com.liferay.portal.kernel.exception.SystemException</type>
-			</throws>
-			<throws>
-				<name>org.jivesoftware.smack.XMPPException</name>
-				<type>org.jivesoftware.smack.XMPPException</type>
+				<name>Exception</name>
+				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -282,22 +335,20 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
-				<name>PortalException</name>
-				<type>com.liferay.portal.kernel.exception.PortalException</type>
-			</throws>
-			<throws>
-				<name>SystemException</name>
-				<type>com.liferay.portal.kernel.exception.SystemException</type>
-			</throws>
-			<throws>
-				<name>org.jivesoftware.smack.XMPPException</name>
-				<type>org.jivesoftware.smack.XMPPException</type>
+				<name>Exception</name>
+				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -305,46 +356,61 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getConnectionConfiguration</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
+			<throws>
+				<name>UnknownHostException</name>
+				<type>java.net.UnknownHostException</type>
+				<comment><![CDATA[]]></comment>
+			</throws>
 		</method>
 		<method>
 			<name>getFullJabberId</name>
 			<param>
 				<name>screenName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getJabberId</name>
 			<param>
 				<name>screenName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>importUser</name>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
-				<name>PortalException</name>
-				<type>com.liferay.portal.kernel.exception.PortalException</type>
-			</throws>
-			<throws>
-				<name>SystemException</name>
-				<type>com.liferay.portal.kernel.exception.SystemException</type>
-			</throws>
-			<throws>
-				<name>org.jivesoftware.smack.XMPPException</name>
-				<type>org.jivesoftware.smack.XMPPException</type>
+				<name>Exception</name>
+				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -352,24 +418,30 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>online</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>connection</name>
 				<type>org.jivesoftware.smack.Connection</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<field>
 			<name>_log</name>
 		</field>
 		<field>
+			<name>_connectionConfiguration</name>
+		</field>
+		<field>
 			<name>_connections</name>
 		</field>
 		<field>
-			<name>_connectionConfiguration</name>
+			<name>_onlineUserIds</name>
 		</field>
 	</javadoc>
 	<javadoc>
@@ -381,10 +453,12 @@
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -392,10 +466,12 @@
 			<param>
 				<name>chat</name>
 				<type>org.jivesoftware.smack.Chat</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>message</name>
 				<type>org.jivesoftware.smack.packet.Message</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<field>
@@ -417,6 +493,7 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -424,39 +501,55 @@
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getScreenName</name>
 			<param>
 				<name>jabberId</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>getStatuses</name>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>buddies</name>
 				<type>java.util.List</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>login</name>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -464,14 +557,17 @@
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>content</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -479,10 +575,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>password</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -490,10 +588,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>online</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -501,30 +601,47 @@
 			<param>
 				<name>jabber</name>
 				<type>Jabber</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
 			<name>getJabber</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<field>
 			<name>_jabber</name>
 		</field>
 	</javadoc>
 	<javadoc>
-		<name>HotDeployMessageListener</name>
-		<type>com.liferay.chat.messaging.HotDeployMessageListener</type>
+		<name>ChatHotDeployMessageListener</name>
+		<type>com.liferay.chat.messaging.ChatHotDeployMessageListener</type>
 		<author><![CDATA[Ryan Park]]></author>
 		<method>
-			<name>doReceive</name>
+			<name>onUndeploy</name>
 			<param>
 				<name>message</name>
 				<type>com.liferay.portal.kernel.messaging.Message</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
+	</javadoc>
+	<javadoc>
+		<name>EntryConstants</name>
+		<type>com.liferay.chat.model.EntryConstants</type>
+		<author><![CDATA[Shinn Lok]]></author>
+		<field>
+			<name>FLAG_READ</name>
+		</field>
+		<field>
+			<name>FLAG_UNREAD</name>
+		</field>
 	</javadoc>
 	<javadoc>
 		<name>EntryImpl</name>
@@ -551,10 +668,12 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -562,14 +681,17 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>pollerResponse</name>
 				<type>com.liferay.portal.kernel.poller.PollerResponse</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -577,10 +699,12 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -588,14 +712,17 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>pollerResponse</name>
 				<type>com.liferay.portal.kernel.poller.PollerResponse</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -603,14 +730,17 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>pollerResponse</name>
 				<type>com.liferay.portal.kernel.poller.PollerResponse</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -618,348 +748,14 @@
 			<param>
 				<name>pollerRequest</name>
 				<type>com.liferay.portal.kernel.poller.PollerRequest</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>Exception</name>
 				<type>java.lang.Exception</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
-	</javadoc>
-	<javadoc>
-		<name>EntryLocalServiceClpInvoker</name>
-		<type>com.liferay.chat.service.base.EntryLocalServiceClpInvoker</type>
-		<author><![CDATA[Brian Wing Shun Chan]]></author>
-		<method>
-			<name>EntryLocalServiceClpInvoker</name>
-		</method>
-		<method>
-			<name>invokeMethod</name>
-			<param>
-				<name>name</name>
-				<type>java.lang.String</type>
-			</param>
-			<param>
-				<name>parameterTypes</name>
-				<type>java.lang.String[]</type>
-			</param>
-			<param>
-				<name>arguments</name>
-				<type>java.lang.Object[]</type>
-			</param>
-			<throws>
-				<name>Throwable</name>
-				<type>java.lang.Throwable</type>
-			</throws>
-		</method>
-		<field>
-			<name>_methodName0</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes0</name>
-		</field>
-		<field>
-			<name>_methodName1</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes1</name>
-		</field>
-		<field>
-			<name>_methodName2</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes2</name>
-		</field>
-		<field>
-			<name>_methodName3</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes3</name>
-		</field>
-		<field>
-			<name>_methodName4</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes4</name>
-		</field>
-		<field>
-			<name>_methodName5</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes5</name>
-		</field>
-		<field>
-			<name>_methodName6</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes6</name>
-		</field>
-		<field>
-			<name>_methodName7</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes7</name>
-		</field>
-		<field>
-			<name>_methodName8</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes8</name>
-		</field>
-		<field>
-			<name>_methodName9</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes9</name>
-		</field>
-		<field>
-			<name>_methodName10</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes10</name>
-		</field>
-		<field>
-			<name>_methodName11</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes11</name>
-		</field>
-		<field>
-			<name>_methodName12</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes12</name>
-		</field>
-		<field>
-			<name>_methodName13</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes13</name>
-		</field>
-		<field>
-			<name>_methodName14</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes14</name>
-		</field>
-		<field>
-			<name>_methodName15</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes15</name>
-		</field>
-		<field>
-			<name>_methodName40</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes40</name>
-		</field>
-		<field>
-			<name>_methodName41</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes41</name>
-		</field>
-		<field>
-			<name>_methodName46</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes46</name>
-		</field>
-		<field>
-			<name>_methodName47</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes47</name>
-		</field>
-		<field>
-			<name>_methodName48</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes48</name>
-		</field>
-		<field>
-			<name>_methodName49</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes49</name>
-		</field>
-		<field>
-			<name>_methodName50</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes50</name>
-		</field>
-	</javadoc>
-	<javadoc>
-		<name>StatusLocalServiceClpInvoker</name>
-		<type>com.liferay.chat.service.base.StatusLocalServiceClpInvoker</type>
-		<author><![CDATA[Brian Wing Shun Chan]]></author>
-		<method>
-			<name>StatusLocalServiceClpInvoker</name>
-		</method>
-		<method>
-			<name>invokeMethod</name>
-			<param>
-				<name>name</name>
-				<type>java.lang.String</type>
-			</param>
-			<param>
-				<name>parameterTypes</name>
-				<type>java.lang.String[]</type>
-			</param>
-			<param>
-				<name>arguments</name>
-				<type>java.lang.Object[]</type>
-			</param>
-			<throws>
-				<name>Throwable</name>
-				<type>java.lang.Throwable</type>
-			</throws>
-		</method>
-		<field>
-			<name>_methodName0</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes0</name>
-		</field>
-		<field>
-			<name>_methodName1</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes1</name>
-		</field>
-		<field>
-			<name>_methodName2</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes2</name>
-		</field>
-		<field>
-			<name>_methodName3</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes3</name>
-		</field>
-		<field>
-			<name>_methodName4</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes4</name>
-		</field>
-		<field>
-			<name>_methodName5</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes5</name>
-		</field>
-		<field>
-			<name>_methodName6</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes6</name>
-		</field>
-		<field>
-			<name>_methodName7</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes7</name>
-		</field>
-		<field>
-			<name>_methodName8</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes8</name>
-		</field>
-		<field>
-			<name>_methodName9</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes9</name>
-		</field>
-		<field>
-			<name>_methodName10</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes10</name>
-		</field>
-		<field>
-			<name>_methodName11</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes11</name>
-		</field>
-		<field>
-			<name>_methodName12</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes12</name>
-		</field>
-		<field>
-			<name>_methodName13</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes13</name>
-		</field>
-		<field>
-			<name>_methodName14</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes14</name>
-		</field>
-		<field>
-			<name>_methodName15</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes15</name>
-		</field>
-		<field>
-			<name>_methodName40</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes40</name>
-		</field>
-		<field>
-			<name>_methodName41</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes41</name>
-		</field>
-		<field>
-			<name>_methodName46</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes46</name>
-		</field>
-		<field>
-			<name>_methodName47</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes47</name>
-		</field>
-		<field>
-			<name>_methodName48</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes48</name>
-		</field>
-		<field>
-			<name>_methodName49</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes49</name>
-		</field>
-		<field>
-			<name>_methodName50</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes50</name>
-		</field>
-		<field>
-			<name>_methodName51</name>
-		</field>
-		<field>
-			<name>_methodParameterTypes51</name>
-		</field>
 	</javadoc>
 	<javadoc>
 		<name>EntryLocalServiceImpl</name>
@@ -970,22 +766,30 @@
 			<param>
 				<name>createDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>content</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -993,18 +797,25 @@
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>content</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1012,10 +823,12 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1023,22 +836,30 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>createDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1046,18 +867,25 @@
 			<param>
 				<name>createDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 	</javadoc>
@@ -1070,26 +898,35 @@
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1097,22 +934,35 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>groupNames</name>
+				<type>java.lang.String[]</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1120,26 +970,35 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>type</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1147,10 +1006,15 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1158,14 +1022,20 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1173,34 +1043,45 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>online</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>awake</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
-				<name>activePanelId</name>
+				<name>activePanelIds</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>message</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>playSound</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<field>
@@ -1216,22 +1097,30 @@
 			<param>
 				<name>fromUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>toUserId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1239,22 +1128,30 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>createDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1262,18 +1159,25 @@
 			<param>
 				<name>createDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<field>
@@ -1285,6 +1189,12 @@
 		<field>
 			<name>FIND_BY_OLD</name>
 		</field>
+		<field>
+			<name>_CREATE_DATE_SQL</name>
+		</field>
+		<field>
+			<name>_FLAG_SQL</name>
+		</field>
 	</javadoc>
 	<javadoc>
 		<name>StatusFinderImpl</name>
@@ -1295,26 +1205,35 @@
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1322,26 +1241,35 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>type</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
 		<method>
@@ -1349,23 +1277,47 @@
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>modifiedDate</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>groupNames</name>
+				<type>java.lang.String[]</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>start</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>end</name>
 				<type>int</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
+		</method>
+		<method>
+			<name>getFindByUsersGroups_SQL</name>
+			<param>
+				<name>groupNames</name>
+				<type>java.lang.String[]</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<field>
 			<name>FIND_BY_MODIFIED_DATE</name>
@@ -1378,21 +1330,107 @@
 		</field>
 	</javadoc>
 	<javadoc>
+		<name>BuddyFinder</name>
+		<type>com.liferay.chat.util.BuddyFinder</type>
+		<author><![CDATA[Ankit Srivastava]]></author>
+		<method>
+			<name>getBuddies</name>
+			<param>
+				<name>companyId</name>
+				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
+			</throws>
+		</method>
+	</javadoc>
+	<javadoc>
+		<name>BuddyFinderUtil</name>
+		<type>com.liferay.chat.util.BuddyFinderUtil</type>
+		<author><![CDATA[Brian Wing Shun Chan]]></author>
+		<author><![CDATA[Ankit Srivastava]]></author>
+		<method>
+			<name>getBuddies</name>
+			<param>
+				<name>companyId</name>
+				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<param>
+				<name>userId</name>
+				<type>long</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
+			<throws>
+				<name>SystemException</name>
+				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
+			</throws>
+		</method>
+		<method>
+			<name>getBuddyFinder</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
+		</method>
+		<method>
+			<name>setBuddyFinder</name>
+			<param>
+				<name>buddyFinder</name>
+				<type>BuddyFinder</type>
+				<comment><![CDATA[]]></comment>
+			</param>
+		</method>
+		<field>
+			<name>_buddyFinder</name>
+		</field>
+	</javadoc>
+	<javadoc>
+		<name>ChatConstants</name>
+		<type>com.liferay.chat.util.ChatConstants</type>
+		<author><![CDATA[Brian Wing Shun Chan]]></author>
+		<field>
+			<name>MAX_POLL_LATENCY</name>
+		</field>
+		<field>
+			<name>ONLINE_DELTA</name>
+		</field>
+	</javadoc>
+	<javadoc>
 		<name>ChatExtensionsUtil</name>
 		<type>com.liferay.chat.util.ChatExtensionsUtil</type>
 		<author><![CDATA[Ryan Park]]></author>
 		<method>
 			<name>getExtensions</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>register</name>
 			<param>
 				<name>servletContextName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>path</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -1400,6 +1438,7 @@
 			<param>
 				<name>servletContextName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -1407,16 +1446,21 @@
 		</method>
 		<method>
 			<name>_getExtensions</name>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 		</method>
 		<method>
 			<name>_register</name>
 			<param>
 				<name>servletContextName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>path</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<method>
@@ -1424,6 +1468,7 @@
 			<param>
 				<name>servletContextName</name>
 				<type>java.lang.String</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 		</method>
 		<field>
@@ -1434,30 +1479,30 @@
 		</field>
 	</javadoc>
 	<javadoc>
-		<name>ChatUtil</name>
-		<type>com.liferay.chat.util.ChatUtil</type>
-		<author><![CDATA[Brian Wing Shun Chan]]></author>
+		<name>DefaultBuddyFinderImpl</name>
+		<type>com.liferay.chat.util.DefaultBuddyFinderImpl</type>
+		<author><![CDATA[Ankit Srivastava]]></author>
 		<method>
 			<name>getBuddies</name>
 			<param>
 				<name>companyId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
 			<param>
 				<name>userId</name>
 				<type>long</type>
+				<comment><![CDATA[]]></comment>
 			</param>
+			<return>
+				<comment><![CDATA[]]></comment>
+			</return>
 			<throws>
 				<name>SystemException</name>
 				<type>com.liferay.portal.kernel.exception.SystemException</type>
+				<comment><![CDATA[]]></comment>
 			</throws>
 		</method>
-		<field>
-			<name>MAX_POLL_LATENCY</name>
-		</field>
-		<field>
-			<name>ONLINE_DELTA</name>
-		</field>
 	</javadoc>
 	<javadoc>
 		<name>PortletPropsKeys</name>
@@ -1465,6 +1510,9 @@
 		<author><![CDATA[Brian Wing Shun Chan]]></author>
 		<field>
 			<name>BUDDY_LIST_MAX_BUDDIES</name>
+		</field>
+		<field>
+			<name>BUDDY_LIST_SITE_EXCLUDES</name>
 		</field>
 		<field>
 			<name>BUDDY_LIST_STRATEGY</name>
@@ -1500,6 +1548,9 @@
 		<author><![CDATA[Brian Wing Shun Chan]]></author>
 		<field>
 			<name>BUDDY_LIST_MAX_BUDDIES</name>
+		</field>
+		<field>
+			<name>BUDDY_LIST_SITE_EXCLUDES</name>
 		</field>
 		<field>
 			<name>BUDDY_LIST_STRATEGY</name>

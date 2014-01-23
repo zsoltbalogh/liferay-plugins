@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,8 +17,10 @@ package com.liferay.portal.workflow.kaleo.runtime.assignment;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.model.ResourceAction;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalServiceUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import java.util.Map;
 public class MultiLanguageTaskAssignmentSelector
 	extends BaseTaskAssignmentSelector {
 
+	@Override
 	public Collection<KaleoTaskAssignment> calculateTaskAssignments(
 			KaleoTaskAssignment kaleoTaskAssignment,
 			ExecutionContext executionContext, ClassLoader... classLoaders)
@@ -57,8 +60,19 @@ public class MultiLanguageTaskAssignmentSelector
 					kaleoTaskAssignment.toXmlString());
 		}
 
-		return taskAssignmentSelector.calculateTaskAssignments(
-			kaleoTaskAssignment, executionContext, classLoaders);
+		Collection<KaleoTaskAssignment> taskAssignments =
+			taskAssignmentSelector.calculateTaskAssignments(
+				kaleoTaskAssignment, executionContext, classLoaders);
+
+		KaleoInstanceToken kaleoInstanceToken =
+			executionContext.getKaleoInstanceToken();
+
+		KaleoInstanceLocalServiceUtil.updateKaleoInstance(
+			kaleoInstanceToken.getKaleoInstanceId(),
+			executionContext.getWorkflowContext(),
+			executionContext.getServiceContext());
+
+		return taskAssignments;
 	}
 
 	public void setTaskAssignmentSelectors(

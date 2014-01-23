@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,6 @@ package com.liferay.portal.workflow.kaleo.runtime.notification;
 
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
-import com.liferay.portal.kernel.template.TemplateContextType;
 import com.liferay.portal.kernel.template.TemplateManagerUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
@@ -24,6 +23,7 @@ import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstanceToken;
 import com.liferay.portal.workflow.kaleo.model.KaleoTask;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.portal.workflow.kaleo.model.KaleoTimerInstanceToken;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
 import com.liferay.portal.workflow.kaleo.util.KaleoTaskAssignmentInstanceUtil;
 import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
@@ -42,6 +42,7 @@ import java.util.Map;
 public class TemplateNotificationMessageGenerator
 	implements NotificationMessageGenerator {
 
+	@Override
 	public String generateMessage(
 			String kaleoClassName, long kaleoClassPK, String notificationName,
 			String notificationTemplateLanguage, String notificationTemplate,
@@ -64,7 +65,7 @@ public class TemplateNotificationMessageGenerator
 			Template template = TemplateManagerUtil.getTemplate(
 				templateManagerName,
 				new StringTemplateResource(templateId, notificationTemplate),
-				TemplateContextType.RESTRICTED);
+				false);
 
 			populateContextVariables(template, executionContext);
 
@@ -109,15 +110,19 @@ public class TemplateNotificationMessageGenerator
 			template.put(entry.getKey(), entry.getValue());
 		}
 
+		template.put(
+			"kaleoInstanceToken", executionContext.getKaleoInstanceToken());
+
 		KaleoTaskInstanceToken kaleoTaskInstanceToken =
 			executionContext.getKaleoTaskInstanceToken();
 
 		if (kaleoTaskInstanceToken != null) {
 			KaleoTask kaleoTask = kaleoTaskInstanceToken.getKaleoTask();
 
+			template.put("kaleoTaskInstanceToken", kaleoTaskInstanceToken);
 			template.put("taskName", kaleoTask.getName());
-
 			template.put("userId", kaleoTaskInstanceToken.getUserId());
+			template.put("userName", kaleoTaskInstanceToken.getUserName());
 
 			List<WorkflowTaskAssignee> workflowTaskAssignees =
 				KaleoTaskAssignmentInstanceUtil.getWorkflowTaskAssignees(
@@ -130,6 +135,14 @@ public class TemplateNotificationMessageGenerator
 				executionContext.getKaleoInstanceToken();
 
 			template.put("userId", kaleoInstanceToken.getUserId());
+			template.put("userName", kaleoInstanceToken.getUserName());
+		}
+
+		KaleoTimerInstanceToken kaleoTimerInstanceToken =
+			executionContext.getKaleoTimerInstanceToken();
+
+		if (kaleoTimerInstanceToken != null) {
+			template.put("kaleoTimerInstanceToken", kaleoTimerInstanceToken);
 		}
 	}
 

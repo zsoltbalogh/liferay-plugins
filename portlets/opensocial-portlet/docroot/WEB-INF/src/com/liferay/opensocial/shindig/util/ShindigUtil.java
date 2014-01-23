@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -33,11 +33,13 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
@@ -335,6 +337,10 @@ public class ShindigUtil {
 		return PortalUtil.getPortletNamespace(portletId);
 	}
 
+	public static String getScheme() {
+		return _scheme.get();
+	}
+
 	public static String getTableOpenSocial() {
 		return _TABLE_OPEN_SOCIAL;
 	}
@@ -375,8 +381,27 @@ public class ShindigUtil {
 		return false;
 	}
 
+	public static boolean isValidUser(User user) {
+		if (user.isDefaultUser()) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
 	public static void setHost(String host) {
 		_host.set(host);
+	}
+
+	public static void setScheme(String scheme) {
+		_scheme.set(scheme);
+	}
+
+	public static String transformURL(String url) {
+		return StringUtil.replace(
+			url, new String[] {"%host%", "%scheme%"},
+			new String[] {getHost(), getScheme()});
 	}
 
 	public static void updateOAuthConsumers(
@@ -451,5 +476,9 @@ public class ShindigUtil {
 
 	@Inject
 	private static Processor _processor;
+
+	private static AutoResetThreadLocal<String> _scheme =
+		new AutoResetThreadLocal<String>(
+			ShindigUtil.class + "._scheme", StringPool.BLANK);
 
 }

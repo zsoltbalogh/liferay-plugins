@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -17,34 +17,50 @@
 
 package com.liferay.so.invitemembers.portlet;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
+import com.liferay.portal.model.Layout;
+import com.liferay.portal.model.User;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.service.GroupLocalServiceUtil;
+import com.liferay.portal.service.LayoutLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.PortletURLFactoryUtil;
+import com.liferay.so.MemberRequestAlreadyUsedException;
+import com.liferay.so.MemberRequestInvalidUserException;
+import com.liferay.so.invitemembers.util.InviteMembersUtil;
 import com.liferay.so.service.MemberRequestLocalServiceUtil;
 import com.liferay.so.util.PortletKeys;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
+import java.util.List;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
 import javax.portlet.WindowState;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +69,55 @@ import javax.servlet.http.HttpServletRequest;
  * @author Ryan Park
  */
 public class InviteMembersPortlet extends MVCPortlet {
+
+	public void getAvailableUsers(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		int end = ParamUtil.getInteger(resourceRequest, "end");
+		String keywords = ParamUtil.getString(resourceRequest, "keywords");
+		int start = ParamUtil.getInteger(resourceRequest, "start");
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		jsonObject.put(
+			"count",
+			InviteMembersUtil.getAvailableUsersCount(
+				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
+				keywords));
+
+		JSONObject optionsJSONObject = JSONFactoryUtil.createJSONObject();
+
+		optionsJSONObject.put("end", end);
+		optionsJSONObject.put("keywords", keywords);
+		optionsJSONObject.put("start", start);
+
+		jsonObject.put("options", optionsJSONObject);
+
+		List<User> users =
+			InviteMembersUtil.getAvailableUsers(
+				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
+				keywords, start, end);
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		for (User user : users) {
+			JSONObject userJSONObject = JSONFactoryUtil.createJSONObject();
+
+			userJSONObject.put("userEmailAddress", user.getEmailAddress());
+			userJSONObject.put("userFullName", user.getFullName());
+			userJSONObject.put("userId", user.getUserId());
+
+			jsonArray.put(userJSONObject);
+		}
+
+		jsonObject.put("users", jsonArray);
+
+		writeJSON(resourceRequest, resourceResponse, jsonObject);
+	}
 
 	public void sendInvites(
 			ActionRequest actionRequest, ActionResponse actionResponse)
@@ -64,6 +129,58 @@ public class InviteMembersPortlet extends MVCPortlet {
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(e, e);
+			}
+		}
+	}
+
+	@Override
+	public void serveResource(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws PortletException {
+
+		try {
+			String resourceID = resourceRequest.getResourceID();
+
+			if (resourceID.equals("getAvailableUsers")) {
+				getAvailableUsers(resourceRequest, resourceResponse);
+			}
+			else {
+				super.serveResource(resourceRequest, resourceResponse);
+			}
+		}
+		catch (Exception e) {
+			throw new PortletException(e);
+		}
+	}
+
+	public void updateMemberRequest(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long memberRequestId = ParamUtil.getLong(
+			actionRequest, "memberRequestId");
+		int status = ParamUtil.getInteger(actionRequest, "status");
+		long userNotificationEventId = ParamUtil.getLong(
+			actionRequest, "userNotificationEventId");
+
+		try {
+			MemberRequestLocalServiceUtil.updateMemberRequest(
+				themeDisplay.getUserId(), memberRequestId, status);
+
+			UserNotificationEventLocalServiceUtil.deleteUserNotificationEvent(
+				userNotificationEventId);
+		}
+		catch (Exception e) {
+			if ((e instanceof MemberRequestAlreadyUsedException) ||
+				(e instanceof MemberRequestInvalidUserException)) {
+
+				SessionErrors.add(actionRequest, e.getClass(), e);
+			}
+			else {
+				throw e;
 			}
 		}
 	}
@@ -91,12 +208,23 @@ public class InviteMembersPortlet extends MVCPortlet {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
+		long plid = themeDisplay.getPlid();
+
+		Layout layout = LayoutLocalServiceUtil.getLayout(plid);
+
+		if (layout.isPrivateLayout()) {
+			Group guestGroup = GroupLocalServiceUtil.getGroup(
+				themeDisplay.getCompanyId(), GroupConstants.GUEST);
+
+			plid = guestGroup.getDefaultPublicPlid();
+		}
+
 		PortletURL portletURL = PortletURLFactoryUtil.create(
-			actionRequest, PortletKeys.SO_NOTIFICATION, themeDisplay.getPlid(),
+			actionRequest, PortletKeys.SO_NOTIFICATION, plid,
 			PortletRequest.RENDER_PHASE);
 
 		portletURL.setParameter("mvcPath", "/notifications/view.jsp");
-		portletURL.setParameter("p_p_state", WindowState.MAXIMIZED.toString());
+		portletURL.setWindowState(WindowState.MAXIMIZED);
 
 		serviceContext.setAttribute("redirectURL", portletURL.toString());
 
@@ -144,8 +272,8 @@ public class InviteMembersPortlet extends MVCPortlet {
 			request, com.liferay.portal.util.PortletKeys.LOGIN,
 			group.getDefaultPublicPlid(), PortletRequest.RENDER_PHASE);
 
-		createAccountURL.setParameter("saveLastPath", "0");
 		createAccountURL.setParameter("struts_action", "/login/create_account");
+		createAccountURL.setParameter("saveLastPath", Boolean.FALSE.toString());
 		createAccountURL.setPortletMode(PortletMode.VIEW);
 		createAccountURL.setWindowState(WindowState.MAXIMIZED);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,16 +14,20 @@
 
 package com.liferay.portal.workflow.kaleo.test;
 
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionManagerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 
 import java.io.InputStream;
+
+import org.junit.Test;
 
 /**
  * @author Marcellus Tavares
  */
 public class KaleoDefinitionTestCase extends TestCase {
 
+	@Test
 	public void testValidateCategorySpecificDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/category-specific-definition.xml");
@@ -31,6 +35,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertValid(inputStream);
 	}
 
+	@Test
 	public void testValidateIncomingTransitionInitialStateDefinition()
 		throws Exception {
 
@@ -43,6 +48,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			"An incoming transition was found for initial state start", error);
 	}
 
+	@Test
 	public void testValidateIncomingTransitionsJoinNodeDefinition()
 		throws Exception {
 
@@ -51,8 +57,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 
 		String error = assertInvalid(inputStream);
 
-		assertEquals(
-			"Incorrect number of incoming transitions for join join", error);
+		assertEquals("There are errors between fork fork and join join", error);
 
 		inputStream = getResource(
 			"/META-INF/definitions/incoming-transitions-join-2.xml");
@@ -60,7 +65,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		error = assertInvalid(inputStream);
 
 		assertEquals(
-			"Incorrect number of incoming transitions for join join1", error);
+			"There are errors between fork fork1 and join join1", error);
 
 		inputStream = getResource(
 			"/META-INF/definitions/incoming-transitions-join-3.xml");
@@ -68,17 +73,35 @@ public class KaleoDefinitionTestCase extends TestCase {
 		error = assertInvalid(inputStream);
 
 		assertEquals(
-			"Incorrect number of incoming transitions for join join", error);
+			"There are errors between fork fork1 and join join", error);
 
 		inputStream = getResource(
 			"/META-INF/definitions/incoming-transitions-join-4.xml");
 
 		error = assertInvalid(inputStream);
 
+		assertEquals("There are errors between fork fork and join join", error);
+
+		inputStream = getResource(
+			"/META-INF/definitions/incoming-transitions-join-5.xml");
+
+		error = assertInvalid(inputStream);
+
 		assertEquals(
-			"Incorrect number of incoming transitions for join join", error);
+			"There are errors between fork fork and join fork Join", error);
+
+		inputStream = getResource(
+			"/META-INF/definitions/incoming-transitions-join-6.xml");
+
+		assertValid(inputStream);
+
+		inputStream = getResource(
+			"/META-INF/definitions/incoming-transitions-join-7.xml");
+
+		assertValid(inputStream);
 	}
 
+	@Test
 	public void testValidateLegalMarketingDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/legal-marketing-definition.xml");
@@ -86,6 +109,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertValid(inputStream);
 	}
 
+	@Test
 	public void testValidateLessThanTwoOutgoingConditionNodeDefinition()
 		throws Exception {
 
@@ -99,6 +123,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			error);
 	}
 
+	@Test
 	public void testValidateLessThanTwoOutgoingForkNodeDefinition()
 		throws Exception {
 
@@ -111,6 +136,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			"Less than 2 outgoing transitions found for fork fork", error);
 	}
 
+	@Test
 	public void testValidateMatchingForkAndJoins() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/matching-fork-and-join-1.xml");
@@ -134,6 +160,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("Fork fork3 and join join6 are not paired", error);
 	}
 
+	@Test
 	public void testValidateMultipleInitialStatesDefinedDefinition()
 		throws Exception {
 
@@ -145,6 +172,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("Multiple initial states start1 and start2", error);
 	}
 
+	@Test
 	public void testValidateNoAssignmentsTaskNodeDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/no-assignments-task.xml");
@@ -154,6 +182,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No assignments for task task", error);
 	}
 
+	@Test
 	public void testValidateNoIncomingTransitionConditionNodeDefinition()
 		throws Exception {
 
@@ -166,6 +195,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			"No incoming transition found for condition condition", error);
 	}
 
+	@Test
 	public void testValidateNoIncomingTransitionForkNodeDefinition()
 		throws Exception {
 
@@ -177,6 +207,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No incoming transition found for fork fork", error);
 	}
 
+	@Test
 	public void testValidateNoIncomingTransitionStateNodeDefinition()
 		throws Exception {
 
@@ -188,6 +219,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No incoming transition found for state state", error);
 	}
 
+	@Test
 	public void testValidateNoIncomingTransitionTaskNodeDefinition()
 		throws Exception {
 
@@ -199,6 +231,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No incoming transition found for task task", error);
 	}
 
+	@Test
 	public void testValidateNoInitialStateDefinedDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/no-initial-state.xml");
@@ -208,6 +241,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No initial state defined", error);
 	}
 
+	@Test
 	public void testValidateNoOutgoingTransitionInitialStateDefinition()
 		throws Exception {
 
@@ -220,17 +254,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			"No outgoing transition found for initial state start", error);
 	}
 
-	public void testValidateNoOutgoingTransitionJoinNodeDefinition()
-		throws Exception {
-
-		InputStream inputStream = getResource(
-			"/META-INF/definitions/no-outgoing-join.xml");
-
-		String error = assertInvalid(inputStream);
-
-		assertEquals("No outgoing transition found for join join", error);
-	}
-
+	@Test
 	public void testValidateNoOutgoingTransitionStartNodeDefinition()
 		throws Exception {
 
@@ -243,6 +267,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 			"No outgoing transition found for initial state start", error);
 	}
 
+	@Test
 	public void testValidateNoOutgoingTransitionTaskNodeDefinition()
 		throws Exception {
 
@@ -251,9 +276,10 @@ public class KaleoDefinitionTestCase extends TestCase {
 
 		String error = assertInvalid(inputStream);
 
-		assertEquals("No outgoing transition found for task task", error);
+		assertEquals("Unable to parse definition", error);
 	}
 
+	@Test
 	public void testValidateNoTerminalStatesDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/no-terminal-states.xml");
@@ -263,6 +289,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("No terminal states defined", error);
 	}
 
+	@Test
 	public void testValidateSingleApproverDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/single-approver-definition.xml");
@@ -270,6 +297,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertValid(inputStream);
 	}
 
+	@Test
 	public void testValidateSingleApproverScriptedAssignmentDefinition()
 		throws Exception {
 
@@ -280,6 +308,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertValid(inputStream);
 	}
 
+	@Test
 	public void testValidateTransitions() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/invalid-transition.xml");
@@ -289,6 +318,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("Unable to find target node for transition end", error);
 	}
 
+	@Test
 	public void testValidateUnbalancedForkAndJoinNodes() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/unbalanced-fork-and-join.xml");
@@ -298,6 +328,7 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertEquals("There are unbalanced fork and join nodes", error);
 	}
 
+	@Test
 	public void testValidateValidDefinition() throws Exception {
 		InputStream inputStream = getResource(
 			"/META-INF/definitions/valid-definition.xml");
@@ -305,10 +336,11 @@ public class KaleoDefinitionTestCase extends TestCase {
 		assertValid(inputStream);
 	}
 
-	protected String assertInvalid(InputStream inputStream) {
+	protected String assertInvalid(InputStream inputStream) throws Exception {
+		byte[] bytes = FileUtil.getBytes(inputStream);
+
 		try {
-			WorkflowDefinitionManagerUtil.validateWorkflowDefinition(
-				inputStream);
+			WorkflowDefinitionManagerUtil.validateWorkflowDefinition(bytes);
 
 			fail();
 		}
@@ -321,10 +353,11 @@ public class KaleoDefinitionTestCase extends TestCase {
 		return null;
 	}
 
-	protected void assertValid(InputStream inputStream) {
+	protected void assertValid(InputStream inputStream) throws Exception {
+		byte[] bytes = FileUtil.getBytes(inputStream);
+
 		try {
-			WorkflowDefinitionManagerUtil.validateWorkflowDefinition(
-				inputStream);
+			WorkflowDefinitionManagerUtil.validateWorkflowDefinition(bytes);
 		}
 		catch (WorkflowException we) {
 			fail(we.getMessage());

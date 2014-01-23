@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,13 +21,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 
 long wsrpConsumerId = ParamUtil.getLong(request, "wsrpConsumerId");
 
-WSRPConsumer wsrpConsumer = null;
-
-try {
-	wsrpConsumer = WSRPConsumerLocalServiceUtil.getWSRPConsumer(wsrpConsumerId);
-}
-catch (NoSuchConsumerException nsce) {
-}
+WSRPConsumer wsrpConsumer = WSRPConsumerLocalServiceUtil.fetchWSRPConsumer(wsrpConsumerId);
 %>
 
 <liferay-ui:header
@@ -35,54 +29,36 @@ catch (NoSuchConsumerException nsce) {
 	title='<%= (wsrpConsumer != null) ? wsrpConsumer.getName() : "new-consumer" %>'
 />
 
-<form action="<portlet:actionURL name="updateWSRPConsumer"><portlet:param name="mvcPath" value="/admin/edit_consumer.jsp" /><portlet:param name="redirect" value="<%= redirect %>" /></portlet:actionURL>" method="post" name="<portlet:namespace />fm" onSubmit="<portlet:namespace />saveConsumer(); return false;">
-<input name="<portlet:namespace />wsrpConsumerId" type="hidden" value="<%= wsrpConsumerId %>" />
+<portlet:actionURL name="updateWSRPConsumer" var="updateWSRPConsumerURL" />
 
-<liferay-ui:error exception="<%= WSRPConsumerNameException.class %>" message="please-enter-a-valid-name" />
-<liferay-ui:error exception="<%= WSRPConsumerWSDLException.class %>" message="url-does-not-point-to-a-valid-wsrp-producer" />
+<aui:form action="<%= updateWSRPConsumerURL %>" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + renderResponse.getNamespace() + "saveConsumer();" %>'>
+	<aui:input name="mvcPath" type="hidden" value="/admin/edit_consumer.jsp" />
+	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
+	<aui:input name="wsrpConsumerId" type="hidden" value="<%= wsrpConsumerId %>" />
 
-<table class="lfr-table">
-<tr>
-	<td>
-		<liferay-ui:message key="name" />
-	</td>
-	<td>
-		<liferay-ui:input-field bean="<%= wsrpConsumer %>" field="name" model="<%= WSRPConsumer.class %>" />
-	</td>
-</tr>
-<tr>
-	<td>
-		<liferay-ui:message key="url" />
-	</td>
-	<td>
-		<liferay-ui:input-field bean="<%= wsrpConsumer %>" field="url" model="<%= WSRPConsumer.class %>" />
-	</td>
-</tr>
-<tr>
-	<td>
-		<liferay-ui:message key="forward-cookies" />
-	</td>
-	<td>
-		<liferay-ui:input-field bean="<%= wsrpConsumer %>" field="forwardCookies" model="<%= WSRPConsumer.class %>" />
-	</td>
-</tr>
-<tr>
-	<td>
-		<liferay-ui:message key="forward-headers" />
-	</td>
-	<td>
-		<liferay-ui:input-field bean="<%= wsrpConsumer %>" field="forwardHeaders" model="<%= WSRPConsumer.class %>" />
-	</td>
-</tr>
-</table>
+	<liferay-ui:error exception="<%= WSRPConsumerNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= WSRPConsumerWSDLException.class %>" message="url-does-not-point-to-a-valid-wsrp-producer" />
 
-<br />
+	<aui:model-context bean="<%= wsrpConsumer %>" model="<%= WSRPConsumer.class %>" />
 
-<input type="submit" value="<liferay-ui:message key="save" />" />
+	<aui:fieldset>
+		<aui:input name="name" />
 
-<input type="button" value="<liferay-ui:message key="cancel" />" onClick="location.href = '<%= HtmlUtil.escape(PortalUtil.escapeRedirect(redirect)) %>';" />
+		<aui:input name="url" />
 
-</form>
+		<aui:input name="forwardCookies" />
+
+		<aui:input name="forwardHeaders" />
+
+		<aui:input helpMessage="markup-character-sets-help" name="markupCharacterSets" />
+	</aui:fieldset>
+
+	<aui:button-row>
+		<aui:button type="submit" />
+
+		<aui:button href="<%= redirect %>" type="cancel" />
+	</aui:button-row>
+</aui:form>
 
 <aui:script>
 	function <portlet:namespace />saveConsumer() {

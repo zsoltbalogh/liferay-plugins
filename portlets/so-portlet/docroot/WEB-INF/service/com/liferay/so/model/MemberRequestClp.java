@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,15 +17,19 @@ package com.liferay.so.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.so.service.ClpSerializer;
 import com.liferay.so.service.MemberRequestLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -39,26 +43,32 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 	public MemberRequestClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return MemberRequest.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return MemberRequest.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setMemberRequestId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_memberRequestId);
+		return _memberRequestId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -79,6 +89,9 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 		attributes.put("invitedRoleId", getInvitedRoleId());
 		attributes.put("invitedTeamId", getInvitedTeamId());
 		attributes.put("status", getStatus());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -156,119 +169,306 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 		if (status != null) {
 			setStatus(status);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getMemberRequestId() {
 		return _memberRequestId;
 	}
 
+	@Override
 	public void setMemberRequestId(long memberRequestId) {
 		_memberRequestId = memberRequestId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMemberRequestId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, memberRequestId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setGroupId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, groupId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_memberRequestRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_memberRequestRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_memberRequestRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getKey() {
 		return _key;
 	}
 
+	@Override
 	public void setKey(String key) {
 		_key = key;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKey", String.class);
+
+				method.invoke(_memberRequestRemoteModel, key);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getReceiverUserId() {
 		return _receiverUserId;
 	}
 
+	@Override
 	public void setReceiverUserId(long receiverUserId) {
 		_receiverUserId = receiverUserId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setReceiverUserId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, receiverUserId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getReceiverUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getReceiverUserId(), "uuid",
 			_receiverUserUuid);
 	}
 
+	@Override
 	public void setReceiverUserUuid(String receiverUserUuid) {
 		_receiverUserUuid = receiverUserUuid;
 	}
 
+	@Override
 	public long getInvitedRoleId() {
 		return _invitedRoleId;
 	}
 
+	@Override
 	public void setInvitedRoleId(long invitedRoleId) {
 		_invitedRoleId = invitedRoleId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInvitedRoleId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, invitedRoleId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getInvitedTeamId() {
 		return _invitedTeamId;
 	}
 
+	@Override
 	public void setInvitedTeamId(long invitedTeamId) {
 		_invitedTeamId = invitedTeamId;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setInvitedTeamId", long.class);
+
+				method.invoke(_memberRequestRemoteModel, invitedTeamId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public int getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(int status) {
 		_status = status;
+
+		if (_memberRequestRemoteModel != null) {
+			try {
+				Class<?> clazz = _memberRequestRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setStatus", int.class);
+
+				method.invoke(_memberRequestRemoteModel, status);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getMemberRequestRemoteModel() {
@@ -280,6 +480,48 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 		_memberRequestRemoteModel = memberRequestRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _memberRequestRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_memberRequestRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			MemberRequestLocalServiceUtil.addMemberRequest(this);
@@ -315,6 +557,7 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(MemberRequest memberRequest) {
 		int value = 0;
 
@@ -332,18 +575,15 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MemberRequestClp)) {
 			return false;
 		}
 
-		MemberRequestClp memberRequest = null;
-
-		try {
-			memberRequest = (MemberRequestClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		MemberRequestClp memberRequest = (MemberRequestClp)obj;
 
 		long primaryKey = memberRequest.getPrimaryKey();
 
@@ -358,6 +598,16 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -393,6 +643,7 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 
@@ -469,4 +720,6 @@ public class MemberRequestClp extends BaseModelImpl<MemberRequest>
 	private long _invitedTeamId;
 	private int _status;
 	private BaseModel<?> _memberRequestRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

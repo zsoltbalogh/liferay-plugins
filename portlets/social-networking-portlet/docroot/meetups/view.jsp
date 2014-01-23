@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -50,12 +50,14 @@ else if (tabs1.equals("my-meetups")) {
 	addMeetupsEntryURL.setParameter("redirect", currentURL);
 	%>
 
-	<input onClick='location.href = "<%= addMeetupsEntryURL.toString() %>"' type="button" value='<liferay-ui:message key="add-meetup" />' />
+	<aui:button-row>
+		<aui:button href="<%= addMeetupsEntryURL.toString() %>" primary="<%= true %>" value="add-meetup" />
+	</aui:button-row>
 
-	<br /><br />
+	<br />
 </c:if>
 
-<table class="lfr-table" width="100%">
+<table class="table" width="100%">
 
 <%
 for (int i = 0; i < meetupsEntries.size(); i++) {
@@ -65,7 +67,7 @@ for (int i = 0; i < meetupsEntries.size(); i++) {
 %>
 
 	<tr>
-		<td align="center" valign="top">
+		<td align="center" width="20%">
 
 			<%
 			PortletURL viewMeetupsEntryURL = renderResponse.createRenderURL();
@@ -78,7 +80,7 @@ for (int i = 0; i < meetupsEntries.size(); i++) {
 			String thumbnailURL = null;
 
 			if (meetupsEntry.getThumbnailId() == 0) {
-				thumbnailURL = request.getContextPath() + "/meetups/images/calendar.png";
+				thumbnailURL = PortalUtil.getPathContext(request) + "/meetups/images/calendar.png";
 			}
 			else {
 				thumbnailURL = themeDisplay.getPathImage() + "/meetups?img_id=" + meetupsEntry.getThumbnailId() + "&t=" + WebServerServletTokenUtil.getToken(meetupsEntry.getThumbnailId());
@@ -87,7 +89,7 @@ for (int i = 0; i < meetupsEntries.size(); i++) {
 
 			<a href="<%= viewMeetupsEntryURL %>"><img alt="<liferay-ui:message key="view-meetup" />" src="<%= thumbnailURL %>" /></a>
 		</td>
-		<td valign="top" width="99%">
+		<td valign="top" width="80%">
 			<div>
 				<%= meetupsEntry.getTitle() %>
 			</div>

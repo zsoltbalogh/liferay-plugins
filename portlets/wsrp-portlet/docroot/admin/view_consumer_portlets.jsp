@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -29,16 +29,24 @@ portletURL.setParameter("mvcPath", "/admin/view_consumer_portlets.jsp");
 portletURL.setParameter("wsrpConsumerId", String.valueOf(wsrpConsumerId));
 %>
 
-<form>
+<portlet:renderURL var="addPortletURL">
+	<portlet:param name="mvcPath" value="/admin/edit_consumer_portlet.jsp" />
+	<portlet:param name="redirect" value="<%= currentURL %>" />
+	<portlet:param name="wsrpConsumerId" value="<%= String.valueOf(wsrpConsumer.getWsrpConsumerId()) %>" />
+</portlet:renderURL>
+
+<aui:button-row>
+	<aui:button href="<%= addPortletURL %>" value="add-portlet" />
+</aui:button-row>
 
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-portlets"
 	headerNames="name,remote-portlet"
 	iteratorURL="<%= portletURL %>"
+	total="<%= WSRPConsumerPortletLocalServiceUtil.getWSRPConsumerPortletsCount(wsrpConsumerId) %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= WSRPConsumerPortletLocalServiceUtil.getWSRPConsumerPortlets(wsrpConsumerId, searchContainer.getStart(), searchContainer.getEnd()) %>"
-		total="<%= WSRPConsumerPortletLocalServiceUtil.getWSRPConsumerPortletsCount(wsrpConsumerId) %>"
 	/>
 
 	<liferay-ui:search-container-row
@@ -75,16 +83,8 @@ portletURL.setParameter("wsrpConsumerId", String.valueOf(wsrpConsumerId));
 		/>
 	</liferay-ui:search-container-row>
 
-	<div>
-		<input type="button" value="<liferay-ui:message key="add-portlet" />" onClick="location.href = '<portlet:renderURL><portlet:param name="mvcPath" value="/admin/edit_consumer_portlet.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /><portlet:param name="wsrpConsumerId" value="<%= String.valueOf(wsrpConsumer.getWsrpConsumerId()) %>" /></portlet:renderURL>';" />
-	</div>
-
-	<br />
-
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>
-
-</form>
 
 <%
 PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(pageContext, "manage-portlets"), currentURL);

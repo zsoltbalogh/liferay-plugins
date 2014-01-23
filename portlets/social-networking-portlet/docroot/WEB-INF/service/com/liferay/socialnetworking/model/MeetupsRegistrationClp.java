@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,15 +17,19 @@ package com.liferay.socialnetworking.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.socialnetworking.service.ClpSerializer;
 import com.liferay.socialnetworking.service.MeetupsRegistrationLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -39,26 +43,32 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 	public MeetupsRegistrationClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return MeetupsRegistration.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return MeetupsRegistration.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _meetupsRegistrationId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setMeetupsRegistrationId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_meetupsRegistrationId);
+		return _meetupsRegistrationId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -76,6 +86,9 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 		attributes.put("meetupsEntryId", getMeetupsEntryId());
 		attributes.put("status", getStatus());
 		attributes.put("comments", getComments());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -136,86 +149,228 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 		if (comments != null) {
 			setComments(comments);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getMeetupsRegistrationId() {
 		return _meetupsRegistrationId;
 	}
 
+	@Override
 	public void setMeetupsRegistrationId(long meetupsRegistrationId) {
 		_meetupsRegistrationId = meetupsRegistrationId;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMeetupsRegistrationId",
+						long.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel,
+					meetupsRegistrationId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserId", long.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, userId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		return _userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserName", String.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, userName);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getMeetupsEntryId() {
 		return _meetupsEntryId;
 	}
 
+	@Override
 	public void setMeetupsEntryId(long meetupsEntryId) {
 		_meetupsEntryId = meetupsEntryId;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setMeetupsEntryId", long.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, meetupsEntryId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public int getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(int status) {
 		_status = status;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setStatus", int.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, status);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getComments() {
 		return _comments;
 	}
 
+	@Override
 	public void setComments(String comments) {
 		_comments = comments;
+
+		if (_meetupsRegistrationRemoteModel != null) {
+			try {
+				Class<?> clazz = _meetupsRegistrationRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setComments", String.class);
+
+				method.invoke(_meetupsRegistrationRemoteModel, comments);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getMeetupsRegistrationRemoteModel() {
@@ -227,6 +382,48 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 		_meetupsRegistrationRemoteModel = meetupsRegistrationRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _meetupsRegistrationRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_meetupsRegistrationRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			MeetupsRegistrationLocalServiceUtil.addMeetupsRegistration(this);
@@ -260,6 +457,7 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(MeetupsRegistration meetupsRegistration) {
 		int value = 0;
 
@@ -277,18 +475,15 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof MeetupsRegistrationClp)) {
 			return false;
 		}
 
-		MeetupsRegistrationClp meetupsRegistration = null;
-
-		try {
-			meetupsRegistration = (MeetupsRegistrationClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		MeetupsRegistrationClp meetupsRegistration = (MeetupsRegistrationClp)obj;
 
 		long primaryKey = meetupsRegistration.getPrimaryKey();
 
@@ -303,6 +498,16 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -332,6 +537,7 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(31);
 
@@ -392,4 +598,6 @@ public class MeetupsRegistrationClp extends BaseModelImpl<MeetupsRegistration>
 	private int _status;
 	private String _comments;
 	private BaseModel<?> _meetupsRegistrationRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -47,6 +47,7 @@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.repository.model.Folder" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
+page import="com.liferay.portal.kernel.util.LocaleUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PrefsParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringPool" %><%@
@@ -58,13 +59,13 @@ page import="com.liferay.portal.model.Layout" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
 page import="com.liferay.portal.util.PortletLister" %><%@
 page import="com.liferay.portal.util.PortletListerFactoryUtil" %><%@
-page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %><%@
+page import="com.liferay.portlet.PortletURLFactoryUtil" %><%@
 page import="com.liferay.portlet.expando.service.ExpandoValueServiceUtil" %>
 
 <%@ page import="java.util.Locale" %><%@
 page import="java.util.Map" %>
 
-<%@ page import="javax.portlet.PortletPreferences" %><%@
+<%@ page import="javax.portlet.PortletRequest" %><%@
 page import="javax.portlet.PortletURL" %>
 
 <%@ page import="org.apache.shindig.gadgets.spec.Feature" %><%@

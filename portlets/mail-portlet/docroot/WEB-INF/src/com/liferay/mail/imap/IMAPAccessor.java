@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,7 +40,6 @@ import com.liferay.util.mail.InternetAddressUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
@@ -56,8 +55,8 @@ import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
 import javax.mail.Folder;
-import javax.mail.Message.RecipientType;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
@@ -873,7 +872,7 @@ public class IMAPAccessor {
 		throws MailException {
 
 		int pageCount =
-			(int)(Math.ceil(messageCount / (double) messagesPerPage));
+			(int)(Math.ceil(messageCount / (double)messagesPerPage));
 
 		if (messageCount == 0) {
 			return new int[] {0, 0};
@@ -972,10 +971,7 @@ public class IMAPAccessor {
 		String fileName = part.getFileName();
 		Object content = part.getContent();
 
-		if (content instanceof InputStream) {
-			return;
-		}
-		else if (content instanceof Multipart) {
+		if (content instanceof Multipart) {
 			Multipart multipart = (Multipart)content;
 
 			for (int i = 0; i < multipart.getCount(); i++) {
@@ -989,7 +985,7 @@ public class IMAPAccessor {
 			}
 		}
 		else if (Validator.isNull(fileName)) {
-			String contentType = part.getContentType().toLowerCase();
+			String contentType = StringUtil.toLowerCase(part.getContentType());
 
 			if (contentType.startsWith(ContentTypes.TEXT_PLAIN)) {
 				bodyPlain.append(

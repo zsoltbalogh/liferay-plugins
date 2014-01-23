@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.mobile.device.Capability;
 import com.liferay.portal.kernel.mobile.device.KnownDevices;
 import com.liferay.portal.kernel.mobile.device.NoKnownDevices;
 import com.liferay.portal.kernel.mobile.device.VersionableName;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.apache.commons.lang.time.StopWatch;
  */
 public class WURFLKnownDevices implements KnownDevices {
 
+	@Override
 	public Set<VersionableName> getBrands() {
 		if (!_initialized) {
 			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
@@ -48,6 +50,7 @@ public class WURFLKnownDevices implements KnownDevices {
 		return _brands;
 	}
 
+	@Override
 	public Set<VersionableName> getBrowsers() {
 		if (!_initialized) {
 			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
@@ -58,10 +61,12 @@ public class WURFLKnownDevices implements KnownDevices {
 		return _browsers;
 	}
 
+	@Override
 	public Map<Capability, Set<String>> getDeviceIds() {
 		return _devicesIds;
 	}
 
+	@Override
 	public Set<VersionableName> getOperatingSystems() {
 		if (!_initialized) {
 			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
@@ -72,6 +77,7 @@ public class WURFLKnownDevices implements KnownDevices {
 		return _operatingSystems;
 	}
 
+	@Override
 	public Set<String> getPointingMethods() {
 		if (!_initialized) {
 			NoKnownDevices noKnownDevices = NoKnownDevices.getInstance();
@@ -86,6 +92,7 @@ public class WURFLKnownDevices implements KnownDevices {
 		loadWURFLDevices();
 	}
 
+	@Override
 	public synchronized void reload() {
 		_initialized = false;
 
@@ -172,7 +179,7 @@ public class WURFLKnownDevices implements KnownDevices {
 	}
 
 	protected void updateDevicesIds(Device device, String... capabilityNames) {
-		if ((capabilityNames == null) || (capabilityNames.length == 0)) {
+		if (ArrayUtil.isEmpty(capabilityNames)) {
 			return;
 		}
 

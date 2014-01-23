@@ -1,5 +1,6 @@
 {
-	"layouts": [
+	"layoutTemplateId": "1_3_1_columns",
+	"privatePages": [
 		{
 			"columns": [
 				[
@@ -43,7 +44,7 @@
 					"Main Content.html"
 				],
 				[
-					"Why Seven Cogs.html"
+					"Why Zoe.html"
 				]
 			],
 			"friendlyURL": "/about-us",
@@ -56,6 +57,5 @@
 			"name": "Contact Us",
 			"title": "Contact Us"
 		}
-	],
-	"layoutTemplateId": "1_3_1_columns"
+	]
 }

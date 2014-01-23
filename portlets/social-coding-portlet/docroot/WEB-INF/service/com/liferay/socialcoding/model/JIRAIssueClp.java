@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,14 +17,18 @@ package com.liferay.socialcoding.model;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 
+import com.liferay.socialcoding.service.ClpSerializer;
 import com.liferay.socialcoding.service.JIRAIssueLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +41,32 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 	public JIRAIssueClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return JIRAIssue.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return JIRAIssue.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _jiraIssueId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setJiraIssueId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_jiraIssueId);
+		return _jiraIssueId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -76,6 +86,9 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 		attributes.put("assigneeJiraUserId", getAssigneeJiraUserId());
 		attributes.put("resolution", getResolution());
 		attributes.put("status", getStatus());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -147,94 +160,264 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 		if (status != null) {
 			setStatus(status);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getJiraIssueId() {
 		return _jiraIssueId;
 	}
 
+	@Override
 	public void setJiraIssueId(long jiraIssueId) {
 		_jiraIssueId = jiraIssueId;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setJiraIssueId", long.class);
+
+				method.invoke(_jiraIssueRemoteModel, jiraIssueId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_jiraIssueRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_jiraIssueRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getProjectId() {
 		return _projectId;
 	}
 
+	@Override
 	public void setProjectId(long projectId) {
 		_projectId = projectId;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setProjectId", long.class);
+
+				method.invoke(_jiraIssueRemoteModel, projectId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getKey() {
 		return _key;
 	}
 
+	@Override
 	public void setKey(String key) {
 		_key = key;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setKey", String.class);
+
+				method.invoke(_jiraIssueRemoteModel, key);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getSummary() {
 		return _summary;
 	}
 
+	@Override
 	public void setSummary(String summary) {
 		_summary = summary;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setSummary", String.class);
+
+				method.invoke(_jiraIssueRemoteModel, summary);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getDescription() {
 		return _description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setDescription", String.class);
+
+				method.invoke(_jiraIssueRemoteModel, description);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getReporterJiraUserId() {
 		return _reporterJiraUserId;
 	}
 
+	@Override
 	public void setReporterJiraUserId(String reporterJiraUserId) {
 		_reporterJiraUserId = reporterJiraUserId;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setReporterJiraUserId",
+						String.class);
+
+				method.invoke(_jiraIssueRemoteModel, reporterJiraUserId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getAssigneeJiraUserId() {
 		return _assigneeJiraUserId;
 	}
 
+	@Override
 	public void setAssigneeJiraUserId(String assigneeJiraUserId) {
 		_assigneeJiraUserId = assigneeJiraUserId;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAssigneeJiraUserId",
+						String.class);
+
+				method.invoke(_jiraIssueRemoteModel, assigneeJiraUserId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getResolution() {
 		return _resolution;
 	}
 
+	@Override
 	public void setResolution(String resolution) {
 		_resolution = resolution;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setResolution", String.class);
+
+				method.invoke(_jiraIssueRemoteModel, resolution);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(String status) {
 		_status = status;
+
+		if (_jiraIssueRemoteModel != null) {
+			try {
+				Class<?> clazz = _jiraIssueRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setStatus", String.class);
+
+				method.invoke(_jiraIssueRemoteModel, status);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getJIRAIssueRemoteModel() {
@@ -245,6 +428,48 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 		_jiraIssueRemoteModel = jiraIssueRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _jiraIssueRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_jiraIssueRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			JIRAIssueLocalServiceUtil.addJIRAIssue(this);
@@ -279,6 +504,7 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 		return clone;
 	}
 
+	@Override
 	public int compareTo(JIRAIssue jiraIssue) {
 		int value = 0;
 
@@ -296,18 +522,15 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof JIRAIssueClp)) {
 			return false;
 		}
 
-		JIRAIssueClp jiraIssue = null;
-
-		try {
-			jiraIssue = (JIRAIssueClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		JIRAIssueClp jiraIssue = (JIRAIssueClp)obj;
 
 		long primaryKey = jiraIssue.getPrimaryKey();
 
@@ -322,6 +545,16 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -355,6 +588,7 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(37);
 
@@ -424,4 +658,6 @@ public class JIRAIssueClp extends BaseModelImpl<JIRAIssue> implements JIRAIssue 
 	private String _resolution;
 	private String _status;
 	private BaseModel<?> _jiraIssueRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

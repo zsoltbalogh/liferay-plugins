@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -97,32 +97,39 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 	public static long BLOCKING_COLUMN_BITMASK = 1L;
 	public static long KALEOCLASSNAME_COLUMN_BITMASK = 2L;
 	public static long KALEOCLASSPK_COLUMN_BITMASK = 4L;
+	public static long KALEOTIMERID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.portal.workflow.kaleo.model.KaleoTimer"));
 
 	public KaleoTimerModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kaleoTimerId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKaleoTimerId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kaleoTimerId);
+		return _kaleoTimerId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KaleoTimer.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KaleoTimer.class.getName();
 	}
@@ -148,6 +155,9 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		attributes.put("scale", getScale());
 		attributes.put("recurrenceDuration", getRecurrenceDuration());
 		attributes.put("recurrenceScale", getRecurrenceScale());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -257,48 +267,59 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public long getKaleoTimerId() {
 		return _kaleoTimerId;
 	}
 
+	@Override
 	public void setKaleoTimerId(long kaleoTimerId) {
 		_columnBitmask = -1L;
 
 		_kaleoTimerId = kaleoTimerId;
 	}
 
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
 
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -308,26 +329,32 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getKaleoClassName() {
 		if (_kaleoClassName == null) {
 			return StringPool.BLANK;
@@ -337,6 +364,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setKaleoClassName(String kaleoClassName) {
 		_columnBitmask |= KALEOCLASSNAME_COLUMN_BITMASK;
 
@@ -351,10 +379,12 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		return GetterUtil.getString(_originalKaleoClassName);
 	}
 
+	@Override
 	public long getKaleoClassPK() {
 		return _kaleoClassPK;
 	}
 
+	@Override
 	public void setKaleoClassPK(long kaleoClassPK) {
 		_columnBitmask |= KALEOCLASSPK_COLUMN_BITMASK;
 
@@ -371,14 +401,17 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		return _originalKaleoClassPK;
 	}
 
+	@Override
 	public long getKaleoDefinitionId() {
 		return _kaleoDefinitionId;
 	}
 
+	@Override
 	public void setKaleoDefinitionId(long kaleoDefinitionId) {
 		_kaleoDefinitionId = kaleoDefinitionId;
 	}
 
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return StringPool.BLANK;
@@ -388,18 +421,22 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
 	}
 
+	@Override
 	public boolean getBlocking() {
 		return _blocking;
 	}
 
+	@Override
 	public boolean isBlocking() {
 		return _blocking;
 	}
 
+	@Override
 	public void setBlocking(boolean blocking) {
 		_columnBitmask |= BLOCKING_COLUMN_BITMASK;
 
@@ -416,6 +453,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		return _originalBlocking;
 	}
 
+	@Override
 	public String getDescription() {
 		if (_description == null) {
 			return StringPool.BLANK;
@@ -425,18 +463,22 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setDescription(String description) {
 		_description = description;
 	}
 
+	@Override
 	public double getDuration() {
 		return _duration;
 	}
 
+	@Override
 	public void setDuration(double duration) {
 		_duration = duration;
 	}
 
+	@Override
 	public String getScale() {
 		if (_scale == null) {
 			return StringPool.BLANK;
@@ -446,18 +488,22 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setScale(String scale) {
 		_scale = scale;
 	}
 
+	@Override
 	public double getRecurrenceDuration() {
 		return _recurrenceDuration;
 	}
 
+	@Override
 	public void setRecurrenceDuration(double recurrenceDuration) {
 		_recurrenceDuration = recurrenceDuration;
 	}
 
+	@Override
 	public String getRecurrenceScale() {
 		if (_recurrenceScale == null) {
 			return StringPool.BLANK;
@@ -467,6 +513,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		}
 	}
 
+	@Override
 	public void setRecurrenceScale(String recurrenceScale) {
 		_recurrenceScale = recurrenceScale;
 	}
@@ -525,6 +572,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		return kaleoTimerImpl;
 	}
 
+	@Override
 	public int compareTo(KaleoTimer kaleoTimer) {
 		int value = 0;
 
@@ -547,18 +595,15 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KaleoTimer)) {
 			return false;
 		}
 
-		KaleoTimer kaleoTimer = null;
-
-		try {
-			kaleoTimer = (KaleoTimer)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KaleoTimer kaleoTimer = (KaleoTimer)obj;
 
 		long primaryKey = kaleoTimer.getPrimaryKey();
 
@@ -573,6 +618,16 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -726,6 +781,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(55);
 

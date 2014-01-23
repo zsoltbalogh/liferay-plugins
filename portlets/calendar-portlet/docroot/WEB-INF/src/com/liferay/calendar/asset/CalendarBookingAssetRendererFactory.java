@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -29,14 +29,10 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.asset.model.AssetRenderer;
 import com.liferay.portlet.asset.model.BaseAssetRendererFactory;
 
-import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Fabio Pezzutto
@@ -45,23 +41,29 @@ import javax.servlet.http.HttpServletRequest;
 public class CalendarBookingAssetRendererFactory
 	extends BaseAssetRendererFactory {
 
-	public static final String CLASS_NAME = CalendarBooking.class.getName();
-
 	public static final String TYPE = "calendar";
 
+	@Override
 	public AssetRenderer getAssetRenderer(long classPK, int type)
 		throws PortalException, SystemException {
 
 		CalendarBooking calendarBooking =
 			CalendarBookingLocalServiceUtil.getCalendarBooking(classPK);
 
-		return new CalendarBookingAssetRenderer(calendarBooking);
+		CalendarBookingAssetRenderer calendarBookingAssetRenderer =
+			new CalendarBookingAssetRenderer(calendarBooking);
+
+		calendarBookingAssetRenderer.setAssetRendererType(type);
+
+		return calendarBookingAssetRenderer;
 	}
 
+	@Override
 	public String getClassName() {
-		return CLASS_NAME;
+		return CalendarBooking.class.getName();
 	}
 
+	@Override
 	public String getType() {
 		return TYPE;
 	}
@@ -72,28 +74,29 @@ public class CalendarBookingAssetRendererFactory
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortalException, SystemException {
 
-		HttpServletRequest request =
-			liferayPortletRequest.getHttpServletRequest();
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		CalendarResource calendarResource =
 			CalendarResourceUtil.getGroupCalendarResource(
 				liferayPortletRequest, themeDisplay.getScopeGroupId());
 
+		if (calendarResource == null) {
+			return null;
+		}
+
 		Calendar calendar = calendarResource.getDefaultCalendar();
 
 		if (!CalendarPermission.contains(
 				themeDisplay.getPermissionChecker(), calendar.getCalendarId(),
-				ActionKeys.ADD_CALENDAR)) {
+				ActionKeys.MANAGE_BOOKINGS)) {
 
 			return null;
 		}
 
-		PortletURL portletURL = PortletURLFactoryUtil.create(
-			request, PortletKeys.CALENDAR, getControlPanelPlid(themeDisplay),
-			PortletRequest.RENDER_PHASE);
+		PortletURL portletURL = liferayPortletResponse.createRenderURL(
+			PortletKeys.CALENDAR);
 
 		portletURL.setParameter("mvcPath", "/edit_calendar_booking.jsp");
 		portletURL.setParameter(

@@ -1,52 +1,50 @@
 @import "compass";
 
 .private-messaging-portlet {
-	.aui-dialog-content .aui-panel-bd {
-		padding: 0;
+	.layout {
+		width: auto;
 	}
 
-	.header-title {
-		font-weight: normal;
-		margin: 0;
-		padding: 10px;
+	.alert {
+		margin-bottom: 0;
 	}
 
-	img.avatar {
-		width: 50px;
-	}
-
-	.check-all {
+	.column-content .check-all {
 		margin: 0 20px 0 5px;
 	}
 
+	.lfr-search-container {
+		margin: 0;
+	}
+
 	.controls {
-		@include border-radius(4px);
+		background: #EEE9E9;
+		border-bottom-width: 0;
+		padding: 5px 10px;
 
-		background-color: #EEE;
-		border: 1px solid #CCC;
-		border-radius: 4px;
-		margin-bottom: -1px;
-		padding: 5px;
-		width: auto;
-
-		.controls-content {
-			line-height: 2em;
+		.check-all {
+			margin: 0 5px 0 0;
 		}
+	}
 
-		.aui-column-content {
-			padding: 0 0;
-		}
+	img.avatar {
+		width: 60px;
+	}
 
-		.col-1 {
-			text-align: left;
-		}
+	.thread .message-container {
+		margin: 0 10px;
+	}
 
-		.col-2 {
-			text-align: right;
-		}
+	.message-container .portlet-msg-error {
+		display: block;
+		margin-bottom: 10px;
+	}
 
-		.back-button {
-			float: right;
+	.message-attachments {
+		clear: both;
+
+		li {
+			list-style: none;
 		}
 	}
 
@@ -54,16 +52,14 @@
 		width: 300px;
 	}
 
-	.message-body {
+	.message-body, .message-subject, .message-to {
 		width: 90%;
 	}
 
-	.message-body-container .message-body-container-content {
-		padding: 10px;
-
-		.autocomplete-button {
-			margin: 0;
-		}
+	input[type="file"] {
+		height: 24px;
+		line-height: 24px;
+		padding: 0;
 	}
 
 	.author-sender {
@@ -72,8 +68,9 @@
 
 	.message-link {
 		display: block;
-		margin: -10px -10px -10px -60px;
-		padding: 10px 10px 10px 60px;
+		margin: -10px;
+		padding: 10px;
+		padding-left: 80px;
 		position: relative;
 		z-index: 1;
 
@@ -86,8 +83,26 @@
 		}
 	}
 
-	.private-messaging-container .results-header, .taglib-user-display.display-style-2 .user-name, .taglib-user-display.display-style-2 .user-details, .thread .taglib-search-iterator-page-iterator-bottom {
+	.private-messaging-container .results-header, .taglib-user-display.display-style-2 .user-details, .taglib-user-display.display-style-2 .user-name {
 		display: none;
+	}
+
+	.table {
+		border-top: 0;
+		margin-bottom: 0;
+
+		thead {
+			display: none;
+		}
+
+		.first {
+			vertical-align: middle;
+			width: 12px;
+		}
+	}
+
+	.table-striped .table-data .first, .table-striped .table-data .last {
+		background: none;
 	}
 
 	/* Messages */
@@ -100,32 +115,40 @@
 		}
 	}
 
-	.private-messaging-container .taglib-search-iterator .col-1 {
-		width: 10px;
-	}
-
 	/* Results */
 
-	.messages .results-grid {
-		border: 0px;
-
-		table.taglib-search-iterator, .results-row td, .results-row.alt td {
-			border: 1px solid #CFCFCF;
-		}
-
-		.results-row td, .results-row.alt td {
+	.messages .table-data tr {
+		&:hover td, &:nth-child(odd) td, td {
 			background: #FFF;
 			padding: 10px;
 		}
 
-		.results-row.unread td {
+		&.unread td {
 			background: #F0F5F7;
 		}
+	}
+
+	.taglib-page-iterator {
+		padding: 10px;
+
+		.lfr-pagination-buttons, .lfr-pagination-config, .search-results {
+			line-height: 30px;
+		}
+	}
+
+	.taglib-search-iterator-page-iterator-top {
+		border-top: 1px solid #DDD;
+		margin-bottom: 0;
 	}
 
 	/* Thread */
 
 	.thread {
+		.taglib-header {
+			border-top: 1px solid #C8C9CA;
+			margin-top: 0;
+		}
+
 		.body {
 			padding: 5px 60px 0 0;
 
@@ -146,13 +169,25 @@
 			padding: 0 10px 10px;
 		}
 
-		.results-row td {
-			border-bottom: 1px solid #CFCFCF;
+		tr td {
 			background-color: transparent;
+			border-bottom: 1px solid #CFCFCF;
+
+			&.last, &.only {
+				border-bottom-width: 0;
+			}
+		}
+
+		.lfr-search-container, .message-body-container-content {
+			margin: 0 10px;
 		}
 
 		.name {
 			font-weight: bold;
+		}
+
+		.back-button {
+			float: right;
 		}
 	}
 
@@ -167,11 +202,44 @@
 		padding: 0;
 	}
 
-	.messages .last-thread, .thread .message {
-		margin-left: 60px;
-	}
-
 	.line-through {
 		text-decoration: line-through;
+	}
+}
+
+/* ---------- Responsive ---------- */
+
+html.aui {
+	@media (max-width: 979px) {
+		.private-messaging-portlet {
+			.btn-group, .button-holder {
+				width: auto;
+			}
+		}
+	}
+
+	@media (max-width: 767px) {
+		.private-messaging-portlet {
+			button, button:hover {
+				width: 100%;
+
+				&.close {
+					width: auto;
+				}
+			}
+		}
+	}
+}
+
+/* ---------- Extras ---------- */
+
+.private-messaging-portlet .controls {
+	@include border-radius(4px);
+}
+
+.ie7 .private-messaging-portlet {
+	.message-to {
+		position: relative;
+		z-index: 1;
 	}
 }

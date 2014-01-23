@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -48,6 +49,7 @@ public class CalendarFinderImpl
 	public static final String FIND_BY_C_G_C_N_D =
 		CalendarFinder.class.getName() + ".findByC_G_C_N_D";
 
+	@Override
 	public int countByKeywords(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String keywords)
@@ -70,6 +72,7 @@ public class CalendarFinderImpl
 			andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String name, String description, boolean andOperator)
@@ -83,6 +86,7 @@ public class CalendarFinderImpl
 			andOperator);
 	}
 
+	@Override
 	public int countByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String[] names, String[] descriptions, boolean andOperator)
@@ -93,6 +97,7 @@ public class CalendarFinderImpl
 			andOperator, false);
 	}
 
+	@Override
 	public int filterCountByKeywords(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String keywords)
@@ -115,6 +120,7 @@ public class CalendarFinderImpl
 			andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String name, String description, boolean andOperator)
@@ -128,6 +134,7 @@ public class CalendarFinderImpl
 			andOperator);
 	}
 
+	@Override
 	public int filterCountByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String[] names, String[] descriptions, boolean andOperator)
@@ -138,6 +145,7 @@ public class CalendarFinderImpl
 			andOperator, false);
 	}
 
+	@Override
 	public List<Calendar> filterFindByKeywords(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String keywords, int start, int end,
@@ -161,6 +169,7 @@ public class CalendarFinderImpl
 			andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<Calendar> filterFindByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String name, String description, boolean andOperator, int start,
@@ -175,6 +184,7 @@ public class CalendarFinderImpl
 			andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<Calendar> filterFindByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String[] names, String[] descriptions, boolean andOperator,
@@ -186,6 +196,7 @@ public class CalendarFinderImpl
 			andOperator, start, end, orderByComparator, true);
 	}
 
+	@Override
 	public List<Calendar> findByKeywords(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String keywords, int start, int end,
@@ -209,6 +220,7 @@ public class CalendarFinderImpl
 			andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<Calendar> findByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String name, String description, boolean andOperator, int start,
@@ -223,6 +235,7 @@ public class CalendarFinderImpl
 			andOperator, start, end, orderByComparator);
 	}
 
+	@Override
 	public List<Calendar> findByC_G_C_N_D(
 			long companyId, long[] groupIds, long[] calendarResourceIds,
 			String[] names, String[] descriptions, boolean andOperator,
@@ -271,7 +284,7 @@ public class CalendarFinderImpl
 				sql, "description", StringPool.LIKE, false, descriptions);
 			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
@@ -280,9 +293,7 @@ public class CalendarFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -355,7 +366,7 @@ public class CalendarFinderImpl
 
 			sql = StringUtil.replace(sql, "[$ORDER_BY$]", sb.toString());
 
-			SQLQuery q = session.createSQLQuery(sql);
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
 			q.addEntity("Calendar", CalendarImpl.class);
 
@@ -364,9 +375,7 @@ public class CalendarFinderImpl
 			qPos.add(companyId);
 			qPos.add(groupIds);
 
-			if ((calendarResourceIds != null) &&
-				(calendarResourceIds.length > 0)) {
-
+			if (ArrayUtil.isNotEmpty(calendarResourceIds)) {
 				qPos.add(calendarResourceIds);
 			}
 
@@ -384,9 +393,7 @@ public class CalendarFinderImpl
 	}
 
 	protected String getCalendarResourceIds(long[] calendarResourceIds) {
-		if ((calendarResourceIds == null) ||
-			(calendarResourceIds.length == 0)) {
-
+		if (ArrayUtil.isEmpty(calendarResourceIds)) {
 			return StringPool.BLANK;
 		}
 

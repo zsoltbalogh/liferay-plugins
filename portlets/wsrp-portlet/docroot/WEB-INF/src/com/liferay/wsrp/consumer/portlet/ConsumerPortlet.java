@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TransientValue;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -60,6 +61,7 @@ import com.liferay.wsrp.service.WSRPConsumerPortletLocalServiceUtil;
 import com.liferay.wsrp.servlet.ServiceHolder;
 import com.liferay.wsrp.util.ConsumerRequestExtensionsHelper;
 import com.liferay.wsrp.util.ExtensionHelperUtil;
+import com.liferay.wsrp.util.MarkupCharacterSetsUtil;
 import com.liferay.wsrp.util.PortletPropsValues;
 import com.liferay.wsrp.util.WSRPConsumerManager;
 import com.liferay.wsrp.util.WSRPConsumerManagerFactory;
@@ -282,11 +284,10 @@ public class ConsumerPortlet extends GenericPortlet {
 		if (wsrpAuth.equals(expectedWsrpAuth)) {
 			return true;
 		}
-		else {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-			return false;
-		}
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+		return false;
 	}
 
 	protected void doProcessAction(
@@ -309,7 +310,7 @@ public class ConsumerPortlet extends GenericPortlet {
 		UserContext userContext = new UserContext();
 
 		initContexts(
-			actionRequest, actionResponse, wsrpConsumerPortlet,
+			actionRequest, actionResponse, wsrpConsumer, wsrpConsumerPortlet,
 			wsrpConsumerManager, interactionParams, markupParams,
 			portletContext, runtimeContext, userContext);
 
@@ -359,7 +360,7 @@ public class ConsumerPortlet extends GenericPortlet {
 		UserContext userContext = new UserContext();
 
 		initContexts(
-			eventRequest, eventResponse, wsrpConsumerPortlet,
+			eventRequest, eventResponse, wsrpConsumer, wsrpConsumerPortlet,
 			wsrpConsumerManager, eventParams, markupParams, portletContext,
 			runtimeContext, userContext);
 
@@ -526,7 +527,7 @@ public class ConsumerPortlet extends GenericPortlet {
 		UserContext userContext = new UserContext();
 
 		initContexts(
-			portletRequest, portletResponse, wsrpConsumerPortlet,
+			portletRequest, portletResponse, wsrpConsumer, wsrpConsumerPortlet,
 			wsrpConsumerManager, markupParams, portletContext, runtimeContext,
 			userContext);
 
@@ -568,8 +569,8 @@ public class ConsumerPortlet extends GenericPortlet {
 			markupResponse = markupService.getMarkup(getMarkup);
 		}
 
-		// There is a memory leak in Axis that caches the entire response
-		// after each call. See LPS-25067.
+		// There is a memory leak in Axis that caches the entire response after
+		// each call. See LPS-25067.
 
 		Stub stub = (Stub)markupService;
 
@@ -741,9 +742,9 @@ public class ConsumerPortlet extends GenericPortlet {
 		UserContext userContext = new UserContext();
 
 		initContexts(
-			resourceRequest, resourceResponse, wsrpConsumerPortlet,
-			wsrpConsumerManager, portletContext, resourceParams, runtimeContext,
-			userContext);
+			resourceRequest, resourceResponse, wsrpConsumer,
+			wsrpConsumerPortlet, wsrpConsumerManager, portletContext,
+			resourceParams, runtimeContext, userContext);
 
 		GetResource getResource = new GetResource();
 
@@ -979,7 +980,7 @@ public class ConsumerPortlet extends GenericPortlet {
 
 	protected void initContexts(
 			ActionRequest actionRequest, ActionResponse actionResponse,
-			WSRPConsumerPortlet wsrpConsumerPortlet,
+			WSRPConsumer wsrpConsumer, WSRPConsumerPortlet wsrpConsumerPortlet,
 			WSRPConsumerManager wsrpConsumerManager,
 			InteractionParams interactionParams, MarkupParams markupParams,
 			PortletContext portletContext, RuntimeContext runtimeContext,
@@ -990,7 +991,7 @@ public class ConsumerPortlet extends GenericPortlet {
 			actionRequest);
 
 		initContexts(
-			actionRequest, actionResponse, wsrpConsumerPortlet,
+			actionRequest, actionResponse, wsrpConsumer, wsrpConsumerPortlet,
 			wsrpConsumerManager, markupParams, portletContext, runtimeContext,
 			userContext);
 
@@ -1017,14 +1018,14 @@ public class ConsumerPortlet extends GenericPortlet {
 
 	protected void initContexts(
 			EventRequest eventRequest, EventResponse eventResponse,
-			WSRPConsumerPortlet wsrpConsumerPortlet,
+			WSRPConsumer wsrpConsumer, WSRPConsumerPortlet wsrpConsumerPortlet,
 			WSRPConsumerManager wsrpConsumerManager, EventParams eventParams,
 			MarkupParams markupParams, PortletContext portletContext,
 			RuntimeContext runtimeContext, UserContext userContext)
 		throws Exception {
 
 		initContexts(
-			eventRequest, eventResponse, wsrpConsumerPortlet,
+			eventRequest, eventResponse, wsrpConsumer, wsrpConsumerPortlet,
 			wsrpConsumerManager, markupParams, portletContext, runtimeContext,
 			userContext);
 
@@ -1039,7 +1040,7 @@ public class ConsumerPortlet extends GenericPortlet {
 
 	protected void initContexts(
 			PortletRequest portletRequest, PortletResponse portletResponse,
-			WSRPConsumerPortlet wsrpConsumerPortlet,
+			WSRPConsumer wsrpConsumer, WSRPConsumerPortlet wsrpConsumerPortlet,
 			WSRPConsumerManager wsrpConsumerManager, MimeRequest mimeRequest,
 			PortletContext portletContext, RuntimeContext runtimeContext,
 			UserContext userContext)
@@ -1112,7 +1113,24 @@ public class ConsumerPortlet extends GenericPortlet {
 
 		mimeRequest.setLocales(localesArray);
 
-		mimeRequest.setMarkupCharacterSets(_CHAR_SETS);
+		String[] markupCharacterSets = null;
+
+		if (Validator.isNotNull(wsrpConsumer.getMarkupCharacterSets())) {
+			String markupCharacterSetsString =
+				wsrpConsumer.getMarkupCharacterSets();
+
+			markupCharacterSetsString =
+				MarkupCharacterSetsUtil.getSupportedMarkupCharacterSets(
+					markupCharacterSetsString);
+
+			markupCharacterSets = StringUtil.split(markupCharacterSetsString);
+		}
+		else {
+			markupCharacterSets = _CHAR_SETS;
+		}
+
+		mimeRequest.setMarkupCharacterSets(markupCharacterSets);
+
 		mimeRequest.setMimeTypes(_MIME_TYPES);
 		mimeRequest.setMode(getWSRPMode(portletRequest.getPortletMode()));
 		mimeRequest.setWindowState(
@@ -1234,7 +1252,7 @@ public class ConsumerPortlet extends GenericPortlet {
 
 	protected void initContexts(
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse,
-			WSRPConsumerPortlet wsrpConsumerPortlet,
+			WSRPConsumer wsrpConsumer, WSRPConsumerPortlet wsrpConsumerPortlet,
 			WSRPConsumerManager wsrpConsumerManager,
 			PortletContext portletContext, ResourceParams resourceParams,
 			RuntimeContext runtimeContext, UserContext userContext)
@@ -1244,9 +1262,9 @@ public class ConsumerPortlet extends GenericPortlet {
 			resourceRequest);
 
 		initContexts(
-			resourceRequest, resourceResponse, wsrpConsumerPortlet,
-			wsrpConsumerManager, resourceParams, portletContext, runtimeContext,
-			userContext);
+			resourceRequest, resourceResponse, wsrpConsumer,
+			wsrpConsumerPortlet, wsrpConsumerManager, resourceParams,
+			portletContext, runtimeContext, userContext);
 
 		String resourceID = resourceRequest.getResourceID();
 
@@ -1649,7 +1667,9 @@ public class ConsumerPortlet extends GenericPortlet {
 				String name = clientAttribute.getName();
 				String value = clientAttribute.getValue();
 
-				if (name.equalsIgnoreCase(HttpHeaders.CONTENT_DISPOSITION)) {
+				if (StringUtil.equalsIgnoreCase(
+						name, HttpHeaders.CONTENT_DISPOSITION)) {
+
 					resourceResponse.setProperty(
 						HttpHeaders.CONTENT_DISPOSITION, value);
 
@@ -2032,7 +2052,6 @@ public class ConsumerPortlet extends GenericPortlet {
 		portletSession.setAttribute(WebKeys.SESSION_CONTEXT, sessionContext);
 
 		serviceHolder.setSessionContext(sessionContext);
-
 	}
 
 	private static final String _BLOCKING_ACTION_TEMPLATE =

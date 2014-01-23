@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -46,8 +46,8 @@ while (iterator.hasNext()) {
 }
 %>
 
-<div class="aui-menu aui-overlaycontext-hidden user-notification-events" id="<portlet:namespace />notificationsMenuContainer">
-	<div class="aui-menu-content user-notification-events-container" id="<portlet:namespace />notificationsMenuContent">
+<div class="menu overlaycontext-hidden user-notification-events" id="<portlet:namespace />notificationsMenuContainer">
+	<div class="menu-content user-notification-events-container" id="<portlet:namespace />notificationsMenuContent">
 
 		<%
 		String userNotificationEventUuids = StringPool.BLANK;
@@ -63,7 +63,7 @@ while (iterator.hasNext()) {
 
 			long userId = notificationEventJSONObject.getLong("userId");
 
-			String userFullName = PortalUtil.getUserName(userId, StringPool.BLANK);
+			String userFullName = HtmlUtil.escape(PortalUtil.getUserName(userId, StringPool.BLANK));
 
 			String userDisplayURL = StringPool.BLANK;
 			String userPortaitURL = StringPool.BLANK;
@@ -79,7 +79,7 @@ while (iterator.hasNext()) {
 		%>
 
 			<c:choose>
-				<c:when test="<%= portletId.equals(PortletKeys.ANNOUNCEMENTS) %>">
+				<c:when test="<%= portletId.equals(PortletKeys.ANNOUNCEMENTS) || portletId.equals(PortletKeys.SO_ANNOUNCEMENTS) %>">
 					<%@ include file="/notifications/view_announcement.jspf" %>
 				</c:when>
 				<c:when test="<%= portletId.equals(PortletKeys.SO_INVITE_MEMBERS) %>">
@@ -126,8 +126,8 @@ while (iterator.hasNext()) {
 	<span class="notification-count"><%= notificationEvents.size() %></span>
 </a>
 
-<aui:script use="aui-base">
-	var userNotificationEvents = A.one('.dockbar .user-notification-events');
+<aui:script use="aui-base,aui-io-deprecated">
+	var userNotificationEvents = A.one('#<portlet:namespace />notificationsMenuContainer');
 	var userNotificationsContainer = userNotificationEvents.one('.user-notification-events-container');
 
 	<c:if test="<%= notificationEvents.size() > 0 %>">

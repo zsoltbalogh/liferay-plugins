@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -51,9 +51,7 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 			KBArticleSearchTerms searchTerms = (KBArticleSearchTerms)searchContainer.getSearchTerms();
 			%>
 
-			<liferay-ui:search-container-results>
-				<%@ include file="/admin/article_search_results.jspf" %>
-			</liferay-ui:search-container-results>
+			<%@ include file="/admin/article_search_results.jspf" %>
 
 			<%
 			boolean updateArticlesPriorities = AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.UPDATE_KB_ARTICLES_PRIORITIES);
@@ -103,20 +101,20 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 					property="userName"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					href="<%= rowURL %>"
 					name="create-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbArticle.getCreateDate()) + "<br />" + dateFormatTime.format(kbArticle.getCreateDate()) %>'
+					value="<%= kbArticle.getCreateDate() %>"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					href="<%= rowURL %>"
 					name="modified-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbArticle.getModifiedDate()) + "<br />" + dateFormatTime.format(kbArticle.getModifiedDate()) %>'
+					value="<%= kbArticle.getModifiedDate() %>"
 				/>
 
 				<liferay-ui:search-container-column-text
@@ -124,7 +122,7 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 					href="<%= rowURL %>"
 					name="status"
 					orderable="<%= true %>"
-					value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(kbArticle.getStatus())) + ")" %>'
+					value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(kbArticle.getStatus())) + ")" %>'
 				/>
 
 				<liferay-ui:search-container-column-text
@@ -159,9 +157,10 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 							modelResourceDescription="<%= HtmlUtil.escape(themeDisplay.getScopeGroupName()) %>"
 							resourcePrimKey="<%= String.valueOf(scopeGroupId) %>"
 							var="permissionsURL"
+							windowState="<%= LiferayWindowState.POP_UP.toString() %>"
 						/>
 
-						<aui:button href="<%= permissionsURL %>" value="permissions" />
+						<aui:button href="<%= permissionsURL %>" useDialog="<%= true %>" value="permissions" />
 					</c:if>
 
 					<c:if test="<%= AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.SUBSCRIBE) %>">
@@ -203,7 +202,7 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 				searchContainer.setEmptyResultsMessage(null);
 				%>
 
-				<div class="portlet-msg-info">
+				<div class="alert alert-info">
 					<liferay-portlet:renderURL var="viewKBArticleURL">
 						<portlet:param name="mvcPath" value='<%= templatePath + "view_article.jsp" %>' />
 						<portlet:param name="resourcePrimKey" value="<%= String.valueOf(parentResourcePrimKey) %>" />
@@ -231,7 +230,7 @@ long parentResourcePrimKey = ParamUtil.getLong(request, "parentResourcePrimKey",
 			</c:if>
 
 			<c:if test="<%= (total > 0) && (AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.DELETE_KB_ARTICLES) || AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.UPDATE_KB_ARTICLES_PRIORITIES)) %>">
-				<aui:button-row>
+				<aui:button-row cssClass="kb-bulk-action-button-holder">
 					<c:if test="<%= AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.DELETE_KB_ARTICLES) %>">
 						<aui:button onClick='<%= renderResponse.getNamespace() + "deleteKBArticles();" %>' value="delete" />
 					</c:if>

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -44,9 +44,7 @@
 			KBTemplateSearchTerms searchTerms = (KBTemplateSearchTerms)searchContainer.getSearchTerms();
 			%>
 
-			<liferay-ui:search-container-results>
-				<%@ include file="/admin/template_search_results.jspf" %>
-			</liferay-ui:search-container-results>
+			<%@ include file="/admin/template_search_results.jspf" %>
 
 			<liferay-ui:search-container-row
 				className="com.liferay.knowledgebase.model.KBTemplate"
@@ -65,18 +63,18 @@
 					property="userName"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					name="create-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbTemplate.getCreateDate()) + "<br />" + dateFormatTime.format(kbTemplate.getCreateDate()) %>'
+					value="<%= kbTemplate.getCreateDate() %>"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					name="modified-date"
 					orderable="<%= true %>"
-					value='<%= dateFormatDate.format(kbTemplate.getModifiedDate()) + "<br />" + dateFormatTime.format(kbTemplate.getModifiedDate()) %>'
+					value="<%= kbTemplate.getModifiedDate() %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp
@@ -102,9 +100,10 @@
 							modelResourceDescription="<%= HtmlUtil.escape(themeDisplay.getScopeGroupName()) %>"
 							resourcePrimKey="<%= String.valueOf(scopeGroupId) %>"
 							var="permissionsURL"
+							windowState="<%= LiferayWindowState.POP_UP.toString() %>"
 						/>
 
-						<aui:button href="<%= permissionsURL %>" value="permissions" />
+						<aui:button href="<%= permissionsURL %>" useDialog="<%= true %>" value="permissions" />
 					</c:if>
 				</aui:button-row>
 
@@ -112,7 +111,7 @@
 			</c:if>
 
 			<c:if test="<%= (total > 0) && AdminPermission.contains(permissionChecker, scopeGroupId, ActionKeys.DELETE_KB_TEMPLATES) %>">
-				<aui:button-row>
+				<aui:button-row cssClass="kb-bulk-action-button-holder">
 					<aui:button onClick='<%= renderResponse.getNamespace() + "deleteKBTemplates();" %>' value="delete" />
 				</aui:button-row>
 			</c:if>

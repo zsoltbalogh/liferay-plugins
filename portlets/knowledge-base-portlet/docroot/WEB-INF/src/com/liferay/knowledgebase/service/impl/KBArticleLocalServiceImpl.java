@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -68,12 +70,12 @@ import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.Subscription;
 import com.liferay.portal.model.Ticket;
 import com.liferay.portal.model.User;
+import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.SubscriptionSender;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.documentlibrary.DuplicateDirectoryException;
-import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.portlet.documentlibrary.FileNameException;
 import com.liferay.portlet.documentlibrary.NoSuchDirectoryException;
 import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
@@ -194,7 +196,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 
 		// Attachments
 
-		addKBArticleAttachments(kbArticle, dirName, serviceContext);
+		addKBArticleAttachments(userId, kbArticle, dirName, serviceContext);
 
 		// Workflow
 
@@ -773,22 +775,13 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		KBArticle kbArticle = getLatestKBArticle(
 			resourcePrimKey, WorkflowConstants.STATUS_ANY);
 
-		for (String fileName : kbArticle.getAttachmentsFileNames()) {
-			String shortFileName = FileUtil.getShortFileName(fileName);
+		List<FileEntry> attachmentsFileEntries =
+			kbArticle.getAttachmentsFileEntries();
 
-			InputStream inputStream = null;
-
-			try {
-				inputStream = DLStoreUtil.getFileAsStream(
-					kbArticle.getCompanyId(), CompanyConstants.SYSTEM,
-					fileName);
-
-				addAttachment(
-					dirName, shortFileName, inputStream, serviceContext);
-			}
-			finally {
-				StreamUtil.cleanUp(inputStream);
-			}
+		for (FileEntry fileEntry : attachmentsFileEntries) {
+			addAttachment(
+				dirName, fileEntry.getTitle(), fileEntry.getContentStream(),
+				serviceContext);
 		}
 
 		return dirName;
@@ -803,65 +796,58 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		// KB article
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		int version = KBArticleConstants.DEFAULT_VERSION;
-		int status = WorkflowConstants.STATUS_DRAFT;
 
 		validate(title, content);
 
 		KBArticle oldKBArticle = getLatestKBArticle(
 			resourcePrimKey, WorkflowConstants.STATUS_ANY);
 
-		long oldResourcePrimKey = oldKBArticle.getResourcePrimKey();
-		long oldGroupId = oldKBArticle.getGroupId();
-		Date oldCreateDate = oldKBArticle.getCreateDate();
-		long oldRootResourcePrimKey = oldKBArticle.getRootResourcePrimKey();
-		long oldParentResourcePrimKey = oldKBArticle.getParentResourcePrimKey();
 		int oldVersion = oldKBArticle.getVersion();
-		double oldPriority = oldKBArticle.getPriority();
-		int oldViewCount = oldKBArticle.getViewCount();
-		int oldStatus = oldKBArticle.getStatus();
 
 		KBArticle kbArticle = null;
 
-		if (oldStatus == WorkflowConstants.STATUS_APPROVED) {
+		if (oldKBArticle.isApproved()) {
 			long kbArticleId = counterLocalService.increment();
 
 			kbArticle = kbArticlePersistence.create(kbArticleId);
-			version = oldVersion + 1;
+
+			kbArticle.setResourcePrimKey(oldKBArticle.getResourcePrimKey());
+			kbArticle.setGroupId(oldKBArticle.getGroupId());
+			kbArticle.setCompanyId(user.getCompanyId());
+			kbArticle.setUserId(user.getUserId());
+			kbArticle.setUserName(user.getFullName());
+			kbArticle.setCreateDate(oldKBArticle.getCreateDate());
+			kbArticle.setRootResourcePrimKey(
+				oldKBArticle.getRootResourcePrimKey());
+			kbArticle.setParentResourcePrimKey(
+				oldKBArticle.getParentResourcePrimKey());
+			kbArticle.setVersion(oldVersion + 1);
+			kbArticle.setPriority(oldKBArticle.getPriority());
+			kbArticle.setViewCount(oldKBArticle.getViewCount());
 		}
 		else {
 			kbArticle = oldKBArticle;
-			version = oldVersion;
 		}
 
-		if (oldStatus == WorkflowConstants.STATUS_PENDING) {
-			status = WorkflowConstants.STATUS_PENDING;
+		if (oldKBArticle.isPending()) {
+			kbArticle.setStatus(WorkflowConstants.STATUS_PENDING);
+		}
+		else {
+			kbArticle.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 
-		kbArticle.setResourcePrimKey(oldResourcePrimKey);
-		kbArticle.setGroupId(oldGroupId);
-		kbArticle.setCompanyId(user.getCompanyId());
-		kbArticle.setUserId(user.getUserId());
-		kbArticle.setUserName(user.getFullName());
-		kbArticle.setCreateDate(oldCreateDate);
 		kbArticle.setModifiedDate(serviceContext.getModifiedDate(null));
-		kbArticle.setRootResourcePrimKey(oldRootResourcePrimKey);
-		kbArticle.setParentResourcePrimKey(oldParentResourcePrimKey);
-		kbArticle.setVersion(version);
 		kbArticle.setTitle(title);
 		kbArticle.setContent(content);
 		kbArticle.setDescription(description);
-		kbArticle.setPriority(oldPriority);
 		kbArticle.setSections(
 			StringUtil.merge(AdminUtil.escapeSections(sections)));
-		kbArticle.setViewCount(oldViewCount);
 		kbArticle.setLatest(true);
 		kbArticle.setMain(false);
-		kbArticle.setStatus(status);
 
 		kbArticlePersistence.update(kbArticle);
 
-		if (oldVersion < version) {
+		if (oldKBArticle.isApproved()) {
 			oldKBArticle.setLatest(false);
 
 			kbArticlePersistence.update(oldKBArticle);
@@ -886,7 +872,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		// Attachments
 
 		updateKBArticleAttachments(
-			kbArticle, oldVersion, dirName, serviceContext);
+			userId, kbArticle, oldVersion, dirName, serviceContext);
 
 		// Workflow
 
@@ -908,9 +894,10 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		long classTypeId = 0;
 
 		assetEntryLocalService.updateEntry(
-			userId, kbArticle.getGroupId(), KBArticle.class.getName(),
+			userId, kbArticle.getGroupId(), kbArticle.getCreateDate(),
+			kbArticle.getModifiedDate(), KBArticle.class.getName(),
 			kbArticle.getClassPK(), kbArticle.getUuid(), classTypeId,
-			assetCategoryIds, assetTagNames, false, null, null, null, null,
+			assetCategoryIds, assetTagNames, false, null, null, null,
 			ContentTypes.TEXT_HTML, kbArticle.getTitle(),
 			kbArticle.getDescription(), null, null, null, 0, 0, null, false);
 	}
@@ -937,22 +924,28 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		long[] resourcePrimKeys = StringUtil.split(
 			StringUtil.merge(resourcePrimKeyToPriorityMap.keySet()), 0L);
 
-		List<KBArticle> kbArticles1 = getKBArticles(
+		List<KBArticle> kbArticles = getKBArticles(
 			resourcePrimKeys, WorkflowConstants.STATUS_ANY, null);
 
-		for (KBArticle kbArticle1 : kbArticles1) {
+		for (KBArticle kbArticle : kbArticles) {
 			double priority = resourcePrimKeyToPriorityMap.get(
-				kbArticle1.getResourcePrimKey());
+				kbArticle.getResourcePrimKey());
 
-			List<KBArticle> kbArticles2 = getKBArticleVersions(
-				kbArticle1.getResourcePrimKey(), WorkflowConstants.STATUS_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			updatePriority(kbArticle.getResourcePrimKey(), priority);
+		}
+	}
 
-			for (KBArticle kbArticle2 : kbArticles2) {
-				kbArticle2.setPriority(priority);
+	public void updatePriority(long resourcePrimKey, double priority)
+		throws PortalException, SystemException {
 
-				kbArticlePersistence.update(kbArticle2);
-			}
+		List<KBArticle> kbArticleVersions = getKBArticleVersions(
+			resourcePrimKey, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		for (KBArticle kbArticle : kbArticleVersions) {
+			kbArticle.setPriority(priority);
+
+			kbArticlePersistence.update(kbArticle);
 		}
 	}
 
@@ -1045,7 +1038,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		String dirName =
 			KBArticleConstants.DIR_NAME_PREFIX + kbArticle.getKbArticleId();
 
-		addKBArticleAttachments(kbArticle, dirName, serviceContext);
+		addKBArticleAttachments(userId, kbArticle, dirName, serviceContext);
 
 		deleteKBArticleAttachments(kbArticle, kbArticle.getKbArticleId());
 
@@ -1080,7 +1073,8 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	protected void addKBArticleAttachments(
-			KBArticle kbArticle, String dirName, ServiceContext serviceContext)
+			long userId, KBArticle kbArticle, String dirName,
+			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		try {
@@ -1103,34 +1097,31 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		String[] fileNames = DLStoreUtil.getFileNames(
 			serviceContext.getCompanyId(), CompanyConstants.SYSTEM, dirName);
 
+		if (fileNames.length > 0) {
+			PortletFileRepositoryUtil.deletePortletFileEntries(
+				serviceContext.getScopeGroupId(),
+				kbArticle.getAttachmentsFolderId());
+		}
+
 		for (String fileName : fileNames) {
 			InputStream inputStream = null;
-
-			String attachmentsDirName = kbArticle.getAttachmentsDirName();
-
-			String fullFileName = attachmentsDirName.concat(
-				StringPool.SLASH).concat(FileUtil.getShortFileName(fileName));
 
 			try {
 				inputStream = DLStoreUtil.getFileAsStream(
 					serviceContext.getCompanyId(), CompanyConstants.SYSTEM,
 					fileName);
 
-				if (!DLStoreUtil.hasDirectory(
-						serviceContext.getCompanyId(), CompanyConstants.SYSTEM,
-						dirName)) {
+				String shortFileName = FileUtil.getShortFileName(fileName);
 
-					DLStoreUtil.addDirectory(
-						serviceContext.getCompanyId(), CompanyConstants.SYSTEM,
-						dirName);
-				}
+				String mimeType = MimeTypesUtil.getContentType(
+					inputStream, fileName);
 
-				DLStoreUtil.addFile(
-					serviceContext.getCompanyId(), CompanyConstants.SYSTEM,
-					fullFileName, inputStream);
-			}
-			catch (DuplicateFileException dfe) {
-				_log.error("File already exists for " + dfe.getMessage());
+				PortletFileRepositoryUtil.addPortletFileEntry(
+					serviceContext.getScopeGroupId(), userId,
+					KBArticle.class.getName(), kbArticle.getClassPK(),
+					PortletKeys.KNOWLEDGE_BASE_ARTICLE,
+					kbArticle.getAttachmentsFolderId(), inputStream,
+					shortFileName, mimeType, true);
 			}
 			finally {
 				StreamUtil.cleanUp(inputStream);
@@ -1511,7 +1502,7 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	protected void updateKBArticleAttachments(
-			KBArticle kbArticle, int oldVersion, String dirName,
+			long userId, KBArticle kbArticle, int oldVersion, String dirName,
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
@@ -1521,16 +1512,18 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 					kbArticle.getResourcePrimKey();
 
 			if (Validator.isNull(dirName)) {
-				addKBArticleAttachments(kbArticle, oldDirName, serviceContext);
+				addKBArticleAttachments(
+					userId, kbArticle, oldDirName, serviceContext);
 			}
 			else {
-				addKBArticleAttachments(kbArticle, dirName, serviceContext);
+				addKBArticleAttachments(
+					userId, kbArticle, dirName, serviceContext);
 			}
 		}
 		else if (Validator.isNotNull(dirName)) {
 			deleteKBArticleAttachments(kbArticle, kbArticle.getClassPK());
 
-			addKBArticleAttachments(kbArticle, dirName, serviceContext);
+			addKBArticleAttachments(userId, kbArticle, dirName, serviceContext);
 		}
 	}
 

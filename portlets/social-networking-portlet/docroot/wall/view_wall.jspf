@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -35,17 +35,18 @@
 		}
 		%>
 
-		<form method="post" name="<portlet:namespace />fm" onSubmit="<portlet:namespace />addWallEntry(); return false;">
-		<input name="<portlet:namespace />redirect" type="hidden" value="<%= currentURL %>" />
-		<input name="<portlet:namespace />wallEntryId" type="hidden" value="" />
+		<aui:form method="post" name="fm" onSubmit='<%= "event.preventDefault();" + renderResponse.getNamespace() + "addWallEntry();" %>'>
+			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+			<aui:input name="wallEntryId" type="hidden" value="" />
 
-		<liferay-ui:input-field bean="<%= null %>" field="comments" model="<%= WallEntry.class %>" />
+			<aui:model-context bean="<%= null %>" model="<%= WallEntry.class %>" />
 
-		<br /><br />
+			<aui:input name="comments" />
 
-		<input type="submit" value="<liferay-ui:message key="post" />" />
-
-		</form>
+			<aui:button-row>
+				<aui:button type="submit" value="post" />
+			</aui:button-row>
+		</aui:form>
 
 		<div class="separator"><!-- --></div>
 
@@ -73,9 +74,11 @@
 		else {
 			results = WallEntryLocalServiceUtil.getWallEntries(group.getGroupId(), searchContainer.getStart(), searchContainer.getEnd());
 		}
+
+		searchContainer.setResults(results);
 		%>
 
-		<table class="lfr-table" width="100%">
+		<table class="table" width="100%">
 
 		<%
 		String myWallLayoutFriendlyURL = null;
@@ -134,22 +137,10 @@
 							String wallToWallHREF = null;
 
 							if ((wallUser.getUserId() != themeDisplay.getUserId()) || ((wallUser.getUserId() == themeDisplay.getUserId()) && Validator.isNull(myWallLayoutFriendlyURL))) {
-								wallLayoutFriendlyURL = PortletPropsValues.WALL_LAYOUT_FRIENDLY_URL;
-
-								if (Validator.isNull(wallLayoutFriendlyURL)) {
-									Group wallGroup = wallUser.getGroup();
-
-									long wallPlid = LayoutLocalServiceUtil.getDefaultPlid(wallGroup.getGroupId(), false, portletDisplay.getId());
-
-									if (wallPlid != 0) {
-										Layout wallLayout = LayoutLocalServiceUtil.getLayout(wallPlid);
-
-										wallLayoutFriendlyURL = wallLayout.getFriendlyURL();
-									}
-								}
+								wallLayoutFriendlyURL = WallUtil.getWallLayoutFriendlyURL(wallUser);
 
 								if (Validator.isNotNull(wallLayoutFriendlyURL) && (wallUser.getUserId() != themeDisplay.getUserId())) {
-									wallToWallHREF = themeDisplay.getPathFriendlyURLPublic() + StringPool.SLASH + wallUser.getScreenName() + wallLayoutFriendlyURL + "/-/wall/" + wallUser.getScreenName();
+									wallToWallHREF = WallUtil.getWallLink(wallUser, wallLayoutFriendlyURL, HtmlUtil.escapeURL(wallUser.getScreenName()), themeDisplay);
 								}
 							}
 							%>
@@ -232,7 +223,7 @@
 		</aui:script>
 	</c:when>
 	<c:when test="<%= user.getUserId() != user2.getUserId() %>">
-		<div class="portlet-msg-info">
+		<div class="alert alert-info">
 			<%= LanguageUtil.format(pageContext, (user2.isMale() ? "you-have-to-be-x's-friend-to-access-his-wall" : "you-have-to-be-x's-friend-to-access-her-wall"), HtmlUtil.escape(user2.getFirstName())) %>
 
 			<c:choose>

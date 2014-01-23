@@ -2,10 +2,12 @@
 
 #parse ($init)
 
-<html class="#language ("lang.dir")" dir="#language ("lang.dir")" lang="$w3c_language_id">
+<html class="$root_css_class" dir="#language ("lang.dir")" lang="$w3c_language_id">
 
 <head>
 	<title>$the_title - $company_name</title>
+
+	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 
 	$theme.include($top_head_include)
 </head>
@@ -25,7 +27,7 @@ $theme.include($body_top_include)
 <div id="loginPage">
 	<div class="login-holder">
 		<div class="company-title">
-			<a class="$logo_css_class" href="$site_default_url" title="#language ("go-to") #language ("dashboard")">
+			<a class="$logo_css_class" href="$site_default_url" title="#language_format ("go-to-x", [$languageUtil.get($locale, "dashboard")])">
 				<img alt="$logo_description" height="$site_logo_height" src="$site_logo" width="$site_logo_width" />
 			</a>
 		</div>
@@ -46,8 +48,8 @@ $theme.include($body_top_include)
 
 $theme.include($body_bottom_include)
 
-</body>
-
 $theme.include($bottom_include)
+
+</body>
 
 </html>

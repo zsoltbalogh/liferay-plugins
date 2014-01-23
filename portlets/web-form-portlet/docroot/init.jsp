@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,13 +40,11 @@ page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.security.permission.ActionKeys" %><%@
 page import="com.liferay.portal.util.PortalUtil" %><%@
-page import="com.liferay.portlet.PortletPreferencesFactoryUtil" %><%@
 page import="com.liferay.portlet.expando.DuplicateColumnNameException" %><%@
 page import="com.liferay.webform.util.PortletPropsValues" %><%@
 page import="com.liferay.webform.util.WebFormUtil" %>
 
-<%@ page import="javax.portlet.ActionRequest" %><%@
-page import="javax.portlet.PortletPreferences" %>
+<%@ page import="javax.portlet.ActionRequest" %>
 
 <portlet:defineObjects />
 
@@ -55,11 +53,5 @@ page import="javax.portlet.PortletPreferences" %>
 <%
 String currentURL = PortalUtil.getCurrentURL(request);
 
-PortletPreferences preferences = liferayPortletRequest.getPreferences();
-
 String portletResource = ParamUtil.getString(request, "portletResource");
-
-if (Validator.isNotNull(portletResource)) {
-	preferences = PortletPreferencesFactoryUtil.getPortletSetup(request, portletResource);
-}
 %>

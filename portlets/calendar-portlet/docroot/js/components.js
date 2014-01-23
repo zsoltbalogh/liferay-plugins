@@ -11,6 +11,10 @@
 
 	var STR_SPACE = ' ';
 
+	var TPL_SPAN = '<span>';
+
+	var TPL_SPAN_CLOSE = '</span>';
+
 	AUI.add(
 		'liferay-calendar-simple-menu',
 		function(A) {
@@ -146,6 +150,10 @@
 										cssClass += STR_SPACE + CSS_SIMPLE_MENU_ITEM_HIDDEN;
 									}
 
+									if (item.cssClass) {
+										cssClass += STR_SPACE + item.cssClass;
+									}
+
 									var li = A.Node.create(
 										Lang.sub(
 											TPL_SIMPLE_MENU_ITEM,
@@ -194,7 +202,7 @@
 		},
 		'',
 		{
-			requires: ['aui-base', 'aui-template', 'widget-position', 'widget-position-align', 'widget-position-constrain', 'widget-stack', 'widget-stdmod']
+			requires: ['aui-base', 'aui-template-deprecated', 'widget-position', 'widget-position-align', 'widget-position-constrain', 'widget-stack', 'widget-stdmod']
 		}
 	);
 
@@ -233,7 +241,7 @@
 				'<tpl for="calendars">',
 					'<div class="', CSS_CALENDAR_LIST_ITEM, '">',
 						'<div class="', CSS_CALENDAR_LIST_ITEM_COLOR, '" {[ parent.calendars[$i].get("visible") ? ', '\'style="background-color:\'', STR_PLUS, 'parent.calendars[$i].get("color")', STR_PLUS, '";border-color:"', STR_PLUS, 'parent.calendars[$i].get("color")', STR_PLUS, '";\\""', ' : \'', STR_BLANK, '\' ]}></div>',
-							'<span class="', CSS_CALENDAR_LIST_ITEM_LABEL, '">{[ parent.calendars[$i].getDisplayName() ]}</span>',
+							'<span class="', CSS_CALENDAR_LIST_ITEM_LABEL, '">{[ Liferay.Util.escapeHTML(parent.calendars[$i].getDisplayName()) ]}</span>',
 						'<div href="javascript:;" class="', CSS_CALENDAR_LIST_ITEM_ARROW, '"></div>',
 					'</div>',
 				'</tpl>'
@@ -559,6 +567,7 @@
 										points: [ A.WidgetPositionAlign.TL, A.WidgetPositionAlign.BL ]
 									},
 									bubbleTargets: [ instance ],
+									constrain: true,
 									host: instance,
 									items: [],
 									plugins: [ A.Plugin.OverlayAutohide ],
@@ -585,7 +594,7 @@
 		},
 		'',
 		{
-			requires: ['aui-template', 'liferay-scheduler']
+			requires: ['aui-template-deprecated', 'liferay-scheduler']
 		}
 	);
 
@@ -679,7 +688,7 @@
 
 							instance.items.removeClass(CSS_SIMPLE_COLOR_PICKER_ITEM_SELECTED);
 
-							var newNode = instance.items.item(pallete.indexOf(val));
+							var newNode = instance.items.item(AArray.indexOf(pallete, val));
 
 							if (newNode) {
 								newNode.addClass(CSS_SIMPLE_COLOR_PICKER_ITEM_SELECTED);
@@ -701,7 +710,7 @@
 		},
 		'',
 		{
-			requires: ['aui-base', 'aui-template']
+			requires: ['aui-base', 'aui-template-deprecated']
 		}
 	);
 
@@ -710,17 +719,20 @@
 		function(A) {
 			var Lang = A.Lang;
 
-			var TPL_REMINDER_SECTION = '<div class="calendar-portlet-reminder-section">' +
-				'<input class="calendar-portlet-reminder-check" name="{portletNamespace}reminder{i}" type="checkbox" <tpl if="!disabled">checked="checked"</tpl> /> ' +
-				'<input name="{portletNamespace}reminderValue{i}" type="text" size="5" value="{time.value}" <tpl if="disabled">disabled="disabled"</tpl> /> ' +
-				'<select name="{portletNamespace}reminderDuration{i}" <tpl if="disabled">disabled="disabled"</tpl>>' +
+			var TPL_REMINDER_SECTION = '<div class="calendar-portlet-reminder-section form-inline">' +
+				'<label class="checkbox">' +
+					'<input class="calendar-portlet-reminder-check" id="{portletNamespace}reminder{i}" name="{portletNamespace}reminder{i}" type="checkbox" <tpl if="!disabled">checked="checked"</tpl> />' +
+				'</label>' +
+				'<label class="reminder-type" for="{portletNamespace}reminder{i}">' +
+					'<input id="{portletNamespace}reminderType{i}" name="{portletNamespace}reminderType{i}" type="hidden" value="email" />' +
+					'{email}'+
+				'</label>' +
+				'<input class="input-mini reminder-value" name="{portletNamespace}reminderValue{i}" type="text" size="5" value="{time.value}" <tpl if="disabled">disabled="disabled"</tpl> /> ' +
+				'<select class="reminder-duration span2" name="{portletNamespace}reminderDuration{i}" <tpl if="disabled">disabled="disabled"</tpl>>' +
 					'<option value="60" <tpl if="time.desc == \'minutes\'">selected="selected"</tpl>>{minutes}</option>' +
 					'<option value="3600" <tpl if="time.desc == \'hours\'">selected="selected"</tpl>>{hours}</option>' +
 					'<option value="86400" <tpl if="time.desc == \'days\'">selected="selected"</tpl>>{days}</option>' +
 					'<option value="604800" <tpl if="time.desc == \'weeks\'">selected="selected"</tpl>>{weeks}</option>' +
-				'</select>' +
-				'<select name="{portletNamespace}reminderType{i}" <tpl if="disabled">disabled="disabled"</tpl>>' +
-					'<option value="email">{email}</option>' +
 				'</select>' +
 			'</div>';
 
@@ -780,7 +792,7 @@
 
 							var target = event.target;
 							var checked = target.get('checked');
-							var elements = target.siblings('input[type=text],select');
+							var elements = target.ancestor().siblings('input[type=text],select');
 
 							elements.set('disabled', !checked);
 
@@ -883,6 +895,7 @@
 					var datePicker = Liferay.component(Liferay.CalendarUtil.PORTLET_NAMESPACE + fieldName + 'datePicker');
 
 					if (datePicker) {
+						datePicker.calendar.deselectDates();
 						datePicker.calendar.selectDates(date);
 
 						datePicker.syncUI();
@@ -933,7 +946,7 @@
 
 				MONTH_LABELS: [
 					Liferay.Language.get('january'),
-					Liferay.Language.get('frebruary'),
+					Liferay.Language.get('february'),
 					Liferay.Language.get('march'),
 					Liferay.Language.get('april'),
 					Liferay.Language.get('may'),
@@ -969,7 +982,7 @@
 					}
 
 					if ((recurrence.frequency == instance.FREQUENCY.WEEKLY) && (recurrence.weekdays.length > 0)) {
-						template.push(STR_SPACE, Liferay.Language.get('on'), ' {weekDays}');
+						template.push(STR_SPACE, TPL_SPAN, Liferay.Language.get('on'), TPL_SPAN_CLOSE, ' {weekDays}');
 					}
 
 					if (recurrence.count && (recurrence.endValue === 'after')) {
@@ -981,7 +994,9 @@
 						template.push(
 							STR_COMMA,
 							STR_SPACE,
+							TPL_SPAN,
 							Liferay.Language.get('until'),
+							TPL_SPAN_CLOSE,
 							A.Lang.sub(
 								' {month} {date}, {year}',
 								{
@@ -1035,43 +1050,53 @@
 					var confirmationPanel = instance.confirmationPanel;
 
 					if (!confirmationPanel) {
-						confirmationPanel = new A.Dialog(
+						var buttons = [
 							{
-								bodyContent: content.join(''),
-								buttons: [
-									{
-										handler: function(event, buttonItem) {
-											this.onlyThisInstanceFn.apply(this, arguments);
-										},
-										label: Liferay.Language.get('only-this-instance')
-									},
-									{
-										handler: function(event, buttonItem) {
-											this.allFollowingFn.apply(this, arguments);
-										},
-										label: Liferay.Language.get('all-following')
-									},
-									{
-										handler: function(event, buttonItem) {
-											this.allEventsInFn.apply(this, arguments);
-										},
-										label: Liferay.Language.get('all-events-in-the-series')
-									},
-									{
-										handler: function(event, buttonItem) {
-											this.cancelFn.apply(this, arguments);
-										},
-										label: Liferay.Language.get('cancel-this-change')
+								on: {
+
+									click: function(event, buttonItem)  {
+										confirmationPanel.onlyThisInstanceFn.apply(confirmationPanel, arguments);
 									}
-								],
-								centered: true,
-								close: false,
-								modal: true,
-								resizable: false,
-								title: titleText,
-								visible: false,
-								width: 550,
-								zIndex: 1000
+								},
+								label: Liferay.Language.get('only-this-instance')
+							},
+							{
+								on: {
+									click: function(event, buttonItem)  {
+										confirmationPanel.allFollowingFn.apply(confirmationPanel, arguments);
+									}
+								},
+								label: Liferay.Language.get('all-following')
+							},
+							{
+								on: {
+									click: function(event, buttonItem)  {
+										confirmationPanel.allEventsInFn.apply(confirmationPanel, arguments);
+									}
+								},
+								label: Liferay.Language.get('all-events-in-the-series')
+							},
+							{
+								on: {
+									click: function(event, buttonItem)  {
+										confirmationPanel.cancelFn.apply(confirmationPanel, arguments);
+									}
+								},
+								label: Liferay.Language.get('cancel-this-change')
+							}
+						];
+
+						confirmationPanel = Liferay.Util.Window.getWindow(
+							{
+								dialog:	{
+									bodyContent: content.join(''),
+									height: 200,
+									toolbars: {
+										footer: buttons
+									},
+									width: 700
+								},
+								title: titleText
 							}
 						);
 
@@ -1081,7 +1106,7 @@
 					confirmationPanel.onlyThisInstanceFn = onlyThisInstanceFn;
 					confirmationPanel.allFollowingFn = allFollowingFn;
 					confirmationPanel.allEventsInFn = allEventsInFn;
-					confirmationPanel.cancelFn = cancelFn || confirmationPanel.close;
+					confirmationPanel.cancelFn = cancelFn || confirmationPanel.hide;
 
 					confirmationPanel.render().show();
 				}
@@ -1089,7 +1114,7 @@
 		},
 		'',
 		{
-			requires: ['aui-base']
+			requires: ['aui-base', 'liferay-util-window']
 		}
 	);
 
@@ -1105,31 +1130,34 @@
 					var confirmationPanel = instance.confirmationPanel;
 
 					if (!confirmationPanel) {
-						confirmationPanel = new A.Dialog(
+						var buttons = [
 							{
-								bodyContent: message,
-								buttons: [
-									{
-										handler: function(event, buttonItem) {
-											this.yesFn.apply(this, arguments);
-										},
-										label: yesButtonLabel
-									},
-									{
-										handler: function(event, buttonItem) {
-											this.noFn.apply(this, arguments);
-										},
-										label: noButtonLabel
+								on: {
+									click: function(event, buttonItem) {
+										confirmationPanel.yesFn.apply(confirmationPanel, arguments);
 									}
-								],
-								centered: true,
-								close: false,
-								modal: true,
-								resizable: false,
-								title: Liferay.Language.get('are-you-sure'),
-								visible: false,
-								width: 350,
-								zIndex: 1000
+								},
+								label: yesButtonLabel
+							},
+							{
+								on: {
+									click: function(event, buttonItem) {
+										confirmationPanel.noFn.apply(confirmationPanel, arguments);
+									}
+								},
+								label: noButtonLabel
+							}
+						];
+
+						confirmationPanel = Liferay.Util.Window.getWindow(
+							{
+								dialog : {
+									bodyContent: message,
+									toolbars: {
+										footer: buttons
+									},
+								},
+								title: Liferay.Language.get('are-you-sure')
 							}
 						);
 
@@ -1145,7 +1173,7 @@
 		},
 		'',
 		{
-			requires: ['aui-dialog']
+			requires: ['liferay-util-window']
 		}
 	);
 }());

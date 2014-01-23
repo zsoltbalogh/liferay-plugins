@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,15 +15,22 @@
 package com.liferay.akismet.model;
 
 import com.liferay.akismet.service.AkismetDataLocalServiceUtil;
+import com.liferay.akismet.service.ClpSerializer;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
+import com.liferay.portal.util.PortalUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +44,32 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 	public AkismetDataClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return AkismetData.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return AkismetData.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _akismetDataId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setAkismetDataId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_akismetDataId);
+		return _akismetDataId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -67,13 +80,17 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 
 		attributes.put("akismetDataId", getAkismetDataId());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("mbMessageId", getMbMessageId());
+		attributes.put("classNameId", getClassNameId());
+		attributes.put("classPK", getClassPK());
 		attributes.put("type", getType());
 		attributes.put("permalink", getPermalink());
 		attributes.put("referrer", getReferrer());
 		attributes.put("userAgent", getUserAgent());
 		attributes.put("userIP", getUserIP());
 		attributes.put("userURL", getUserURL());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -92,10 +109,16 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 			setModifiedDate(modifiedDate);
 		}
 
-		Long mbMessageId = (Long)attributes.get("mbMessageId");
+		Long classNameId = (Long)attributes.get("classNameId");
 
-		if (mbMessageId != null) {
-			setMbMessageId(mbMessageId);
+		if (classNameId != null) {
+			setClassNameId(classNameId);
+		}
+
+		Long classPK = (Long)attributes.get("classPK");
+
+		if (classPK != null) {
+			setClassPK(classPK);
 		}
 
 		String type = (String)attributes.get("type");
@@ -133,78 +156,259 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		if (userURL != null) {
 			setUserURL(userURL);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public long getAkismetDataId() {
 		return _akismetDataId;
 	}
 
+	@Override
 	public void setAkismetDataId(long akismetDataId) {
 		_akismetDataId = akismetDataId;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setAkismetDataId", long.class);
+
+				method.invoke(_akismetDataRemoteModel, akismetDataId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_akismetDataRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
-	public long getMbMessageId() {
-		return _mbMessageId;
+	@Override
+	public String getClassName() {
+		if (getClassNameId() <= 0) {
+			return StringPool.BLANK;
+		}
+
+		return PortalUtil.getClassName(getClassNameId());
 	}
 
-	public void setMbMessageId(long mbMessageId) {
-		_mbMessageId = mbMessageId;
+	@Override
+	public void setClassName(String className) {
+		long classNameId = 0;
+
+		if (Validator.isNotNull(className)) {
+			classNameId = PortalUtil.getClassNameId(className);
+		}
+
+		setClassNameId(classNameId);
 	}
 
+	@Override
+	public long getClassNameId() {
+		return _classNameId;
+	}
+
+	@Override
+	public void setClassNameId(long classNameId) {
+		_classNameId = classNameId;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setClassNameId", long.class);
+
+				method.invoke(_akismetDataRemoteModel, classNameId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public long getClassPK() {
+		return _classPK;
+	}
+
+	@Override
+	public void setClassPK(long classPK) {
+		_classPK = classPK;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setClassPK", long.class);
+
+				method.invoke(_akismetDataRemoteModel, classPK);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
 	public String getType() {
 		return _type;
 	}
 
+	@Override
 	public void setType(String type) {
 		_type = type;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setType", String.class);
+
+				method.invoke(_akismetDataRemoteModel, type);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getPermalink() {
 		return _permalink;
 	}
 
+	@Override
 	public void setPermalink(String permalink) {
 		_permalink = permalink;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPermalink", String.class);
+
+				method.invoke(_akismetDataRemoteModel, permalink);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getReferrer() {
 		return _referrer;
 	}
 
+	@Override
 	public void setReferrer(String referrer) {
 		_referrer = referrer;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setReferrer", String.class);
+
+				method.invoke(_akismetDataRemoteModel, referrer);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserAgent() {
 		return _userAgent;
 	}
 
+	@Override
 	public void setUserAgent(String userAgent) {
 		_userAgent = userAgent;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserAgent", String.class);
+
+				method.invoke(_akismetDataRemoteModel, userAgent);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserIP() {
 		return _userIP;
 	}
 
+	@Override
 	public void setUserIP(String userIP) {
 		_userIP = userIP;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserIP", String.class);
+
+				method.invoke(_akismetDataRemoteModel, userIP);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getUserURL() {
 		return _userURL;
 	}
 
+	@Override
 	public void setUserURL(String userURL) {
 		_userURL = userURL;
+
+		if (_akismetDataRemoteModel != null) {
+			try {
+				Class<?> clazz = _akismetDataRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUserURL", String.class);
+
+				method.invoke(_akismetDataRemoteModel, userURL);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
 	public BaseModel<?> getAkismetDataRemoteModel() {
@@ -215,6 +419,48 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		_akismetDataRemoteModel = akismetDataRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _akismetDataRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_akismetDataRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			AkismetDataLocalServiceUtil.addAkismetData(this);
@@ -236,7 +482,8 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 
 		clone.setAkismetDataId(getAkismetDataId());
 		clone.setModifiedDate(getModifiedDate());
-		clone.setMbMessageId(getMbMessageId());
+		clone.setClassNameId(getClassNameId());
+		clone.setClassPK(getClassPK());
 		clone.setType(getType());
 		clone.setPermalink(getPermalink());
 		clone.setReferrer(getReferrer());
@@ -247,6 +494,7 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(AkismetData akismetData) {
 		long primaryKey = akismetData.getPrimaryKey();
 
@@ -263,18 +511,15 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof AkismetDataClp)) {
 			return false;
 		}
 
-		AkismetDataClp akismetData = null;
-
-		try {
-			akismetData = (AkismetDataClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		AkismetDataClp akismetData = (AkismetDataClp)obj;
 
 		long primaryKey = akismetData.getPrimaryKey();
 
@@ -292,15 +537,27 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 	}
 
 	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
+	}
+
+	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{akismetDataId=");
 		sb.append(getAkismetDataId());
 		sb.append(", modifiedDate=");
 		sb.append(getModifiedDate());
-		sb.append(", mbMessageId=");
-		sb.append(getMbMessageId());
+		sb.append(", classNameId=");
+		sb.append(getClassNameId());
+		sb.append(", classPK=");
+		sb.append(getClassPK());
 		sb.append(", type=");
 		sb.append(getType());
 		sb.append(", permalink=");
@@ -318,8 +575,9 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.akismet.model.AkismetData");
@@ -334,8 +592,12 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 		sb.append(getModifiedDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
-			"<column><column-name>mbMessageId</column-name><column-value><![CDATA[");
-		sb.append(getMbMessageId());
+			"<column><column-name>classNameId</column-name><column-value><![CDATA[");
+		sb.append(getClassNameId());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>classPK</column-name><column-value><![CDATA[");
+		sb.append(getClassPK());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>type</column-name><column-value><![CDATA[");
@@ -369,7 +631,8 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 
 	private long _akismetDataId;
 	private Date _modifiedDate;
-	private long _mbMessageId;
+	private long _classNameId;
+	private long _classPK;
 	private String _type;
 	private String _permalink;
 	private String _referrer;
@@ -377,4 +640,6 @@ public class AkismetDataClp extends BaseModelImpl<AkismetData>
 	private String _userIP;
 	private String _userURL;
 	private BaseModel<?> _akismetDataRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,11 +23,15 @@ String redirect = ParamUtil.getString(renderRequest, "redirect");
 
 String keywords = ParamUtil.getString(request, "keywords");
 
-DDLRecordSet recordSet = null;
+DDLRecordSet selRecordSet = null;
 
 try {
 	if (recordSetId > 0) {
-		recordSet = DDLRecordSetLocalServiceUtil.getRecordSet(recordSetId);
+		selRecordSet = DDLRecordSetLocalServiceUtil.getRecordSet(recordSetId);
+
+		if (selRecordSet.getGroupId() != scopeGroupId) {
+			selRecordSet = null;
+		}
 	}
 }
 catch (NoSuchRecordSetException nsrse) {
@@ -40,26 +44,26 @@ catch (NoSuchRecordSetException nsrse) {
 <aui:form action="<%= configurationURL %>" method="post" name="fm1">
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 
-	<div class="portlet-msg-info">
-		<span class="displaying-help-message-holder <%= (recordSet == null) ? StringPool.BLANK : "aui-helper-hidden" %>">
+	<div class="alert alert-info">
+		<span class="displaying-help-message-holder <%= (selRecordSet == null) ? StringPool.BLANK : "hide" %>">
 			<liferay-ui:message key="please-select-a-list-entry-from-the-list-below" />
 		</span>
 
-		<span class="displaying-record-set-id-holder <%= (recordSet == null) ? "aui-helper-hidden" : StringPool.BLANK %>">
-			<liferay-ui:message key="displaying-list" />: <span class="displaying-record-set-id"><%= (recordSet != null) ? HtmlUtil.escape(recordSet.getName(locale)) : StringPool.BLANK %></span>
+		<span class="displaying-record-set-id-holder <%= (selRecordSet == null) ? "hide" : StringPool.BLANK %>">
+			<liferay-ui:message key="displaying-list" />: <span class="displaying-record-set-id"><%= (selRecordSet != null) ? HtmlUtil.escape(selRecordSet.getName(locale)) : StringPool.BLANK %></span>
 		</span>
 	</div>
 
-	<c:if test="<%= recordSet != null %>">
+	<c:if test="<%= selRecordSet != null %>">
 		<aui:fieldset label="templates">
 			<aui:select helpMessage="select-the-form-template-used-to-add-records-to-the-list" label="form-template" name="formTemplateId" onChange='<%= "document." + renderResponse.getNamespace() + "fm." + renderResponse.getNamespace() + "formDDMTemplateId.value = this.value;" %>'>
 				<aui:option label="default" value="<%= 0 %>" />
 
 				<%
 				long classNameId = PortalUtil.getClassNameId(DDMStructure.class);
-				long classPK = recordSet.getDDMStructureId();
+				long classPK = selRecordSet.getDDMStructureId();
 
-				List<DDMTemplate> ddmTemplates = DDMTemplateLocalServiceUtil.getTemplates(classNameId, classPK, DDMTemplateConstants.TEMPLATE_TYPE_FORM, DDMTemplateConstants.TEMPLATE_MODE_CREATE);
+				List<DDMTemplate> ddmTemplates = DDMTemplateLocalServiceUtil.getTemplates(scopeGroupId, classNameId, classPK, DDMTemplateConstants.TEMPLATE_TYPE_FORM, DDMTemplateConstants.TEMPLATE_MODE_CREATE);
 
 				for (DDMTemplate ddmTemplate : ddmTemplates) {
 					boolean selected = false;
@@ -82,30 +86,24 @@ catch (NoSuchRecordSetException nsrse) {
 	</c:if>
 
 	<aui:fieldset label="lists">
-		<br />
-
 		<liferay-ui:search-container
 			emptyResultsMessage="no-entries-were-found"
 			iteratorURL="<%= portletURL %>"
+			total="<%= DDLRecordSetLocalServiceUtil.searchCount(company.getCompanyId(), scopeGroupId, keywords, DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) %>"
 		>
-			<div>
-				<aui:input id="keywords" inlineField="<%= true %>" label="" name="keywords" size="30" title="search-lists" type="text" />
-
-				<aui:button type="submit" value="search" />
+			<div class="form-search input-append">
+				<liferay-ui:input-search autoFocus="<%= true %>" placeholder='<%= LanguageUtil.get(locale, "keywords") %>' title='<%= LanguageUtil.get(locale, "search-lists") %>' />
 			</div>
-
-			<br />
 
 			<liferay-ui:search-container-results
 				results="<%= DDLRecordSetLocalServiceUtil.search(company.getCompanyId(), scopeGroupId, keywords, DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>"
-				total="<%= DDLRecordSetLocalServiceUtil.searchCount(company.getCompanyId(), scopeGroupId, keywords, DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS) %>"
 			/>
 
 			<liferay-ui:search-container-row
 				className="com.liferay.portlet.dynamicdatalists.model.DDLRecordSet"
 				escapedModel="<%= true %>"
 				keyProperty="recordSetId"
-				modelVar="curRecordSet"
+				modelVar="recordSet"
 			>
 
 				<%
@@ -114,9 +112,9 @@ catch (NoSuchRecordSetException nsrse) {
 				sb.append("javascript:");
 				sb.append(renderResponse.getNamespace());
 				sb.append("selectRecordSet('");
-				sb.append(curRecordSet.getRecordSetId());
+				sb.append(recordSet.getRecordSetId());
 				sb.append("','");
-				sb.append(curRecordSet.getName(locale));
+				sb.append(recordSet.getName(locale));
 				sb.append("');");
 
 				String rowURL = sb.toString();
@@ -144,31 +142,25 @@ catch (NoSuchRecordSetException nsrse) {
 				>
 
 					<%
-					buffer.append(StringUtil.shorten(curRecordSet.getDescription(locale), 100));
+					buffer.append(StringUtil.shorten(recordSet.getDescription(locale), 100));
 					%>
 
 				</liferay-ui:search-container-column-text>
 
-				<liferay-ui:search-container-column-text
-					buffer="buffer"
+				<liferay-ui:search-container-column-date
 					href="<%= rowURL %>"
 					name="modified-date"
 					orderable="<%= false %>"
-				>
-
-					<%
-					buffer.append(dateFormatDateTime.format(curRecordSet.getModifiedDate()));
-					%>
-
-				</liferay-ui:search-container-column-text>
+					value="<%= recordSet.getModifiedDate() %>"
+				/>
 			</liferay-ui:search-container-row>
+
+			<div class="separator"><!-- --></div>
 
 			<liferay-ui:search-iterator />
 		</liferay-ui:search-container>
 	</aui:fieldset>
 </aui:form>
-
-<br />
 
 <aui:form action="<%= configurationURL %>" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
@@ -176,12 +168,6 @@ catch (NoSuchRecordSetException nsrse) {
 	<aui:input name="preferences--recordSetId--" type="hidden" value="<%= recordSetId %>" />
 	<aui:input name="preferences--formDDMTemplateId--" type="hidden" value="<%= formDDMTemplateId %>" />
 	<aui:input name="preferences--multipleSubmissions--" type="hidden" value="<%= multipleSubmissions %>" />
-
-	<aui:fieldset cssClass="aui-helper-hidden">
-		<aui:field-wrapper label="portlet-id">
-			<%= portletResource %>
-		</aui:field-wrapper>
-	</aui:fieldset>
 
 	<aui:button-row>
 		<aui:button type="submit" />

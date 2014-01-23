@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -65,6 +65,8 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		};
 	public static final String TABLE_SQL_CREATE = "create table Marketplace_Module (uuid_ VARCHAR(75) null,moduleId LONG not null primary key,appId LONG,contextName VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table Marketplace_Module";
+	public static final String ORDER_BY_JPQL = " ORDER BY module.moduleId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY Marketplace_Module.moduleId ASC";
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
@@ -80,32 +82,39 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	public static long APPID_COLUMN_BITMASK = 1L;
 	public static long CONTEXTNAME_COLUMN_BITMASK = 2L;
 	public static long UUID_COLUMN_BITMASK = 4L;
+	public static long MODULEID_COLUMN_BITMASK = 8L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.marketplace.model.Module"));
 
 	public ModuleModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setModuleId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_moduleId);
+		return _moduleId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return Module.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return Module.class.getName();
 	}
@@ -118,6 +127,9 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		attributes.put("moduleId", getModuleId());
 		attributes.put("appId", getAppId());
 		attributes.put("contextName", getContextName());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -149,6 +161,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -158,6 +171,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -170,18 +184,22 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	public long getModuleId() {
 		return _moduleId;
 	}
 
+	@Override
 	public void setModuleId(long moduleId) {
 		_moduleId = moduleId;
 	}
 
+	@Override
 	public long getAppId() {
 		return _appId;
 	}
 
+	@Override
 	public void setAppId(long appId) {
 		_columnBitmask |= APPID_COLUMN_BITMASK;
 
@@ -198,6 +216,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return _originalAppId;
 	}
 
+	@Override
 	public String getContextName() {
 		if (_contextName == null) {
 			return StringPool.BLANK;
@@ -207,6 +226,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		}
 	}
 
+	@Override
 	public void setContextName(String contextName) {
 		_columnBitmask |= CONTEXTNAME_COLUMN_BITMASK;
 
@@ -262,6 +282,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return moduleImpl;
 	}
 
+	@Override
 	public int compareTo(Module module) {
 		long primaryKey = module.getPrimaryKey();
 
@@ -278,18 +299,15 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof Module)) {
 			return false;
 		}
 
-		Module module = null;
-
-		try {
-			module = (Module)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		Module module = (Module)obj;
 
 		long primaryKey = module.getPrimaryKey();
 
@@ -304,6 +322,16 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -365,6 +393,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(16);
 

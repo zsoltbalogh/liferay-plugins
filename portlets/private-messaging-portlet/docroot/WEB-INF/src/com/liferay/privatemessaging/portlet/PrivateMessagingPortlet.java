@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -26,17 +26,12 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.notifications.Channel;
-import com.liferay.portal.kernel.notifications.ChannelException;
-import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
-import com.liferay.portal.kernel.notifications.NotificationEvent;
-import com.liferay.portal.kernel.notifications.UnknownChannelException;
-import com.liferay.portal.kernel.servlet.ServletResponseUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.portlet.PortletResponseUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -47,7 +42,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.CompanyConstants;
+import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -55,11 +50,9 @@ import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.FileExtensionException;
 import com.liferay.portlet.documentlibrary.FileNameException;
 import com.liferay.portlet.documentlibrary.FileSizeException;
-import com.liferay.portlet.documentlibrary.store.DLStoreUtil;
 import com.liferay.portlet.messageboards.model.MBMessage;
 import com.liferay.portlet.messageboards.service.MBMessageLocalServiceUtil;
 import com.liferay.privatemessaging.service.UserThreadLocalServiceUtil;
-import com.liferay.privatemessaging.util.PortletKeys;
 import com.liferay.privatemessaging.util.PortletPropsValues;
 import com.liferay.privatemessaging.util.PrivateMessagingUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -73,13 +66,11 @@ import java.util.List;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Scott Lee
@@ -100,56 +91,34 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 		for (long mbThreadId : mbThreadIds) {
 			UserThreadLocalServiceUtil.deleteUserThread(
 				themeDisplay.getUserId(), mbThreadId);
-
-			try {
-				removeNotification(
-					themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-					mbThreadId);
-			}
-			catch (ChannelException ce) {
-			}
 		}
 	}
 
 	public void getMessageAttachment(
-			ActionRequest actionRequest, ActionResponse actionResponse)
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
-			long messageId = ParamUtil.getLong(actionRequest, "messageId");
-			String fileName = ParamUtil.getString(actionRequest, "attachment");
+		long messageId = ParamUtil.getLong(resourceRequest, "messageId");
+		String fileName = ParamUtil.getString(resourceRequest, "attachment");
 
-			MBMessage message = MBMessageLocalServiceUtil.getMessage(messageId);
+		MBMessage message = MBMessageLocalServiceUtil.getMessage(messageId);
 
-			if (!PrivateMessagingUtil.isUserPartOfThread(
-					themeDisplay.getUserId(), message.getThreadId())) {
+		if (!PrivateMessagingUtil.isUserPartOfThread(
+				themeDisplay.getUserId(), message.getThreadId())) {
 
-				throw new PrincipalException();
-			}
-
-			String path = message.getAttachmentsDir() + "/" + fileName;
-
-			InputStream inputStream = DLStoreUtil.getFileAsStream(
-				message.getCompanyId(), CompanyConstants.SYSTEM, path);
-			int contentLength = (int)DLStoreUtil.getFileSize(
-				message.getCompanyId(), CompanyConstants.SYSTEM, path);
-			String contentType = MimeTypesUtil.getContentType(fileName);
-
-			HttpServletRequest request = PortalUtil.getHttpServletRequest(
-				actionRequest);
-			HttpServletResponse response = PortalUtil.getHttpServletResponse(
-				actionResponse);
-
-			ServletResponseUtil.sendFile(
-				request, response, fileName, inputStream, contentLength,
-				contentType);
+			throw new PrincipalException();
 		}
-		catch (Exception e) {
-			PortalUtil.sendError(e, actionRequest, actionResponse);
-		}
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.getPortletFileEntry(
+			message.getGroupId(), message.getAttachmentsFolderId(), fileName);
+
+		PortletResponseUtil.sendFile(
+			resourceRequest, resourceResponse, fileName,
+			fileEntry.getContentStream(), (int)fileEntry.getSize(),
+			fileEntry.getMimeType());
 	}
 
 	public void markMessagesAsRead(
@@ -185,13 +154,13 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 	}
 
 	public void sendMessage(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws PortalException, SystemException {
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		throws Exception {
 
 		UploadPortletRequest uploadPortletRequest =
-			PortalUtil.getUploadPortletRequest(actionRequest);
+			PortalUtil.getUploadPortletRequest(resourceRequest);
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		long userId = ParamUtil.getLong(uploadPortletRequest, "userId");
@@ -201,6 +170,8 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 		String body = ParamUtil.getString(uploadPortletRequest, "body");
 		List<ObjectValuePair<String, InputStream>> inputStreamOVPs =
 			new ArrayList<ObjectValuePair<String, InputStream>>();
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		try {
 			for (int i = 1; i <= 3; i++) {
@@ -223,25 +194,22 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 					inputStreamOVPs.add(inputStreamOVP);
 				}
 				catch (Exception e) {
-					_log.error("unable to attach file " + fileName, e);
+					_log.error(
+						translate(resourceRequest, "unable to attach file ") +
+							fileName, e);
 				}
 			}
 
 			UserThreadLocalServiceUtil.addPrivateMessage(
 				userId, mbThreadId, to, subject, body, inputStreamOVPs,
 				themeDisplay);
+
+			jsonObject.put("success", Boolean.TRUE);
 		}
 		catch (Exception e) {
-			if (e instanceof IOException) {
-				throw new PortalException("Unable to process attachment", e);
-			}
-			else if (e instanceof FileExtensionException ||
-					 e instanceof FileNameException ||
-					 e instanceof FileSizeException ||
-					 e instanceof UserScreenNameException) {
+			jsonObject.put("message", getMessage(resourceRequest, e));
 
-				SessionErrors.add(actionRequest, e.getClass());
-			}
+			jsonObject.put("success", Boolean.FALSE);
 		}
 		finally {
 			for (ObjectValuePair<String, InputStream> inputStreamOVP :
@@ -252,6 +220,8 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 				StreamUtil.cleanUp(inputStream);
 			}
 		}
+
+		writeJSON(resourceRequest, resourceResponse, jsonObject);
 	}
 
 	@Override
@@ -263,11 +233,14 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 			String resourceID = GetterUtil.getString(
 				resourceRequest.getResourceID());
 
-			if (resourceID.equals("checkData")) {
-				checkData(resourceRequest, resourceResponse);
+			if (resourceID.equals("getMessageAttachment")) {
+				getMessageAttachment(resourceRequest, resourceResponse);
 			}
 			else if (resourceID.equals("getUsers")) {
 				getUsers(resourceRequest, resourceResponse);
+			}
+			else if (resourceID.equals("sendMessage")) {
+				sendMessage(resourceRequest, resourceResponse);
 			}
 			else {
 				super.serveResource(resourceRequest, resourceResponse);
@@ -278,51 +251,8 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 		}
 	}
 
-	protected void checkData(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
-		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		UploadPortletRequest uploadPortletRequest =
-			PortalUtil.getUploadPortletRequest(resourceRequest);
-
-		String to = ParamUtil.getString(uploadPortletRequest, "to");
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		try {
-			validateTo(to, themeDisplay);
-
-			for (int i = 1; i <= 3; i++) {
-				String fileName = uploadPortletRequest.getFileName(
-					"msgFile" + i);
-				InputStream inputStream = uploadPortletRequest.getFileAsStream(
-					"msgFile" + i);
-
-				if (inputStream == null) {
-					continue;
-				}
-
-				validateAttachment(fileName, inputStream);
-			}
-
-			jsonObject.put("success", true);
-		}
-		catch (Exception e) {
-			jsonObject.put("message", getMessage(resourceRequest, e));
-			jsonObject.put("success", false);
-		}
-
-		writeJSON(resourceRequest, resourceResponse, jsonObject);
-	}
-
 	protected String getMessage(PortletRequest portletRequest, Exception key)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		String message = null;
 
@@ -381,16 +311,16 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 
 		String keywords = ParamUtil.getString(resourceRequest, "keywords");
 
+		JSONObject resultsJSONObject = JSONFactoryUtil.createJSONObject();
+
 		JSONObject jsonObject = PrivateMessagingUtil.getJSONRecipients(
 			themeDisplay.getUserId(),
 			PortletPropsValues.AUTOCOMPLETE_RECIPIENT_TYPE, keywords, 0,
 			PortletPropsValues.AUTOCOMPLETE_RECIPIENT_MAX);
 
-		JSONObject results = JSONFactoryUtil.createJSONObject();
+		resultsJSONObject.put("results", jsonObject);
 
-		results.put("results", jsonObject);
-
-		writeJSON(resourceRequest, resourceResponse, results);
+		writeJSON(resourceRequest, resourceResponse, resultsJSONObject);
 	}
 
 	protected boolean isValidName(String name) {
@@ -414,40 +344,6 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 		}
 
 		return true;
-	}
-
-	protected void removeNotification(
-			long companyId, long userId, long mbThreadId)
-		throws ChannelException {
-
-		List<NotificationEvent> notificationEvents = null;
-
-		try {
-			notificationEvents = ChannelHubManagerUtil.getNotificationEvents(
-				companyId, userId, true);
-		}
-		catch (UnknownChannelException e) {
-			Channel channel = ChannelHubManagerUtil.getChannel(
-				companyId, userId, true);
-
-			notificationEvents = channel.getNotificationEvents();
-		}
-
-		for (NotificationEvent notificationEvent : notificationEvents) {
-			JSONObject notificationEventJSONObject =
-				notificationEvent.getPayload();
-
-			String portletId = notificationEventJSONObject.getString(
-				"portletId");
-			long entryId = notificationEventJSONObject.getLong("entryId");
-
-			if (portletId.equals(PortletKeys.PRIVATE_MESSAGING) &&
-				(entryId == mbThreadId)) {
-
-				ChannelHubManagerUtil.deleteUserNotificiationEvent(
-					companyId, userId, notificationEvent.getUuid());
-			}
-		}
 	}
 
 	protected void validateAttachment(String fileName, InputStream inputStream)
@@ -531,6 +427,19 @@ public class PrivateMessagingPortlet extends MVCPortlet {
 
 			throw new UserScreenNameException(sb.toString());
 		}
+	}
+
+	@Override
+	protected void writeJSON(
+			PortletRequest portletRequest, MimeResponse mimeResponse,
+			Object json)
+		throws IOException {
+
+		mimeResponse.setContentType(ContentTypes.TEXT_HTML);
+
+		PortletResponseUtil.write(mimeResponse, json.toString());
+
+		mimeResponse.flushBuffer();
 	}
 
 	private static Log _log = LogFactoryUtil.getLog(

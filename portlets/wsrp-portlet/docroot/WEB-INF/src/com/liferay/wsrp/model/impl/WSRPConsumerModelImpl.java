@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -15,6 +15,7 @@
 package com.liferay.wsrp.model.impl;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
 import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.util.PortalUtil;
 
 import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
@@ -70,9 +72,10 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			{ "registrationContextString", Types.CLOB },
 			{ "registrationPropertiesString", Types.VARCHAR },
 			{ "forwardCookies", Types.VARCHAR },
-			{ "forwardHeaders", Types.VARCHAR }
+			{ "forwardHeaders", Types.VARCHAR },
+			{ "markupCharacterSets", Types.VARCHAR }
 		};
-	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPConsumer (uuid_ VARCHAR(75) null,wsrpConsumerId LONG not null primary key,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,url STRING null,wsdl TEXT null,registrationContextString TEXT null,registrationPropertiesString STRING null,forwardCookies VARCHAR(255) null,forwardHeaders VARCHAR(255) null)";
+	public static final String TABLE_SQL_CREATE = "create table WSRP_WSRPConsumer (uuid_ VARCHAR(75) null,wsrpConsumerId LONG not null primary key,companyId LONG,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,url STRING null,wsdl TEXT null,registrationContextString TEXT null,registrationPropertiesString STRING null,forwardCookies VARCHAR(255) null,forwardHeaders VARCHAR(255) null,markupCharacterSets VARCHAR(255) null)";
 	public static final String TABLE_SQL_DROP = "drop table WSRP_WSRPConsumer";
 	public static final String ORDER_BY_JPQL = " ORDER BY wsrpConsumer.name ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY WSRP_WSRPConsumer.name ASC";
@@ -90,32 +93,39 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			true);
 	public static long COMPANYID_COLUMN_BITMASK = 1L;
 	public static long UUID_COLUMN_BITMASK = 2L;
+	public static long NAME_COLUMN_BITMASK = 4L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.wsrp.model.WSRPConsumer"));
 
 	public WSRPConsumerModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setWsrpConsumerId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_wsrpConsumerId);
+		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return WSRPConsumer.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return WSRPConsumer.class.getName();
 	}
@@ -138,6 +148,10 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			getRegistrationPropertiesString());
 		attributes.put("forwardCookies", getForwardCookies());
 		attributes.put("forwardHeaders", getForwardHeaders());
+		attributes.put("markupCharacterSets", getMarkupCharacterSets());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -217,8 +231,16 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		if (forwardHeaders != null) {
 			setForwardHeaders(forwardHeaders);
 		}
+
+		String markupCharacterSets = (String)attributes.get(
+				"markupCharacterSets");
+
+		if (markupCharacterSets != null) {
+			setMarkupCharacterSets(markupCharacterSets);
+		}
 	}
 
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -228,6 +250,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -240,18 +263,22 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		return GetterUtil.getString(_originalUuid);
 	}
 
+	@Override
 	public long getWsrpConsumerId() {
 		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setWsrpConsumerId(long wsrpConsumerId) {
 		_wsrpConsumerId = wsrpConsumerId;
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -268,22 +295,27 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		return _originalCompanyId;
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getName() {
 		if (_name == null) {
 			return StringPool.BLANK;
@@ -293,12 +325,14 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
 		_name = name;
 	}
 
+	@Override
 	public String getUrl() {
 		if (_url == null) {
 			return StringPool.BLANK;
@@ -308,10 +342,12 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setUrl(String url) {
 		_url = url;
 	}
 
+	@Override
 	public String getWsdl() {
 		if (_wsdl == null) {
 			return StringPool.BLANK;
@@ -321,10 +357,12 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setWsdl(String wsdl) {
 		_wsdl = wsdl;
 	}
 
+	@Override
 	public String getRegistrationContextString() {
 		if (_registrationContextString == null) {
 			return StringPool.BLANK;
@@ -334,10 +372,12 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setRegistrationContextString(String registrationContextString) {
 		_registrationContextString = registrationContextString;
 	}
 
+	@Override
 	public String getRegistrationPropertiesString() {
 		if (_registrationPropertiesString == null) {
 			return StringPool.BLANK;
@@ -347,11 +387,13 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setRegistrationPropertiesString(
 		String registrationPropertiesString) {
 		_registrationPropertiesString = registrationPropertiesString;
 	}
 
+	@Override
 	public String getForwardCookies() {
 		if (_forwardCookies == null) {
 			return StringPool.BLANK;
@@ -361,10 +403,12 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setForwardCookies(String forwardCookies) {
 		_forwardCookies = forwardCookies;
 	}
 
+	@Override
 	public String getForwardHeaders() {
 		if (_forwardHeaders == null) {
 			return StringPool.BLANK;
@@ -374,8 +418,30 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		}
 	}
 
+	@Override
 	public void setForwardHeaders(String forwardHeaders) {
 		_forwardHeaders = forwardHeaders;
+	}
+
+	@Override
+	public String getMarkupCharacterSets() {
+		if (_markupCharacterSets == null) {
+			return StringPool.BLANK;
+		}
+		else {
+			return _markupCharacterSets;
+		}
+	}
+
+	@Override
+	public void setMarkupCharacterSets(String markupCharacterSets) {
+		_markupCharacterSets = markupCharacterSets;
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(PortalUtil.getClassNameId(
+				WSRPConsumer.class.getName()));
 	}
 
 	public long getColumnBitmask() {
@@ -421,12 +487,14 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		wsrpConsumerImpl.setRegistrationPropertiesString(getRegistrationPropertiesString());
 		wsrpConsumerImpl.setForwardCookies(getForwardCookies());
 		wsrpConsumerImpl.setForwardHeaders(getForwardHeaders());
+		wsrpConsumerImpl.setMarkupCharacterSets(getMarkupCharacterSets());
 
 		wsrpConsumerImpl.resetOriginalValues();
 
 		return wsrpConsumerImpl;
 	}
 
+	@Override
 	public int compareTo(WSRPConsumer wsrpConsumer) {
 		int value = 0;
 
@@ -441,18 +509,15 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof WSRPConsumer)) {
 			return false;
 		}
 
-		WSRPConsumer wsrpConsumer = null;
-
-		try {
-			wsrpConsumer = (WSRPConsumer)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		WSRPConsumer wsrpConsumer = (WSRPConsumer)obj;
 
 		long primaryKey = wsrpConsumer.getPrimaryKey();
 
@@ -467,6 +532,16 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -574,12 +649,21 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			wsrpConsumerCacheModel.forwardHeaders = null;
 		}
 
+		wsrpConsumerCacheModel.markupCharacterSets = getMarkupCharacterSets();
+
+		String markupCharacterSets = wsrpConsumerCacheModel.markupCharacterSets;
+
+		if ((markupCharacterSets != null) &&
+				(markupCharacterSets.length() == 0)) {
+			wsrpConsumerCacheModel.markupCharacterSets = null;
+		}
+
 		return wsrpConsumerCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -605,13 +689,16 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 		sb.append(getForwardCookies());
 		sb.append(", forwardHeaders=");
 		sb.append(getForwardHeaders());
+		sb.append(", markupCharacterSets=");
+		sb.append(getMarkupCharacterSets());
 		sb.append("}");
 
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(40);
+		StringBundler sb = new StringBundler(43);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.wsrp.model.WSRPConsumer");
@@ -665,6 +752,10 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 			"<column><column-name>forwardHeaders</column-name><column-value><![CDATA[");
 		sb.append(getForwardHeaders());
 		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>markupCharacterSets</column-name><column-value><![CDATA[");
+		sb.append(getMarkupCharacterSets());
+		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -690,6 +781,7 @@ public class WSRPConsumerModelImpl extends BaseModelImpl<WSRPConsumer>
 	private String _registrationPropertiesString;
 	private String _forwardCookies;
 	private String _forwardHeaders;
+	private String _markupCharacterSets;
 	private long _columnBitmask;
 	private WSRPConsumer _escapedModel;
 }

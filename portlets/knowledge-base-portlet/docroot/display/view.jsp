@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,10 +24,10 @@
 
 <liferay-ui:search-container
 	searchContainer="<%= new KBArticleSearch(renderRequest, iteratorURL) %>"
+	total="<%= KBArticleServiceUtil.getSiblingKBArticlesCount(scopeGroupId, KBArticleConstants.DEFAULT_PARENT_RESOURCE_PRIM_KEY, WorkflowConstants.STATUS_APPROVED) %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= KBArticleServiceUtil.getSiblingKBArticles(scopeGroupId, KBArticleConstants.DEFAULT_PARENT_RESOURCE_PRIM_KEY, WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>"
-		total="<%= KBArticleServiceUtil.getSiblingKBArticlesCount(scopeGroupId, KBArticleConstants.DEFAULT_PARENT_RESOURCE_PRIM_KEY, WorkflowConstants.STATUS_APPROVED) %>"
 	/>
 
 	<liferay-ui:search-container-row
@@ -67,22 +67,22 @@
 		</c:if>
 
 		<c:if test="<%= showKBArticleCreateDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="create-date"
 				orderable="<%= true %>"
-				value='<%= dateFormatDate.format(kbArticle.getCreateDate()) + "<br />" + dateFormatTime.format(kbArticle.getCreateDate()) %>'
+				value="<%= kbArticle.getCreateDate() %>"
 			/>
 		</c:if>
 
 		<c:if test="<%= showKBArticleModifiedDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="modified-date"
 				orderable="<%= true %>"
-				value='<%= dateFormatDate.format(kbArticle.getModifiedDate()) + "<br />" + dateFormatTime.format(kbArticle.getModifiedDate()) %>'
+				value="<%= kbArticle.getModifiedDate() %>"
 			/>
 		</c:if>
 
@@ -92,7 +92,7 @@
 				href="<%= rowURL %>"
 				name="status"
 				orderable="<%= true %>"
-				value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(kbArticle.getStatus())) + ")" %>'
+				value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(kbArticle.getStatus())) + ")" %>'
 			/>
 		</c:if>
 
@@ -129,63 +129,13 @@
 				modelResourceDescription="<%= HtmlUtil.escape(themeDisplay.getScopeGroupName()) %>"
 				resourcePrimKey="<%= String.valueOf(scopeGroupId) %>"
 				var="permissionsURL"
+				windowState="<%= LiferayWindowState.POP_UP.toString() %>"
 			/>
 
-			<aui:button href="<%= permissionsURL %>" value="permissions" />
+			<aui:button href="<%= permissionsURL %>" useDialog="<%= true %>" value="permissions" />
 		</c:if>
 
-		<div class="kb-display-tools">
-			<table class="lfr-table">
-			<tr>
-				<c:if test="<%= PortalUtil.isRSSFeedsEnabled() %>">
-					<td>
-						<liferay-portlet:resourceURL id="groupKBArticlesRSS" var="groupKBArticlesRSSURL">
-							<portlet:param name="rssDelta" value="<%= String.valueOf(rssDelta) %>" />
-							<portlet:param name="rssDisplayStyle" value="<%= rssDisplayStyle %>" />
-							<portlet:param name="rssFormat" value="<%= rssFormat %>" />
-						</liferay-portlet:resourceURL>
-
-						<liferay-ui:icon
-							image="rss"
-							label="<%= true %>"
-							method="get"
-							target="_blank"
-							url="<%= groupKBArticlesRSSURL %>"
-						/>
-					</td>
-				</c:if>
-
-				<c:if test="<%= DisplayPermission.contains(permissionChecker, scopeGroupId, ActionKeys.SUBSCRIBE) %>">
-					<td>
-						<c:choose>
-							<c:when test="<%= SubscriptionLocalServiceUtil.isSubscribed(user.getCompanyId(), user.getUserId(), KBArticle.class.getName(), scopeGroupId) %>">
-								<liferay-portlet:actionURL name="unsubscribeGroupKBArticles" var="unsubscribeGroupKBArticlesURL">
-									<portlet:param name="redirect" value="<%= redirect %>" />
-								</liferay-portlet:actionURL>
-
-								<liferay-ui:icon
-									image="unsubscribe"
-									label="<%= true %>"
-									url="<%= unsubscribeGroupKBArticlesURL %>"
-								/>
-							</c:when>
-							<c:otherwise>
-								<liferay-portlet:actionURL name="subscribeGroupKBArticles" var="subscribeGroupKBArticlesURL">
-									<portlet:param name="redirect" value="<%= redirect %>" />
-								</liferay-portlet:actionURL>
-
-								<liferay-ui:icon
-									image="subscribe"
-									label="<%= true %>"
-									url="<%= subscribeGroupKBArticlesURL %>"
-								/>
-							</c:otherwise>
-						</c:choose>
-					</td>
-				</c:if>
-			</tr>
-			</table>
-		</div>
+		<liferay-util:include page="/display/display_tools.jsp" servletContext="<%= application %>" />
 	</aui:button-row>
 
 	<liferay-ui:search-iterator />

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,12 +19,13 @@ package com.liferay.calendar.notification;
  */
 public class IMNotificationSender implements NotificationSender {
 
+	@Override
 	public void sendNotification(
 		NotificationRecipient notificationRecipient,
-		NotificationTemplateType notificationTemplateType,
 		NotificationTemplateContext notificationTemplateContext) {
 	}
 
+	@Override
 	public void sendNotification(
 		String fromAddress, String fromName,
 		NotificationRecipient notificationRecipient, String subject,

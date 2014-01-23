@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,7 +23,7 @@
 		List<Fact<?>> facts = new ArrayList<Fact<?>>();
 
 		facts.add(new Fact<KeyValuePair>("classNameIds", new KeyValuePair("classNameIds", StringUtil.merge(classNameIds))));
-		facts.add(new Fact<KeyValuePair>("parentGroupId", new KeyValuePair("parentGroupId", String.valueOf(themeDisplay.getParentGroupId()))));
+		facts.add(new Fact<KeyValuePair>("parentGroupId", new KeyValuePair("parentGroupId", String.valueOf(themeDisplay.getSiteGroupId()))));
 		facts.add(new Fact<User>("user", user));
 		facts.add(new Fact<KeyValuePair>("userCustomAttributeNames", new KeyValuePair("userCustomAttributeNames", userCustomAttributeNames)));
 		facts.add(new Fact<List<AssetEntry>>("results", new ArrayList<AssetEntry>()));

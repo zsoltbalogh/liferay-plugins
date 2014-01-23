@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -49,7 +49,7 @@
 			notificationsMenuItems.on(
 				['mouseover', 'mouseout'],
 				function(event) {
-					event.currentTarget.toggleClass('aui-focus');
+					event.currentTarget.toggleClass('focus');
 				}
 			);
 		}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,8 +14,6 @@
 
 package com.liferay.socialcoding.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -32,13 +30,14 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnmodifiableList;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.model.ModelListener;
-import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import com.liferay.socialcoding.NoSuchJIRAActionException;
@@ -51,6 +50,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the j i r a action service.
@@ -76,64 +76,6 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 		".List1";
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
 		".List2";
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAUSERID =
-		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByJiraUserId",
-			new String[] {
-				String.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAUSERID =
-		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByJiraUserId",
-			new String[] { String.class.getName() },
-			JIRAActionModelImpl.JIRAUSERID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_JIRAUSERID = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByJiraUserId",
-			new String[] { String.class.getName() });
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAISSUEID =
-		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByJiraIssueId",
-			new String[] {
-				Long.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID =
-		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByJiraIssueId",
-			new String[] { Long.class.getName() },
-			JIRAActionModelImpl.JIRAISSUEID_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_JIRAISSUEID = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByJiraIssueId",
-			new String[] { Long.class.getName() });
-	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByType",
-			new String[] {
-				String.class.getName(),
-				
-			"java.lang.Integer", "java.lang.Integer",
-				"com.liferay.portal.kernel.util.OrderByComparator"
-			});
-	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByType",
-			new String[] { String.class.getName() },
-			JIRAActionModelImpl.TYPE_COLUMN_BITMASK);
-	public static final FinderPath FINDER_PATH_COUNT_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByType",
-			new String[] { String.class.getName() });
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
@@ -143,12 +85,1577 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAUSERID =
+		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByJiraUserId",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAUSERID =
+		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByJiraUserId",
+			new String[] { String.class.getName() },
+			JIRAActionModelImpl.JIRAUSERID_COLUMN_BITMASK |
+			JIRAActionModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_JIRAUSERID = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByJiraUserId",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns all the j i r a actions where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @return the matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraUserId(String jiraUserId)
+		throws SystemException {
+		return findByJiraUserId(jiraUserId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the j i r a actions where jiraUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @return the range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
+		int end) throws SystemException {
+		return findByJiraUserId(jiraUserId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the j i r a actions where jiraUserId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
+		int end, OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAUSERID;
+			finderArgs = new Object[] { jiraUserId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAUSERID;
+			finderArgs = new Object[] { jiraUserId, start, end, orderByComparator };
+		}
+
+		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (JIRAAction jiraAction : list) {
+				if (!Validator.equals(jiraUserId, jiraAction.getJiraUserId())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+			boolean bindJiraUserId = false;
+
+			if (jiraUserId == null) {
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
+			}
+			else if (jiraUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
+			}
+			else {
+				bindJiraUserId = true;
+
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindJiraUserId) {
+					qPos.add(jiraUserId);
+				}
+
+				if (!pagination) {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<JIRAAction>(list);
+				}
+				else {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByJiraUserId_First(String jiraUserId,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByJiraUserId_First(jiraUserId,
+				orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("jiraUserId=");
+		msg.append(jiraUserId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByJiraUserId_First(String jiraUserId,
+		OrderByComparator orderByComparator) throws SystemException {
+		List<JIRAAction> list = findByJiraUserId(jiraUserId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByJiraUserId_Last(String jiraUserId,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByJiraUserId_Last(jiraUserId,
+				orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("jiraUserId=");
+		msg.append(jiraUserId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByJiraUserId_Last(String jiraUserId,
+		OrderByComparator orderByComparator) throws SystemException {
+		int count = countByJiraUserId(jiraUserId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<JIRAAction> list = findByJiraUserId(jiraUserId, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraUserId = &#63;.
+	 *
+	 * @param jiraActionId the primary key of the current j i r a action
+	 * @param jiraUserId the jira user ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction[] findByJiraUserId_PrevAndNext(long jiraActionId,
+		String jiraUserId, OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			JIRAAction[] array = new JIRAActionImpl[3];
+
+			array[0] = getByJiraUserId_PrevAndNext(session, jiraAction,
+					jiraUserId, orderByComparator, true);
+
+			array[1] = jiraAction;
+
+			array[2] = getByJiraUserId_PrevAndNext(session, jiraAction,
+					jiraUserId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected JIRAAction getByJiraUserId_PrevAndNext(Session session,
+		JIRAAction jiraAction, String jiraUserId,
+		OrderByComparator orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+		boolean bindJiraUserId = false;
+
+		if (jiraUserId == null) {
+			query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
+		}
+		else if (jiraUserId.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
+		}
+		else {
+			bindJiraUserId = true;
+
+			query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindJiraUserId) {
+			qPos.add(jiraUserId);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<JIRAAction> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the j i r a actions where jiraUserId = &#63; from the database.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByJiraUserId(String jiraUserId) throws SystemException {
+		for (JIRAAction jiraAction : findByJiraUserId(jiraUserId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(jiraAction);
+		}
+	}
+
+	/**
+	 * Returns the number of j i r a actions where jiraUserId = &#63;.
+	 *
+	 * @param jiraUserId the jira user ID
+	 * @return the number of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByJiraUserId(String jiraUserId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAUSERID;
+
+		Object[] finderArgs = new Object[] { jiraUserId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_JIRAACTION_WHERE);
+
+			boolean bindJiraUserId = false;
+
+			if (jiraUserId == null) {
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
+			}
+			else if (jiraUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
+			}
+			else {
+				bindJiraUserId = true;
+
+				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindJiraUserId) {
+					qPos.add(jiraUserId);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1 = "jiraAction.jiraUserId IS NULL";
+	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2 = "jiraAction.jiraUserId = ?";
+	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3 = "(jiraAction.jiraUserId IS NULL OR jiraAction.jiraUserId = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAISSUEID =
+		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByJiraIssueId",
+			new String[] {
+				Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID =
+		new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByJiraIssueId",
+			new String[] { Long.class.getName() },
+			JIRAActionModelImpl.JIRAISSUEID_COLUMN_BITMASK |
+			JIRAActionModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_JIRAISSUEID = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByJiraIssueId",
+			new String[] { Long.class.getName() });
+
+	/**
+	 * Returns all the j i r a actions where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @return the matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraIssueId(long jiraIssueId)
+		throws SystemException {
+		return findByJiraIssueId(jiraIssueId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the j i r a actions where jiraIssueId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @return the range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
+		int end) throws SystemException {
+		return findByJiraIssueId(jiraIssueId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the j i r a actions where jiraIssueId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
+		int end, OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID;
+			finderArgs = new Object[] { jiraIssueId };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAISSUEID;
+			finderArgs = new Object[] { jiraIssueId, start, end, orderByComparator };
+		}
+
+		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (JIRAAction jiraAction : list) {
+				if ((jiraIssueId != jiraAction.getJiraIssueId())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(jiraIssueId);
+
+				if (!pagination) {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<JIRAAction>(list);
+				}
+				else {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByJiraIssueId_First(long jiraIssueId,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByJiraIssueId_First(jiraIssueId,
+				orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("jiraIssueId=");
+		msg.append(jiraIssueId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByJiraIssueId_First(long jiraIssueId,
+		OrderByComparator orderByComparator) throws SystemException {
+		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, 0, 1,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByJiraIssueId_Last(long jiraIssueId,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByJiraIssueId_Last(jiraIssueId,
+				orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("jiraIssueId=");
+		msg.append(jiraIssueId);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByJiraIssueId_Last(long jiraIssueId,
+		OrderByComparator orderByComparator) throws SystemException {
+		int count = countByJiraIssueId(jiraIssueId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, count - 1,
+				count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraIssueId = &#63;.
+	 *
+	 * @param jiraActionId the primary key of the current j i r a action
+	 * @param jiraIssueId the jira issue ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction[] findByJiraIssueId_PrevAndNext(long jiraActionId,
+		long jiraIssueId, OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			JIRAAction[] array = new JIRAActionImpl[3];
+
+			array[0] = getByJiraIssueId_PrevAndNext(session, jiraAction,
+					jiraIssueId, orderByComparator, true);
+
+			array[1] = jiraAction;
+
+			array[2] = getByJiraIssueId_PrevAndNext(session, jiraAction,
+					jiraIssueId, orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected JIRAAction getByJiraIssueId_PrevAndNext(Session session,
+		JIRAAction jiraAction, long jiraIssueId,
+		OrderByComparator orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+		query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(jiraIssueId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<JIRAAction> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the j i r a actions where jiraIssueId = &#63; from the database.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByJiraIssueId(long jiraIssueId) throws SystemException {
+		for (JIRAAction jiraAction : findByJiraIssueId(jiraIssueId,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+			remove(jiraAction);
+		}
+	}
+
+	/**
+	 * Returns the number of j i r a actions where jiraIssueId = &#63;.
+	 *
+	 * @param jiraIssueId the jira issue ID
+	 * @return the number of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByJiraIssueId(long jiraIssueId) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRAISSUEID;
+
+		Object[] finderArgs = new Object[] { jiraIssueId };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_JIRAACTION_WHERE);
+
+			query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				qPos.add(jiraIssueId);
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2 = "jiraAction.jiraIssueId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByType",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, JIRAActionImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByType",
+			new String[] { String.class.getName() },
+			JIRAActionModelImpl.TYPE_COLUMN_BITMASK |
+			JIRAActionModelImpl.MODIFIEDDATE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_TYPE = new FinderPath(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+			JIRAActionModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByType",
+			new String[] { String.class.getName() });
+
+	/**
+	 * Returns all the j i r a actions where type = &#63;.
+	 *
+	 * @param type the type
+	 * @return the matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByType(String type) throws SystemException {
+		return findByType(type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the j i r a actions where type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param type the type
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @return the range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByType(String type, int start, int end)
+		throws SystemException {
+		return findByType(type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the j i r a actions where type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param type the type
+	 * @param start the lower bound of the range of j i r a actions
+	 * @param end the upper bound of the range of j i r a actions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public List<JIRAAction> findByType(String type, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TYPE;
+			finderArgs = new Object[] { type };
+		}
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_TYPE;
+			finderArgs = new Object[] { type, start, end, orderByComparator };
+		}
+
+		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
+				finderArgs, this);
+
+		if ((list != null) && !list.isEmpty()) {
+			for (JIRAAction jiraAction : list) {
+				if (!Validator.equals(type, jiraAction.getType())) {
+					list = null;
+
+					break;
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler query = null;
+
+			if (orderByComparator != null) {
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 3));
+			}
+			else {
+				query = new StringBundler(3);
+			}
+
+			query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+			boolean bindType = false;
+
+			if (type == null) {
+				query.append(_FINDER_COLUMN_TYPE_TYPE_1);
+			}
+			else if (type.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_TYPE_TYPE_3);
+			}
+			else {
+				bindType = true;
+
+				query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
+			}
+			else
+			 if (pagination) {
+				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindType) {
+					qPos.add(type);
+				}
+
+				if (!pagination) {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end, false);
+
+					Collections.sort(list);
+
+					list = new UnmodifiableList<JIRAAction>(list);
+				}
+				else {
+					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
+							start, end);
+				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByType_First(String type,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByType_First(type, orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("type=");
+		msg.append(type);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the first j i r a action in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByType_First(String type,
+		OrderByComparator orderByComparator) throws SystemException {
+		List<JIRAAction> list = findByType(type, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction findByType_Last(String type,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByType_Last(type, orderByComparator);
+
+		if (jiraAction != null) {
+			return jiraAction;
+		}
+
+		StringBundler msg = new StringBundler(4);
+
+		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		msg.append("type=");
+		msg.append(type);
+
+		msg.append(StringPool.CLOSE_CURLY_BRACE);
+
+		throw new NoSuchJIRAActionException(msg.toString());
+	}
+
+	/**
+	 * Returns the last j i r a action in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction fetchByType_Last(String type,
+		OrderByComparator orderByComparator) throws SystemException {
+		int count = countByType(type);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<JIRAAction> list = findByType(type, count - 1, count,
+				orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where type = &#63;.
+	 *
+	 * @param jiraActionId the primary key of the current j i r a action
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next j i r a action
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAAction[] findByType_PrevAndNext(long jiraActionId, String type,
+		OrderByComparator orderByComparator)
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			JIRAAction[] array = new JIRAActionImpl[3];
+
+			array[0] = getByType_PrevAndNext(session, jiraAction, type,
+					orderByComparator, true);
+
+			array[1] = jiraAction;
+
+			array[2] = getByType_PrevAndNext(session, jiraAction, type,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected JIRAAction getByType_PrevAndNext(Session session,
+		JIRAAction jiraAction, String type,
+		OrderByComparator orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByFields().length * 6));
+		}
+		else {
+			query = new StringBundler(3);
+		}
+
+		query.append(_SQL_SELECT_JIRAACTION_WHERE);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_1);
+		}
+		else if (type.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				query.append(_ORDER_BY_ENTITY_ALIAS);
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = query.toString();
+
+		Query q = session.createQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		if (bindType) {
+			qPos.add(type);
+		}
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<JIRAAction> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the j i r a actions where type = &#63; from the database.
+	 *
+	 * @param type the type
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public void removeByType(String type) throws SystemException {
+		for (JIRAAction jiraAction : findByType(type, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
+			remove(jiraAction);
+		}
+	}
+
+	/**
+	 * Returns the number of j i r a actions where type = &#63;.
+	 *
+	 * @param type the type
+	 * @return the number of matching j i r a actions
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public int countByType(String type) throws SystemException {
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_TYPE;
+
+		Object[] finderArgs = new Object[] { type };
+
+		Long count = (Long)FinderCacheUtil.getResult(finderPath, finderArgs,
+				this);
+
+		if (count == null) {
+			StringBundler query = new StringBundler(2);
+
+			query.append(_SQL_COUNT_JIRAACTION_WHERE);
+
+			boolean bindType = false;
+
+			if (type == null) {
+				query.append(_FINDER_COLUMN_TYPE_TYPE_1);
+			}
+			else if (type.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_TYPE_TYPE_3);
+			}
+			else {
+				bindType = true;
+
+				query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+			}
+
+			String sql = query.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = session.createQuery(sql);
+
+				QueryPos qPos = QueryPos.getInstance(q);
+
+				if (bindType) {
+					qPos.add(type);
+				}
+
+				count = (Long)q.uniqueResult();
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_TYPE_TYPE_1 = "jiraAction.type IS NULL";
+	private static final String _FINDER_COLUMN_TYPE_TYPE_2 = "jiraAction.type = ?";
+	private static final String _FINDER_COLUMN_TYPE_TYPE_3 = "(jiraAction.type IS NULL OR jiraAction.type = '')";
+
+	public JIRAActionPersistenceImpl() {
+		setModelClass(JIRAAction.class);
+	}
 
 	/**
 	 * Caches the j i r a action in the entity cache if it is enabled.
 	 *
 	 * @param jiraAction the j i r a action
 	 */
+	@Override
 	public void cacheResult(JIRAAction jiraAction) {
 		EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAActionImpl.class, jiraAction.getPrimaryKey(), jiraAction);
@@ -161,6 +1668,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 *
 	 * @param jiraActions the j i r a actions
 	 */
+	@Override
 	public void cacheResult(List<JIRAAction> jiraActions) {
 		for (JIRAAction jiraAction : jiraActions) {
 			if (EntityCacheUtil.getResult(
@@ -227,6 +1735,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @param jiraActionId the primary key for the new j i r a action
 	 * @return the new j i r a action
 	 */
+	@Override
 	public JIRAAction create(long jiraActionId) {
 		JIRAAction jiraAction = new JIRAActionImpl();
 
@@ -244,9 +1753,10 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction remove(long jiraActionId)
 		throws NoSuchJIRAActionException, SystemException {
-		return remove(Long.valueOf(jiraActionId));
+		return remove((Serializable)jiraActionId);
 	}
 
 	/**
@@ -383,7 +1893,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 			if ((jiraActionModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(jiraActionModelImpl.getOriginalJiraIssueId())
+						jiraActionModelImpl.getOriginalJiraIssueId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_JIRAISSUEID,
@@ -391,9 +1901,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(jiraActionModelImpl.getJiraIssueId())
-					};
+				args = new Object[] { jiraActionModelImpl.getJiraIssueId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_JIRAISSUEID,
 					args);
@@ -421,6 +1929,8 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 
 		EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAActionImpl.class, jiraAction.getPrimaryKey(), jiraAction);
+
+		jiraAction.resetOriginalValues();
 
 		return jiraAction;
 	}
@@ -452,13 +1962,24 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 *
 	 * @param primaryKey the primary key of the j i r a action
 	 * @return the j i r a action
-	 * @throws com.liferay.portal.NoSuchModelException if a j i r a action with the primary key could not be found
+	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public JIRAAction findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchJIRAActionException, SystemException {
+		JIRAAction jiraAction = fetchByPrimaryKey(primaryKey);
+
+		if (jiraAction == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchJIRAActionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return jiraAction;
 	}
 
 	/**
@@ -469,20 +1990,10 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction findByPrimaryKey(long jiraActionId)
 		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByPrimaryKey(jiraActionId);
-
-		if (jiraAction == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + jiraActionId);
-			}
-
-			throw new NoSuchJIRAActionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				jiraActionId);
-		}
-
-		return jiraAction;
+		return findByPrimaryKey((Serializable)jiraActionId);
 	}
 
 	/**
@@ -495,7 +2006,42 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	@Override
 	public JIRAAction fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
+		JIRAAction jiraAction = (JIRAAction)EntityCacheUtil.getResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+				JIRAActionImpl.class, primaryKey);
+
+		if (jiraAction == _nullJIRAAction) {
+			return null;
+		}
+
+		if (jiraAction == null) {
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				jiraAction = (JIRAAction)session.get(JIRAActionImpl.class,
+						primaryKey);
+
+				if (jiraAction != null) {
+					cacheResult(jiraAction);
+				}
+				else {
+					EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+						JIRAActionImpl.class, primaryKey, _nullJIRAAction);
+				}
+			}
+			catch (Exception e) {
+				EntityCacheUtil.removeResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
+					JIRAActionImpl.class, primaryKey);
+
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return jiraAction;
 	}
 
 	/**
@@ -505,1237 +2051,10 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the j i r a action, or <code>null</code> if a j i r a action with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAAction fetchByPrimaryKey(long jiraActionId)
 		throws SystemException {
-		JIRAAction jiraAction = (JIRAAction)EntityCacheUtil.getResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-				JIRAActionImpl.class, jiraActionId);
-
-		if (jiraAction == _nullJIRAAction) {
-			return null;
-		}
-
-		if (jiraAction == null) {
-			Session session = null;
-
-			boolean hasException = false;
-
-			try {
-				session = openSession();
-
-				jiraAction = (JIRAAction)session.get(JIRAActionImpl.class,
-						Long.valueOf(jiraActionId));
-			}
-			catch (Exception e) {
-				hasException = true;
-
-				throw processException(e);
-			}
-			finally {
-				if (jiraAction != null) {
-					cacheResult(jiraAction);
-				}
-				else if (!hasException) {
-					EntityCacheUtil.putResult(JIRAActionModelImpl.ENTITY_CACHE_ENABLED,
-						JIRAActionImpl.class, jiraActionId, _nullJIRAAction);
-				}
-
-				closeSession(session);
-			}
-		}
-
-		return jiraAction;
-	}
-
-	/**
-	 * Returns all the j i r a actions where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @return the matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraUserId(String jiraUserId)
-		throws SystemException {
-		return findByJiraUserId(jiraUserId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the j i r a actions where jiraUserId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @return the range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
-		int end) throws SystemException {
-		return findByJiraUserId(jiraUserId, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the j i r a actions where jiraUserId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraUserId(String jiraUserId, int start,
-		int end, OrderByComparator orderByComparator) throws SystemException {
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAUSERID;
-			finderArgs = new Object[] { jiraUserId };
-		}
-		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAUSERID;
-			finderArgs = new Object[] { jiraUserId, start, end, orderByComparator };
-		}
-
-		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (JIRAAction jiraAction : list) {
-				if (!Validator.equals(jiraUserId, jiraAction.getJiraUserId())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = null;
-
-			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
-			}
-			else {
-				query = new StringBundler(3);
-			}
-
-			query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-			if (jiraUserId == null) {
-				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
-			}
-			else {
-				if (jiraUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
-				}
-			}
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-
-			else {
-				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (jiraUserId != null) {
-					qPos.add(jiraUserId);
-				}
-
-				list = (List<JIRAAction>)QueryUtil.list(q, getDialect(), start,
-						end);
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByJiraUserId_First(String jiraUserId,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByJiraUserId_First(jiraUserId,
-				orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("jiraUserId=");
-		msg.append(jiraUserId);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByJiraUserId_First(String jiraUserId,
-		OrderByComparator orderByComparator) throws SystemException {
-		List<JIRAAction> list = findByJiraUserId(jiraUserId, 0, 1,
-				orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByJiraUserId_Last(String jiraUserId,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByJiraUserId_Last(jiraUserId,
-				orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("jiraUserId=");
-		msg.append(jiraUserId);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByJiraUserId_Last(String jiraUserId,
-		OrderByComparator orderByComparator) throws SystemException {
-		int count = countByJiraUserId(jiraUserId);
-
-		List<JIRAAction> list = findByJiraUserId(jiraUserId, count - 1, count,
-				orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraUserId = &#63;.
-	 *
-	 * @param jiraActionId the primary key of the current j i r a action
-	 * @param jiraUserId the jira user ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction[] findByJiraUserId_PrevAndNext(long jiraActionId,
-		String jiraUserId, OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			JIRAAction[] array = new JIRAActionImpl[3];
-
-			array[0] = getByJiraUserId_PrevAndNext(session, jiraAction,
-					jiraUserId, orderByComparator, true);
-
-			array[1] = jiraAction;
-
-			array[2] = getByJiraUserId_PrevAndNext(session, jiraAction,
-					jiraUserId, orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected JIRAAction getByJiraUserId_PrevAndNext(Session session,
-		JIRAAction jiraAction, String jiraUserId,
-		OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-		if (jiraUserId == null) {
-			query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
-		}
-		else {
-			if (jiraUserId.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
-			}
-		}
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-
-		else {
-			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = query.toString();
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		if (jiraUserId != null) {
-			qPos.add(jiraUserId);
-		}
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<JIRAAction> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all the j i r a actions where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @return the matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraIssueId(long jiraIssueId)
-		throws SystemException {
-		return findByJiraIssueId(jiraIssueId, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the j i r a actions where jiraIssueId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @return the range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
-		int end) throws SystemException {
-		return findByJiraIssueId(jiraIssueId, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the j i r a actions where jiraIssueId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByJiraIssueId(long jiraIssueId, int start,
-		int end, OrderByComparator orderByComparator) throws SystemException {
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRAISSUEID;
-			finderArgs = new Object[] { jiraIssueId };
-		}
-		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_JIRAISSUEID;
-			finderArgs = new Object[] { jiraIssueId, start, end, orderByComparator };
-		}
-
-		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (JIRAAction jiraAction : list) {
-				if ((jiraIssueId != jiraAction.getJiraIssueId())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = null;
-
-			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
-			}
-			else {
-				query = new StringBundler(3);
-			}
-
-			query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-			query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-
-			else {
-				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(jiraIssueId);
-
-				list = (List<JIRAAction>)QueryUtil.list(q, getDialect(), start,
-						end);
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByJiraIssueId_First(long jiraIssueId,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByJiraIssueId_First(jiraIssueId,
-				orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("jiraIssueId=");
-		msg.append(jiraIssueId);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByJiraIssueId_First(long jiraIssueId,
-		OrderByComparator orderByComparator) throws SystemException {
-		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, 0, 1,
-				orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByJiraIssueId_Last(long jiraIssueId,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByJiraIssueId_Last(jiraIssueId,
-				orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("jiraIssueId=");
-		msg.append(jiraIssueId);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByJiraIssueId_Last(long jiraIssueId,
-		OrderByComparator orderByComparator) throws SystemException {
-		int count = countByJiraIssueId(jiraIssueId);
-
-		List<JIRAAction> list = findByJiraIssueId(jiraIssueId, count - 1,
-				count, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where jiraIssueId = &#63;.
-	 *
-	 * @param jiraActionId the primary key of the current j i r a action
-	 * @param jiraIssueId the jira issue ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction[] findByJiraIssueId_PrevAndNext(long jiraActionId,
-		long jiraIssueId, OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			JIRAAction[] array = new JIRAActionImpl[3];
-
-			array[0] = getByJiraIssueId_PrevAndNext(session, jiraAction,
-					jiraIssueId, orderByComparator, true);
-
-			array[1] = jiraAction;
-
-			array[2] = getByJiraIssueId_PrevAndNext(session, jiraAction,
-					jiraIssueId, orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected JIRAAction getByJiraIssueId_PrevAndNext(Session session,
-		JIRAAction jiraAction, long jiraIssueId,
-		OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-		query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-
-		else {
-			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = query.toString();
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(jiraIssueId);
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<JIRAAction> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all the j i r a actions where type = &#63;.
-	 *
-	 * @param type the type
-	 * @return the matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByType(String type) throws SystemException {
-		return findByType(type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the j i r a actions where type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param type the type
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @return the range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByType(String type, int start, int end)
-		throws SystemException {
-		return findByType(type, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the j i r a actions where type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
-	 * </p>
-	 *
-	 * @param type the type
-	 * @param start the lower bound of the range of j i r a actions
-	 * @param end the upper bound of the range of j i r a actions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public List<JIRAAction> findByType(String type, int start, int end,
-		OrderByComparator orderByComparator) throws SystemException {
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-				(orderByComparator == null)) {
-			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TYPE;
-			finderArgs = new Object[] { type };
-		}
-		else {
-			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_TYPE;
-			finderArgs = new Object[] { type, start, end, orderByComparator };
-		}
-
-		List<JIRAAction> list = (List<JIRAAction>)FinderCacheUtil.getResult(finderPath,
-				finderArgs, this);
-
-		if ((list != null) && !list.isEmpty()) {
-			for (JIRAAction jiraAction : list) {
-				if (!Validator.equals(type, jiraAction.getType())) {
-					list = null;
-
-					break;
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler query = null;
-
-			if (orderByComparator != null) {
-				query = new StringBundler(3 +
-						(orderByComparator.getOrderByFields().length * 3));
-			}
-			else {
-				query = new StringBundler(3);
-			}
-
-			query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-			if (type == null) {
-				query.append(_FINDER_COLUMN_TYPE_TYPE_1);
-			}
-			else {
-				if (type.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_TYPE_TYPE_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_TYPE_TYPE_2);
-				}
-			}
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
-					orderByComparator);
-			}
-
-			else {
-				query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (type != null) {
-					qPos.add(type);
-				}
-
-				list = (List<JIRAAction>)QueryUtil.list(q, getDialect(), start,
-						end);
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByType_First(String type,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByType_First(type, orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("type=");
-		msg.append(type);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the first j i r a action in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByType_First(String type,
-		OrderByComparator orderByComparator) throws SystemException {
-		List<JIRAAction> list = findByType(type, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction findByType_Last(String type,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = fetchByType_Last(type, orderByComparator);
-
-		if (jiraAction != null) {
-			return jiraAction;
-		}
-
-		StringBundler msg = new StringBundler(4);
-
-		msg.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		msg.append("type=");
-		msg.append(type);
-
-		msg.append(StringPool.CLOSE_CURLY_BRACE);
-
-		throw new NoSuchJIRAActionException(msg.toString());
-	}
-
-	/**
-	 * Returns the last j i r a action in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching j i r a action, or <code>null</code> if a matching j i r a action could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction fetchByType_Last(String type,
-		OrderByComparator orderByComparator) throws SystemException {
-		int count = countByType(type);
-
-		List<JIRAAction> list = findByType(type, count - 1, count,
-				orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the j i r a actions before and after the current j i r a action in the ordered set where type = &#63;.
-	 *
-	 * @param jiraActionId the primary key of the current j i r a action
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next j i r a action
-	 * @throws com.liferay.socialcoding.NoSuchJIRAActionException if a j i r a action with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAAction[] findByType_PrevAndNext(long jiraActionId, String type,
-		OrderByComparator orderByComparator)
-		throws NoSuchJIRAActionException, SystemException {
-		JIRAAction jiraAction = findByPrimaryKey(jiraActionId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			JIRAAction[] array = new JIRAActionImpl[3];
-
-			array[0] = getByType_PrevAndNext(session, jiraAction, type,
-					orderByComparator, true);
-
-			array[1] = jiraAction;
-
-			array[2] = getByType_PrevAndNext(session, jiraAction, type,
-					orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception e) {
-			throw processException(e);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected JIRAAction getByType_PrevAndNext(Session session,
-		JIRAAction jiraAction, String type,
-		OrderByComparator orderByComparator, boolean previous) {
-		StringBundler query = null;
-
-		if (orderByComparator != null) {
-			query = new StringBundler(6 +
-					(orderByComparator.getOrderByFields().length * 6));
-		}
-		else {
-			query = new StringBundler(3);
-		}
-
-		query.append(_SQL_SELECT_JIRAACTION_WHERE);
-
-		if (type == null) {
-			query.append(_FINDER_COLUMN_TYPE_TYPE_1);
-		}
-		else {
-			if (type.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_TYPE_TYPE_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_TYPE_TYPE_2);
-			}
-		}
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				query.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(WHERE_GREATER_THAN);
-					}
-					else {
-						query.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			query.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				query.append(_ORDER_BY_ENTITY_ALIAS);
-				query.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						query.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						query.append(ORDER_BY_ASC);
-					}
-					else {
-						query.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-
-		else {
-			query.append(JIRAActionModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = query.toString();
-
-		Query q = session.createQuery(sql);
-
-		q.setFirstResult(0);
-		q.setMaxResults(2);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		if (type != null) {
-			qPos.add(type);
-		}
-
-		if (orderByComparator != null) {
-			Object[] values = orderByComparator.getOrderByConditionValues(jiraAction);
-
-			for (Object value : values) {
-				qPos.add(value);
-			}
-		}
-
-		List<JIRAAction> list = q.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
+		return fetchByPrimaryKey((Serializable)jiraActionId);
 	}
 
 	/**
@@ -1744,6 +2063,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1752,7 +2072,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * Returns a range of all the j i r a actions.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of j i r a actions
@@ -1760,6 +2080,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the range of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -1769,7 +2090,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * Returns an ordered range of all the j i r a actions.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.socialcoding.model.impl.JIRAActionModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of j i r a actions
@@ -1778,13 +2099,16 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the ordered range of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAAction> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
+		boolean pagination = true;
 		FinderPath finderPath = null;
-		Object[] finderArgs = new Object[] { start, end, orderByComparator };
+		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
 				(orderByComparator == null)) {
+			pagination = false;
 			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
 			finderArgs = FINDER_ARGS_EMPTY;
 		}
@@ -1812,7 +2136,11 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 				sql = query.toString();
 			}
 			else {
-				sql = _SQL_SELECT_JIRAACTION.concat(JIRAActionModelImpl.ORDER_BY_JPQL);
+				sql = _SQL_SELECT_JIRAACTION;
+
+				if (pagination) {
+					sql = sql.concat(JIRAActionModelImpl.ORDER_BY_JPQL);
+				}
 			}
 
 			Session session = null;
@@ -1822,30 +2150,29 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 
 				Query q = session.createQuery(sql);
 
-				if (orderByComparator == null) {
+				if (!pagination) {
 					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
 							start, end, false);
 
 					Collections.sort(list);
+
+					list = new UnmodifiableList<JIRAAction>(list);
 				}
 				else {
 					list = (List<JIRAAction>)QueryUtil.list(q, getDialect(),
 							start, end);
 				}
+
+				cacheResult(list);
+
+				FinderCacheUtil.putResult(finderPath, finderArgs, list);
 			}
 			catch (Exception e) {
+				FinderCacheUtil.removeResult(finderPath, finderArgs);
+
 				throw processException(e);
 			}
 			finally {
-				if (list == null) {
-					FinderCacheUtil.removeResult(finderPath, finderArgs);
-				}
-				else {
-					cacheResult(list);
-
-					FinderCacheUtil.putResult(finderPath, finderArgs, list);
-				}
-
 				closeSession(session);
 			}
 		}
@@ -1854,233 +2181,15 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	}
 
 	/**
-	 * Removes all the j i r a actions where jiraUserId = &#63; from the database.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByJiraUserId(String jiraUserId) throws SystemException {
-		for (JIRAAction jiraAction : findByJiraUserId(jiraUserId)) {
-			remove(jiraAction);
-		}
-	}
-
-	/**
-	 * Removes all the j i r a actions where jiraIssueId = &#63; from the database.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByJiraIssueId(long jiraIssueId) throws SystemException {
-		for (JIRAAction jiraAction : findByJiraIssueId(jiraIssueId)) {
-			remove(jiraAction);
-		}
-	}
-
-	/**
-	 * Removes all the j i r a actions where type = &#63; from the database.
-	 *
-	 * @param type the type
-	 * @throws SystemException if a system exception occurred
-	 */
-	public void removeByType(String type) throws SystemException {
-		for (JIRAAction jiraAction : findByType(type)) {
-			remove(jiraAction);
-		}
-	}
-
-	/**
 	 * Removes all the j i r a actions from the database.
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (JIRAAction jiraAction : findAll()) {
 			remove(jiraAction);
 		}
-	}
-
-	/**
-	 * Returns the number of j i r a actions where jiraUserId = &#63;.
-	 *
-	 * @param jiraUserId the jira user ID
-	 * @return the number of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByJiraUserId(String jiraUserId) throws SystemException {
-		Object[] finderArgs = new Object[] { jiraUserId };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_JIRAUSERID,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(2);
-
-			query.append(_SQL_COUNT_JIRAACTION_WHERE);
-
-			if (jiraUserId == null) {
-				query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1);
-			}
-			else {
-				if (jiraUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2);
-				}
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (jiraUserId != null) {
-					qPos.add(jiraUserId);
-				}
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_JIRAUSERID,
-					finderArgs, count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of j i r a actions where jiraIssueId = &#63;.
-	 *
-	 * @param jiraIssueId the jira issue ID
-	 * @return the number of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByJiraIssueId(long jiraIssueId) throws SystemException {
-		Object[] finderArgs = new Object[] { jiraIssueId };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_JIRAISSUEID,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(2);
-
-			query.append(_SQL_COUNT_JIRAACTION_WHERE);
-
-			query.append(_FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2);
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				qPos.add(jiraIssueId);
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_JIRAISSUEID,
-					finderArgs, count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	/**
-	 * Returns the number of j i r a actions where type = &#63;.
-	 *
-	 * @param type the type
-	 * @return the number of matching j i r a actions
-	 * @throws SystemException if a system exception occurred
-	 */
-	public int countByType(String type) throws SystemException {
-		Object[] finderArgs = new Object[] { type };
-
-		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_BY_TYPE,
-				finderArgs, this);
-
-		if (count == null) {
-			StringBundler query = new StringBundler(2);
-
-			query.append(_SQL_COUNT_JIRAACTION_WHERE);
-
-			if (type == null) {
-				query.append(_FINDER_COLUMN_TYPE_TYPE_1);
-			}
-			else {
-				if (type.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_TYPE_TYPE_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_TYPE_TYPE_2);
-				}
-			}
-
-			String sql = query.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query q = session.createQuery(sql);
-
-				QueryPos qPos = QueryPos.getInstance(q);
-
-				if (type != null) {
-					qPos.add(type);
-				}
-
-				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
-
-				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_TYPE,
-					finderArgs, count);
-
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
 	}
 
 	/**
@@ -2089,6 +2198,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	 * @return the number of j i r a actions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2102,23 +2212,27 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 				Query q = session.createQuery(_SQL_COUNT_JIRAACTION);
 
 				count = (Long)q.uniqueResult();
-			}
-			catch (Exception e) {
-				throw processException(e);
-			}
-			finally {
-				if (count == null) {
-					count = Long.valueOf(0);
-				}
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_ALL,
 					FINDER_ARGS_EMPTY, count);
+			}
+			catch (Exception e) {
+				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_ALL,
+					FINDER_ARGS_EMPTY);
 
+				throw processException(e);
+			}
+			finally {
 				closeSession(session);
 			}
 		}
 
 		return count.intValue();
+	}
+
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
 	}
 
 	/**
@@ -2135,7 +2249,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<JIRAAction>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2149,40 +2263,24 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 	public void destroy() {
 		EntityCacheUtil.removeCache(JIRAActionImpl.class.getName());
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_ENTITY);
+		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
-	@BeanReference(type = JIRAActionPersistence.class)
-	protected JIRAActionPersistence jiraActionPersistence;
-	@BeanReference(type = JIRAChangeGroupPersistence.class)
-	protected JIRAChangeGroupPersistence jiraChangeGroupPersistence;
-	@BeanReference(type = JIRAChangeItemPersistence.class)
-	protected JIRAChangeItemPersistence jiraChangeItemPersistence;
-	@BeanReference(type = JIRAIssuePersistence.class)
-	protected JIRAIssuePersistence jiraIssuePersistence;
-	@BeanReference(type = SVNRepositoryPersistence.class)
-	protected SVNRepositoryPersistence svnRepositoryPersistence;
-	@BeanReference(type = SVNRevisionPersistence.class)
-	protected SVNRevisionPersistence svnRevisionPersistence;
-	@BeanReference(type = UserPersistence.class)
-	protected UserPersistence userPersistence;
 	private static final String _SQL_SELECT_JIRAACTION = "SELECT jiraAction FROM JIRAAction jiraAction";
 	private static final String _SQL_SELECT_JIRAACTION_WHERE = "SELECT jiraAction FROM JIRAAction jiraAction WHERE ";
 	private static final String _SQL_COUNT_JIRAACTION = "SELECT COUNT(jiraAction) FROM JIRAAction jiraAction";
 	private static final String _SQL_COUNT_JIRAACTION_WHERE = "SELECT COUNT(jiraAction) FROM JIRAAction jiraAction WHERE ";
-	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_1 = "jiraAction.jiraUserId IS NULL";
-	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_2 = "jiraAction.jiraUserId = ?";
-	private static final String _FINDER_COLUMN_JIRAUSERID_JIRAUSERID_3 = "(jiraAction.jiraUserId IS NULL OR jiraAction.jiraUserId = ?)";
-	private static final String _FINDER_COLUMN_JIRAISSUEID_JIRAISSUEID_2 = "jiraAction.jiraIssueId = ?";
-	private static final String _FINDER_COLUMN_TYPE_TYPE_1 = "jiraAction.type IS NULL";
-	private static final String _FINDER_COLUMN_TYPE_TYPE_2 = "jiraAction.type = ?";
-	private static final String _FINDER_COLUMN_TYPE_TYPE_3 = "(jiraAction.type IS NULL OR jiraAction.type = ?)";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "jiraAction.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No JIRAAction exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No JIRAAction exists with the key {";
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(JIRAActionPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"jiraActionId", "jiraUserId", "createDate", "modifiedDate",
+				"jiraIssueId", "type", "body", "jiraGroupName"
+			});
 	private static JIRAAction _nullJIRAAction = new JIRAActionImpl() {
 			@Override
 			public Object clone() {
@@ -2196,6 +2294,7 @@ public class JIRAActionPersistenceImpl extends BasePersistenceImpl<JIRAAction>
 		};
 
 	private static CacheModel<JIRAAction> _nullJIRAActionCacheModel = new CacheModel<JIRAAction>() {
+			@Override
 			public JIRAAction toEntityModel() {
 				return _nullJIRAAction;
 			}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 /**
  * @author Brian Wing Shun Chan
+ * @generated
  */
 public class ProjectsEntryLocalServiceClpInvoker {
 	public ProjectsEntryLocalServiceClpInvoker() {
@@ -72,58 +73,65 @@ public class ProjectsEntryLocalServiceClpInvoker {
 				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
 			};
 
-		_methodName9 = "fetchProjectsEntry";
+		_methodName9 = "dynamicQueryCount";
 
-		_methodParameterTypes9 = new String[] { "long" };
+		_methodParameterTypes9 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery",
+				"com.liferay.portal.kernel.dao.orm.Projection"
+			};
 
-		_methodName10 = "getProjectsEntry";
+		_methodName10 = "fetchProjectsEntry";
 
 		_methodParameterTypes10 = new String[] { "long" };
 
-		_methodName11 = "getPersistedModel";
+		_methodName11 = "getProjectsEntry";
 
-		_methodParameterTypes11 = new String[] { "java.io.Serializable" };
+		_methodParameterTypes11 = new String[] { "long" };
 
-		_methodName12 = "getProjectsEntries";
+		_methodName12 = "getPersistedModel";
 
-		_methodParameterTypes12 = new String[] { "int", "int" };
+		_methodParameterTypes12 = new String[] { "java.io.Serializable" };
 
-		_methodName13 = "getProjectsEntriesCount";
+		_methodName13 = "getProjectsEntries";
 
-		_methodParameterTypes13 = new String[] {  };
+		_methodParameterTypes13 = new String[] { "int", "int" };
 
-		_methodName14 = "updateProjectsEntry";
+		_methodName14 = "getProjectsEntriesCount";
 
-		_methodParameterTypes14 = new String[] {
+		_methodParameterTypes14 = new String[] {  };
+
+		_methodName15 = "updateProjectsEntry";
+
+		_methodParameterTypes15 = new String[] {
 				"com.liferay.so.model.ProjectsEntry"
 			};
 
-		_methodName43 = "getBeanIdentifier";
+		_methodName50 = "getBeanIdentifier";
 
-		_methodParameterTypes43 = new String[] {  };
+		_methodParameterTypes50 = new String[] {  };
 
-		_methodName44 = "setBeanIdentifier";
+		_methodName51 = "setBeanIdentifier";
 
-		_methodParameterTypes44 = new String[] { "java.lang.String" };
+		_methodParameterTypes51 = new String[] { "java.lang.String" };
 
-		_methodName49 = "addProjectsEntry";
+		_methodName56 = "addProjectsEntry";
 
-		_methodParameterTypes49 = new String[] {
+		_methodParameterTypes56 = new String[] {
 				"long", "java.lang.String", "java.lang.String", "int", "int",
 				"int", "int", "int", "int", "boolean", "java.lang.String"
 			};
 
-		_methodName50 = "getUserProjectsEntries";
+		_methodName57 = "getUserProjectsEntries";
 
-		_methodParameterTypes50 = new String[] { "long" };
+		_methodParameterTypes57 = new String[] { "long" };
 
-		_methodName51 = "getUserProjectsEntriesCount";
+		_methodName58 = "getUserProjectsEntriesCount";
 
-		_methodParameterTypes51 = new String[] { "long" };
+		_methodParameterTypes58 = new String[] { "long" };
 
-		_methodName52 = "updateProjectsEntry";
+		_methodName59 = "updateProjectsEntry";
 
-		_methodParameterTypes52 = new String[] {
+		_methodParameterTypes59 = new String[] {
 				"long", "java.lang.String", "java.lang.String", "int", "int",
 				"int", "int", "int", "int", "boolean", "java.lang.String"
 			};
@@ -183,49 +191,55 @@ public class ProjectsEntryLocalServiceClpInvoker {
 
 		if (_methodName9.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes9, parameterTypes)) {
-			return ProjectsEntryLocalServiceUtil.fetchProjectsEntry(((Long)arguments[0]).longValue());
+			return ProjectsEntryLocalServiceUtil.dynamicQueryCount((com.liferay.portal.kernel.dao.orm.DynamicQuery)arguments[0],
+				(com.liferay.portal.kernel.dao.orm.Projection)arguments[1]);
 		}
 
 		if (_methodName10.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes10, parameterTypes)) {
-			return ProjectsEntryLocalServiceUtil.getProjectsEntry(((Long)arguments[0]).longValue());
+			return ProjectsEntryLocalServiceUtil.fetchProjectsEntry(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName11.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes11, parameterTypes)) {
-			return ProjectsEntryLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
+			return ProjectsEntryLocalServiceUtil.getProjectsEntry(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName12.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes12, parameterTypes)) {
-			return ProjectsEntryLocalServiceUtil.getProjectsEntries(((Integer)arguments[0]).intValue(),
-				((Integer)arguments[1]).intValue());
+			return ProjectsEntryLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
 		}
 
 		if (_methodName13.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes13, parameterTypes)) {
-			return ProjectsEntryLocalServiceUtil.getProjectsEntriesCount();
+			return ProjectsEntryLocalServiceUtil.getProjectsEntries(((Integer)arguments[0]).intValue(),
+				((Integer)arguments[1]).intValue());
 		}
 
 		if (_methodName14.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes14, parameterTypes)) {
+			return ProjectsEntryLocalServiceUtil.getProjectsEntriesCount();
+		}
+
+		if (_methodName15.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes15, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.updateProjectsEntry((com.liferay.so.model.ProjectsEntry)arguments[0]);
 		}
 
-		if (_methodName43.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes43, parameterTypes)) {
+		if (_methodName50.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes50, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName44.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes44, parameterTypes)) {
+		if (_methodName51.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes51, parameterTypes)) {
 			ProjectsEntryLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
-		if (_methodName49.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes49, parameterTypes)) {
+		if (_methodName56.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes56, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.addProjectsEntry(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
 				((Integer)arguments[3]).intValue(),
@@ -238,18 +252,18 @@ public class ProjectsEntryLocalServiceClpInvoker {
 				(java.lang.String)arguments[10]);
 		}
 
-		if (_methodName50.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes50, parameterTypes)) {
+		if (_methodName57.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes57, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.getUserProjectsEntries(((Long)arguments[0]).longValue());
 		}
 
-		if (_methodName51.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes51, parameterTypes)) {
+		if (_methodName58.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes58, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.getUserProjectsEntriesCount(((Long)arguments[0]).longValue());
 		}
 
-		if (_methodName52.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes52, parameterTypes)) {
+		if (_methodName59.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes59, parameterTypes)) {
 			return ProjectsEntryLocalServiceUtil.updateProjectsEntry(((Long)arguments[0]).longValue(),
 				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
 				((Integer)arguments[3]).intValue(),
@@ -295,16 +309,18 @@ public class ProjectsEntryLocalServiceClpInvoker {
 	private String[] _methodParameterTypes13;
 	private String _methodName14;
 	private String[] _methodParameterTypes14;
-	private String _methodName43;
-	private String[] _methodParameterTypes43;
-	private String _methodName44;
-	private String[] _methodParameterTypes44;
-	private String _methodName49;
-	private String[] _methodParameterTypes49;
+	private String _methodName15;
+	private String[] _methodParameterTypes15;
 	private String _methodName50;
 	private String[] _methodParameterTypes50;
 	private String _methodName51;
 	private String[] _methodParameterTypes51;
-	private String _methodName52;
-	private String[] _methodParameterTypes52;
+	private String _methodName56;
+	private String[] _methodParameterTypes56;
+	private String _methodName57;
+	private String[] _methodParameterTypes57;
+	private String _methodName58;
+	private String[] _methodParameterTypes58;
+	private String _methodName59;
+	private String[] _methodParameterTypes59;
 }

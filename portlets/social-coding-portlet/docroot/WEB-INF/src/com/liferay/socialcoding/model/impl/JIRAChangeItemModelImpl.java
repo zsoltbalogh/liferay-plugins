@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -68,6 +68,8 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		};
 	public static final String TABLE_SQL_CREATE = "create table changeitem (id LONG not null primary key,groupid LONG,field VARCHAR(75) null,oldValue VARCHAR(75) null,oldString VARCHAR(75) null,newValue VARCHAR(75) null,newString VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table changeitem";
+	public static final String ORDER_BY_JPQL = " ORDER BY jiraChangeItem.jiraChangeItemId ASC";
+	public static final String ORDER_BY_SQL = " ORDER BY changeitem.id ASC";
 	public static final String DATA_SOURCE = "jiraDataSource";
 	public static final String SESSION_FACTORY = "jiraSessionFactory";
 	public static final String TX_MANAGER = "jiraTransactionManager";
@@ -81,32 +83,39 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 				"value.object.column.bitmask.enabled.com.liferay.socialcoding.model.JIRAChangeItem"),
 			true);
 	public static long JIRACHANGEGROUPID_COLUMN_BITMASK = 1L;
+	public static long JIRACHANGEITEMID_COLUMN_BITMASK = 2L;
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(com.liferay.util.service.ServiceProps.get(
 				"lock.expiration.time.com.liferay.socialcoding.model.JIRAChangeItem"));
 
 	public JIRAChangeItemModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setJiraChangeItemId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_jiraChangeItemId);
+		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return JIRAChangeItem.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return JIRAChangeItem.class.getName();
 	}
@@ -122,6 +131,9 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		attributes.put("oldString", getOldString());
 		attributes.put("newValue", getNewValue());
 		attributes.put("newString", getNewString());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -171,18 +183,22 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public long getJiraChangeItemId() {
 		return _jiraChangeItemId;
 	}
 
+	@Override
 	public void setJiraChangeItemId(long jiraChangeItemId) {
 		_jiraChangeItemId = jiraChangeItemId;
 	}
 
+	@Override
 	public long getJiraChangeGroupId() {
 		return _jiraChangeGroupId;
 	}
 
+	@Override
 	public void setJiraChangeGroupId(long jiraChangeGroupId) {
 		_columnBitmask |= JIRACHANGEGROUPID_COLUMN_BITMASK;
 
@@ -199,6 +215,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		return _originalJiraChangeGroupId;
 	}
 
+	@Override
 	public String getField() {
 		if (_field == null) {
 			return StringPool.BLANK;
@@ -208,10 +225,12 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public void setField(String field) {
 		_field = field;
 	}
 
+	@Override
 	public String getOldValue() {
 		if (_oldValue == null) {
 			return StringPool.BLANK;
@@ -221,10 +240,12 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public void setOldValue(String oldValue) {
 		_oldValue = oldValue;
 	}
 
+	@Override
 	public String getOldString() {
 		if (_oldString == null) {
 			return StringPool.BLANK;
@@ -234,10 +255,12 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public void setOldString(String oldString) {
 		_oldString = oldString;
 	}
 
+	@Override
 	public String getNewValue() {
 		if (_newValue == null) {
 			return StringPool.BLANK;
@@ -247,10 +270,12 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public void setNewValue(String newValue) {
 		_newValue = newValue;
 	}
 
+	@Override
 	public String getNewString() {
 		if (_newString == null) {
 			return StringPool.BLANK;
@@ -260,6 +285,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		}
 	}
 
+	@Override
 	public void setNewString(String newString) {
 		_newString = newString;
 	}
@@ -308,6 +334,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		return jiraChangeItemImpl;
 	}
 
+	@Override
 	public int compareTo(JIRAChangeItem jiraChangeItem) {
 		long primaryKey = jiraChangeItem.getPrimaryKey();
 
@@ -324,18 +351,15 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof JIRAChangeItem)) {
 			return false;
 		}
 
-		JIRAChangeItem jiraChangeItem = null;
-
-		try {
-			jiraChangeItem = (JIRAChangeItem)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		JIRAChangeItem jiraChangeItem = (JIRAChangeItem)obj;
 
 		long primaryKey = jiraChangeItem.getPrimaryKey();
 
@@ -350,6 +374,16 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return ENTITY_CACHE_ENABLED;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return FINDER_CACHE_ENABLED;
 	}
 
 	@Override
@@ -437,6 +471,7 @@ public class JIRAChangeItemModelImpl extends BaseModelImpl<JIRAChangeItem>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(25);
 

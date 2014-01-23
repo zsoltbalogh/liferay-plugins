@@ -1,35 +1,20 @@
 {
-	"layouts": [
+	"layoutTemplateId": "2_columns_ii",
+	"publicPages": [
 		{
 			"columns": [
 				[
-					"What We Do.xml"
-				]
-			],
-			"friendlyURL": "/what-we-do",
-			"name": "What We Do",
-			"title": "Liferay Portal: What We Do"
-		},
-		{
-			"columns": [
+					{
+						"portletId": "58"
+					}
+				],
 				[
-					"Who is using Liferay.html"
+					"Welcome.html"
 				]
 			],
-			"friendlyURL": "/who-is-using-liferay",
-			"name": "Who Is Using Liferay",
-			"title": "Liferay Users"
-		},
-		{
-			"columns": [
-				[
-					"Liferay Benefits.xml"
-				]
-			],
-			"friendlyURL": "/liferay-benefits",
-			"name": "Liferay Benefits",
-			"title": "Liferay Benefits"
+			"friendlyURL": "/welcome",
+			"name": "Welcome",
+			"title": "Welcome"
 		}
-	],
-	"layoutTemplateId": "1_column"
+	]
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -86,12 +86,11 @@ public class WebFormUtil {
 
 			String fieldLabel = preferences.getValue(
 				"fieldLabel" + i, StringPool.BLANK);
-
 			String fieldType = preferences.getValue(
 				"fieldType" + i, StringPool.BLANK);
 
 			while ((i == 1) || Validator.isNotNull(fieldLabel)) {
-				if (!fieldType.equalsIgnoreCase("paragraph")) {
+				if (!StringUtil.equalsIgnoreCase(fieldType, "paragraph")) {
 					ExpandoColumnLocalServiceUtil.addColumn(
 						expandoTable.getTableId(), fieldLabel,
 						ExpandoColumnConstants.STRING);
@@ -101,6 +100,8 @@ public class WebFormUtil {
 
 				fieldLabel = preferences.getValue(
 					"fieldLabel" + i, StringPool.BLANK);
+				fieldType = preferences.getValue(
+					"fieldType" + i, StringPool.BLANK);
 			}
 		}
 

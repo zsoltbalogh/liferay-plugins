@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,24 +26,22 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 <aui:form method="post" name="fm">
 
 	<aui:fieldset>
+
+		<%
+		List<Subscription> subscriptions = SubscriptionLocalServiceUtil.getUserSubscriptions(user.getUserId(), KBArticle.class.getName());
+		%>
+
 		<liferay-ui:search-container
 			emptyResultsMessage="no-subscriptions-were-found"
 			orderByCol="<%= orderByCol %>"
 			orderByComparator="<%= KnowledgeBaseUtil.getKBArticleOrderByComparator(orderByCol, orderByType) %>"
 			orderByType="<%= orderByType %>"
+			total='<%= KBArticleServiceUtil.getKBArticlesCount(scopeGroupId, StringUtil.split(ListUtil.toString(subscriptions, "classPK"), 0L), WorkflowConstants.STATUS_APPROVED) %>'
 		>
-			<liferay-ui:search-container-results>
 
-				<%
-				List<Subscription> subscriptions = SubscriptionLocalServiceUtil.getUserSubscriptions(user.getUserId(), KBArticle.class.getName());
-
-				List<KBArticle> kbArticles = KBArticleServiceUtil.getKBArticles(scopeGroupId, StringUtil.split(ListUtil.toString(subscriptions, "classPK"), 0L), WorkflowConstants.STATUS_APPROVED, searchContainer.getOrderByComparator());
-
-				pageContext.setAttribute("results", kbArticles);
-				pageContext.setAttribute("total", kbArticles.size());
-				%>
-
-			</liferay-ui:search-container-results>
+			<liferay-ui:search-container-results
+				results='<%= KBArticleServiceUtil.getKBArticles(scopeGroupId, StringUtil.split(ListUtil.toString(subscriptions, "classPK"), 0L), WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>'
+			/>
 
 			<liferay-ui:search-container-row
 				className="com.liferay.knowledgebase.model.KBArticle"
@@ -72,22 +70,22 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 				</c:if>
 
 				<c:if test="<%= showKBArticleCreateDateColumn %>">
-					<liferay-ui:search-container-column-text
+					<liferay-ui:search-container-column-date
 						cssClass="kb-column-no-wrap"
 						href="<%= rowURL %>"
 						name="create-date"
 						orderable="<%= true %>"
-						value='<%= dateFormatDate.format(kbArticle.getCreateDate()) + "<br />" + dateFormatTime.format(kbArticle.getCreateDate()) %>'
+						value="<%= kbArticle.getCreateDate() %>"
 					/>
 				</c:if>
 
 				<c:if test="<%= showKBArticleModifiedDateColumn %>">
-					<liferay-ui:search-container-column-text
+					<liferay-ui:search-container-column-date
 						cssClass="kb-column-no-wrap"
 						href="<%= rowURL %>"
 						name="modified-date"
 						orderable="<%= true %>"
-						value='<%= dateFormatDate.format(kbArticle.getModifiedDate()) + "<br />" + dateFormatTime.format(kbArticle.getModifiedDate()) %>'
+						value="<%= kbArticle.getModifiedDate() %>"
 					/>
 				</c:if>
 
@@ -97,7 +95,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 						href="<%= rowURL %>"
 						name="status"
 						orderable="<%= true %>"
-						value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(kbArticle.getStatus())) + ")" %>'
+						value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(kbArticle.getStatus())) + ")" %>'
 					/>
 				</c:if>
 

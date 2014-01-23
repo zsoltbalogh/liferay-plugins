@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,30 +14,27 @@
  */
 --%>
 
-<liferay-portlet:renderURL varImpl="iteratorURL">
-	<portlet:param name="mvcPath" value="/view_calendar_resources.jsp" />
-</liferay-portlet:renderURL>
+<liferay-ui:search-container
+	id="users"
+	searchContainer='<%= new CalendarResourceSearch(renderRequest, CalendarResourceSearch.DEFAULT_CUR_PARAM + "Users", iteratorURL) %>'
+>
 
-<liferay-ui:search-container id="users" searchContainer='<%= new CalendarResourceSearch(renderRequest, CalendarResourceSearch.DEFAULT_CUR_PARAM + "Users", iteratorURL) %>'>
-	<liferay-ui:search-container-results>
+	<%
+	if (displayTerms.isAdvancedSearch()) {
+		total = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), displayTerms.getName(), displayTerms.getDescription(), displayTerms.getDescription(), displayTerms.getCode(), null, WorkflowConstants.STATUS_ANY, null, displayTerms.isAndOperator());
 
-		<%
-		CalendarResourceSearchTerms searchTerms = (CalendarResourceSearchTerms)searchContainer.getSearchTerms();
+		searchContainer.setTotal(total);
 
-		if (searchTerms.isAdvancedSearch()) {
-			results = UserLocalServiceUtil.search(themeDisplay.getCompanyId(), searchTerms.getName(), searchTerms.getDescription(), searchTerms.getDescription(), searchTerms.getCode(), null, WorkflowConstants.STATUS_ANY, null, searchTerms.isAndOperator(), searchContainer.getStart(), searchContainer.getEnd(), new UserScreenNameComparator());
-			total = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), searchTerms.getName(), searchTerms.getDescription(), searchTerms.getDescription(), searchTerms.getCode(), null, WorkflowConstants.STATUS_ANY, null, searchTerms.isAndOperator());
-		}
-		else {
-			results = UserLocalServiceUtil.search(themeDisplay.getCompanyId(), searchTerms.getKeywords(), WorkflowConstants.STATUS_ANY, null, searchContainer.getStart(), searchContainer.getEnd(), new UserScreenNameComparator());
-			total = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), searchTerms.getKeywords(), WorkflowConstants.STATUS_ANY, null);
-		}
+		searchContainer.setResults(UserLocalServiceUtil.search(themeDisplay.getCompanyId(), displayTerms.getName(), displayTerms.getDescription(), displayTerms.getDescription(), displayTerms.getCode(), null, WorkflowConstants.STATUS_ANY, null, displayTerms.isAndOperator(), searchContainer.getStart(), searchContainer.getEnd(), new UserScreenNameComparator()));
+	}
+	else {
+		total = UserLocalServiceUtil.searchCount(themeDisplay.getCompanyId(), displayTerms.getKeywords(), WorkflowConstants.STATUS_ANY, null);
 
-		pageContext.setAttribute("results", results);
-		pageContext.setAttribute("total", total);
-		%>
+		searchContainer.setTotal(total);
 
-	</liferay-ui:search-container-results>
+		searchContainer.setResults(UserLocalServiceUtil.search(themeDisplay.getCompanyId(), displayTerms.getKeywords(), WorkflowConstants.STATUS_ANY, null, searchContainer.getStart(), searchContainer.getEnd(), new UserScreenNameComparator()));
+	}
+	%>
 
 	<liferay-ui:search-container-row
 		className="com.liferay.portal.model.User"
@@ -46,7 +43,7 @@
 	>
 		<liferay-ui:search-container-column-text
 			name="name"
-			value="<%= user.getFullName() %>"
+			value="<%= HtmlUtil.escape(user.getFullName()) %>"
 		/>
 
 		<liferay-ui:search-container-column-text

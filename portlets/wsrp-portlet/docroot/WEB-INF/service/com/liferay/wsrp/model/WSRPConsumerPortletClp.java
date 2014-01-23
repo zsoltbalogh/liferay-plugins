@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,14 +16,20 @@ package com.liferay.wsrp.model;
 
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.StagedModelType;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.BaseModel;
 import com.liferay.portal.model.impl.BaseModelImpl;
+import com.liferay.portal.util.PortalUtil;
 
+import com.liferay.wsrp.service.ClpSerializer;
 import com.liferay.wsrp.service.WSRPConsumerPortletLocalServiceUtil;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Method;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,26 +43,32 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 	public WSRPConsumerPortletClp() {
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return WSRPConsumerPortlet.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return WSRPConsumerPortlet.class.getName();
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _wsrpConsumerPortletId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setWsrpConsumerPortletId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_wsrpConsumerPortletId);
+		return _wsrpConsumerPortletId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
@@ -73,6 +85,9 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 		attributes.put("wsrpConsumerId", getWsrpConsumerId());
 		attributes.put("name", getName());
 		attributes.put("portletHandle", getPortletHandle());
+
+		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
+		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
 
 		return attributes;
 	}
@@ -127,70 +142,201 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 		if (portletHandle != null) {
 			setPortletHandle(portletHandle);
 		}
+
+		_entityCacheEnabled = GetterUtil.getBoolean("entityCacheEnabled");
+		_finderCacheEnabled = GetterUtil.getBoolean("finderCacheEnabled");
 	}
 
+	@Override
 	public String getUuid() {
 		return _uuid;
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		_uuid = uuid;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setUuid", String.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, uuid);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getWsrpConsumerPortletId() {
 		return _wsrpConsumerPortletId;
 	}
 
+	@Override
 	public void setWsrpConsumerPortletId(long wsrpConsumerPortletId) {
 		_wsrpConsumerPortletId = wsrpConsumerPortletId;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setWsrpConsumerPortletId",
+						long.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel,
+					wsrpConsumerPortletId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCompanyId", long.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, companyId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setCreateDate", Date.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, createDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setModifiedDate", Date.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, modifiedDate);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public long getWsrpConsumerId() {
 		return _wsrpConsumerId;
 	}
 
+	@Override
 	public void setWsrpConsumerId(long wsrpConsumerId) {
 		_wsrpConsumerId = wsrpConsumerId;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setWsrpConsumerId", long.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, wsrpConsumerId);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getName() {
 		return _name;
 	}
 
+	@Override
 	public void setName(String name) {
 		_name = name;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setName", String.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, name);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
 	}
 
+	@Override
 	public String getPortletHandle() {
 		return _portletHandle;
 	}
 
+	@Override
 	public void setPortletHandle(String portletHandle) {
 		_portletHandle = portletHandle;
+
+		if (_wsrpConsumerPortletRemoteModel != null) {
+			try {
+				Class<?> clazz = _wsrpConsumerPortletRemoteModel.getClass();
+
+				Method method = clazz.getMethod("setPortletHandle", String.class);
+
+				method.invoke(_wsrpConsumerPortletRemoteModel, portletHandle);
+			}
+			catch (Exception e) {
+				throw new UnsupportedOperationException(e);
+			}
+		}
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(PortalUtil.getClassNameId(
+				WSRPConsumerPortlet.class.getName()));
 	}
 
 	public BaseModel<?> getWSRPConsumerPortletRemoteModel() {
@@ -202,6 +348,48 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 		_wsrpConsumerPortletRemoteModel = wsrpConsumerPortletRemoteModel;
 	}
 
+	public Object invokeOnRemoteModel(String methodName,
+		Class<?>[] parameterTypes, Object[] parameterValues)
+		throws Exception {
+		Object[] remoteParameterValues = new Object[parameterValues.length];
+
+		for (int i = 0; i < parameterValues.length; i++) {
+			if (parameterValues[i] != null) {
+				remoteParameterValues[i] = ClpSerializer.translateInput(parameterValues[i]);
+			}
+		}
+
+		Class<?> remoteModelClass = _wsrpConsumerPortletRemoteModel.getClass();
+
+		ClassLoader remoteModelClassLoader = remoteModelClass.getClassLoader();
+
+		Class<?>[] remoteParameterTypes = new Class[parameterTypes.length];
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (parameterTypes[i].isPrimitive()) {
+				remoteParameterTypes[i] = parameterTypes[i];
+			}
+			else {
+				String parameterTypeName = parameterTypes[i].getName();
+
+				remoteParameterTypes[i] = remoteModelClassLoader.loadClass(parameterTypeName);
+			}
+		}
+
+		Method method = remoteModelClass.getMethod(methodName,
+				remoteParameterTypes);
+
+		Object returnValue = method.invoke(_wsrpConsumerPortletRemoteModel,
+				remoteParameterValues);
+
+		if (returnValue != null) {
+			returnValue = ClpSerializer.translateOutput(returnValue);
+		}
+
+		return returnValue;
+	}
+
+	@Override
 	public void persist() throws SystemException {
 		if (this.isNew()) {
 			WSRPConsumerPortletLocalServiceUtil.addWSRPConsumerPortlet(this);
@@ -234,6 +422,7 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 		return clone;
 	}
 
+	@Override
 	public int compareTo(WSRPConsumerPortlet wsrpConsumerPortlet) {
 		int value = 0;
 
@@ -248,18 +437,15 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof WSRPConsumerPortletClp)) {
 			return false;
 		}
 
-		WSRPConsumerPortletClp wsrpConsumerPortlet = null;
-
-		try {
-			wsrpConsumerPortlet = (WSRPConsumerPortletClp)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		WSRPConsumerPortletClp wsrpConsumerPortlet = (WSRPConsumerPortletClp)obj;
 
 		long primaryKey = wsrpConsumerPortlet.getPrimaryKey();
 
@@ -274,6 +460,16 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 	@Override
 	public int hashCode() {
 		return (int)getPrimaryKey();
+	}
+
+	@Override
+	public boolean isEntityCacheEnabled() {
+		return _entityCacheEnabled;
+	}
+
+	@Override
+	public boolean isFinderCacheEnabled() {
+		return _finderCacheEnabled;
 	}
 
 	@Override
@@ -301,6 +497,7 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(28);
 
@@ -355,4 +552,6 @@ public class WSRPConsumerPortletClp extends BaseModelImpl<WSRPConsumerPortlet>
 	private String _name;
 	private String _portletHandle;
 	private BaseModel<?> _wsrpConsumerPortletRemoteModel;
+	private boolean _entityCacheEnabled;
+	private boolean _finderCacheEnabled;
 }

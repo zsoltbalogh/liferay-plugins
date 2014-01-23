@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -27,6 +27,7 @@ import com.liferay.knowledgebase.util.ActionKeys;
 import com.liferay.knowledgebase.util.KnowledgeBaseUtil;
 import com.liferay.knowledgebase.util.PortletKeys;
 import com.liferay.knowledgebase.util.comparator.KBArticleModifiedDateComparator;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -278,8 +279,8 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		KBArticle kbArticle = kbArticleLocalService.getLatestKBArticle(
 			resourcePrimKey, status);
 
-		String name = HtmlUtil.escape(kbArticle.getTitle());
-		String description = HtmlUtil.escape(kbArticle.getTitle());
+		String name = kbArticle.getTitle();
+		String description = kbArticle.getTitle();
 
 		String feedURL = KnowledgeBaseUtil.getKBArticleURL(
 			themeDisplay.getPlid(), resourcePrimKey, status,
@@ -295,8 +296,8 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	}
 
 	public List<KBArticle> getKBArticles(
-			long groupId, long[] resourcePrimKeys, int status,
-			OrderByComparator orderByComparator)
+			long groupId, long[] resourcePrimKeys, int status, int start,
+			int end, OrderByComparator orderByComparator)
 		throws SystemException {
 
 		List<KBArticle> kbArticles = new ArrayList<KBArticle>();
@@ -308,15 +309,15 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 
 			if (status == WorkflowConstants.STATUS_ANY) {
 				curKBArticles = kbArticlePersistence.filterFindByR_G_L(
-					ArrayUtil.toArray(params[1]), groupId, true);
+					ArrayUtil.toArray(params[1]), groupId, true, start, end);
 			}
 			else if (status == WorkflowConstants.STATUS_APPROVED) {
 				curKBArticles = kbArticlePersistence.filterFindByR_G_M(
-					ArrayUtil.toArray(params[1]), groupId, true);
+					ArrayUtil.toArray(params[1]), groupId, true, start, end);
 			}
 			else {
 				curKBArticles = kbArticlePersistence.filterFindByR_G_S(
-					ArrayUtil.toArray(params[1]), groupId, status);
+					ArrayUtil.toArray(params[1]), groupId, status, start, end);
 			}
 
 			kbArticles.addAll(curKBArticles);
@@ -330,6 +331,42 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 
 		return new UnmodifiableList<KBArticle>(kbArticles);
+	}
+
+	public List<KBArticle> getKBArticles(
+			long groupId, long[] resourcePrimKeys, int status,
+			OrderByComparator orderByComparator)
+		throws SystemException {
+
+		return getKBArticles(
+			groupId, resourcePrimKeys, status, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, orderByComparator);
+	}
+
+	public int getKBArticlesCount(
+			long groupId, long[] resourcePrimKeys, int status)
+		throws SystemException {
+
+		int count = 0;
+
+		Long[][] params = new Long[][] {ArrayUtil.toArray(resourcePrimKeys)};
+
+		while ((params = KnowledgeBaseUtil.getParams(params[0])) != null) {
+			if (status == WorkflowConstants.STATUS_ANY) {
+				count += kbArticlePersistence.filterCountByR_G_L(
+					ArrayUtil.toArray(params[1]), groupId, true);
+			}
+			else if (status == WorkflowConstants.STATUS_APPROVED) {
+				count += kbArticlePersistence.filterCountByR_G_M(
+					ArrayUtil.toArray(params[1]), groupId, true);
+			}
+			else {
+				count += kbArticlePersistence.filterCountByR_G_S(
+					ArrayUtil.toArray(params[1]), groupId, status);
+			}
+		}
+
+		return count;
 	}
 
 	public KBArticleSearchDisplay getKBArticleSearchDisplay(

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -45,19 +45,23 @@ import com.liferay.portal.UserScreenNameException;
 import com.liferay.portal.UserSmsException;
 import com.liferay.portal.WebsiteURLException;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.NotificationEventFactoryUtil;
+import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UniqueList;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Address;
@@ -67,13 +71,15 @@ import com.liferay.portal.model.EmailAddress;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.Phone;
+import com.liferay.portal.model.Role;
+import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserGroupRole;
+import com.liferay.portal.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.model.Website;
-import com.liferay.portal.service.EmailAddressServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
-import com.liferay.portal.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.service.UserServiceUtil;
 import com.liferay.portal.theme.PortletDisplay;
 import com.liferay.portal.theme.ThemeDisplay;
@@ -83,9 +89,7 @@ import com.liferay.portlet.announcements.service.AnnouncementsDeliveryLocalServi
 import com.liferay.portlet.social.NoSuchRelationException;
 import com.liferay.portlet.social.model.SocialRequest;
 import com.liferay.portlet.social.model.SocialRequestConstants;
-import com.liferay.portlet.social.model.SocialRequestFeedEntry;
 import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
-import com.liferay.portlet.social.service.SocialRequestInterpreterLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestLocalServiceUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -138,6 +142,9 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			if (type == SocialRelationConstants.TYPE_UNI_ENEMY) {
 				SocialRelationLocalServiceUtil.deleteRelations(
 					themeDisplay.getUserId(), userId);
+
+				SocialRelationLocalServiceUtil.deleteRelations(
+					userId, themeDisplay.getUserId());
 			}
 			else if (blocked) {
 				continue;
@@ -226,7 +233,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
-		jsonObject.put("success", true);
+		jsonObject.put("success", Boolean.TRUE);
 
 		JSONObject userJSONObject = getUserJSONObject(
 			resourceResponse, themeDisplay, userId);
@@ -264,7 +271,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			try {
 				JSONObject userJSONObject = JSONFactoryUtil.createJSONObject();
 
-				userJSONObject.put("success", true);
+				userJSONObject.put("success", Boolean.TRUE);
 				userJSONObject.put(
 					"user",
 					getUserJSONObject(resourceResponse, themeDisplay, userId));
@@ -365,7 +372,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 					themeDisplay.getUserId(), 0, User.class.getName(),
 					themeDisplay.getUserId(), type, StringPool.BLANK, userId);
 
-			sendNotificationEvent(socialRequest, themeDisplay);
+			sendNotificationEvent(socialRequest);
 		}
 	}
 
@@ -451,7 +458,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 			jsonObject.put("contactList", contactsJSONObject);
 
-			jsonObject.put("success", true);
+			jsonObject.put("success", Boolean.TRUE);
 		}
 		catch (Exception e) {
 			if (e instanceof ContactFullNameException) {
@@ -468,7 +475,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 					"an-error-occurred-while-processing-the-requested-resource";
 			}
 
-			jsonObject.put("success", false);
+			jsonObject.put("success", Boolean.FALSE);
 		}
 
 		jsonObject.put("message", translate(actionRequest, message));
@@ -496,10 +503,10 @@ public class ContactsCenterPortlet extends MVCPortlet {
 				updateAsset(actionRequest);
 			}
 			else if (fieldGroup.equals("comments") ||
-					fieldGroup.equals("details") ||
-					fieldGroup.equals("instantMessenger") ||
-					fieldGroup.equals("sms") ||
-					fieldGroup.equals("socialNetwork")) {
+					 fieldGroup.equals("details") ||
+					 fieldGroup.equals("instantMessenger") ||
+					 fieldGroup.equals("sms") ||
+					 fieldGroup.equals("socialNetwork")) {
 
 				updateProfile(actionRequest);
 			}
@@ -514,7 +521,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 			jsonObject.put("redirect", redirect);
 
-			jsonObject.put("success", true);
+			jsonObject.put("success", Boolean.TRUE);
 		}
 		catch (Exception e) {
 			ThemeDisplay themeDisplay =
@@ -579,7 +586,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 			jsonObject.put("message", translate(actionRequest, message));
 
-			jsonObject.put("success", false);
+			jsonObject.put("success", Boolean.FALSE);
 		}
 
 		writeJSON(actionRequest, actionResponse, jsonObject);
@@ -592,16 +599,14 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		long requestId = ParamUtil.getLong(actionRequest, "requestId");
+		long socialRequestId = ParamUtil.getLong(
+			actionRequest, "socialRequestId");
+		int status = ParamUtil.getInteger(actionRequest, "status");
+		long userNotificationEventId = ParamUtil.getLong(
+			actionRequest, "userNotificationEventId");
 
 		SocialRequest socialRequest =
-			SocialRequestLocalServiceUtil.getSocialRequest(requestId);
-
-		if (socialRequest.getUserId() != themeDisplay.getUserId()) {
-			return;
-		}
-
-		int status = ParamUtil.getInteger(actionRequest, "status");
+			SocialRequestLocalServiceUtil.getSocialRequest(socialRequestId);
 
 		if (SocialRelationLocalServiceUtil.hasRelation(
 				socialRequest.getReceiverUserId(), socialRequest.getUserId(),
@@ -611,14 +616,16 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		}
 
 		SocialRequestLocalServiceUtil.updateRequest(
-			requestId, status, themeDisplay);
+			socialRequestId, status, themeDisplay);
 
-		String notificationEventUuid = ParamUtil.getString(
-			actionRequest, "notificationEventUuid");
+		if (status == SocialRequestConstants.STATUS_CONFIRM) {
+			SocialRelationLocalServiceUtil.addRelation(
+				socialRequest.getUserId(), socialRequest.getReceiverUserId(),
+				socialRequest.getType());
+		}
 
-		ChannelHubManagerUtil.confirmDelivery(
-			themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-			notificationEventUuid, false);
+		UserNotificationEventLocalServiceUtil.deleteUserNotificationEvent(
+			userNotificationEventId);
 	}
 
 	protected void deleteEntry(
@@ -661,7 +668,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		for (long userId : userIds) {
 			JSONObject userJSONObject = JSONFactoryUtil.createJSONObject();
 
-			userJSONObject.put("success", true);
+			userJSONObject.put("success", Boolean.TRUE);
 			userJSONObject.put(
 				"user",
 				getUserJSONObject(actionResponse, themeDisplay, userId));
@@ -705,12 +712,12 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-		String portletName = portletDisplay.getPortletName();
+		String portletId = portletDisplay.getId();
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		if (filterBy.equals(ContactsConstants.FILTER_BY_DEFAULT) &&
-			!portletName.equals(PortletKeys.MEMBERS)) {
+			!portletId.equals(PortletKeys.MEMBERS)) {
 
 			List<BaseModel<?>> contacts =
 				EntryLocalServiceUtil.searchUsersAndContacts(
@@ -742,7 +749,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		}
 		else if (filterBy.equals(
 					ContactsConstants.FILTER_BY_TYPE_MY_CONTACTS) &&
-				 !portletName.equals(PortletKeys.MEMBERS)) {
+				 !portletId.equals(PortletKeys.MEMBERS)) {
 
 			List<Entry> entries = EntryLocalServiceUtil.search(
 				themeDisplay.getUserId(), keywords, start, end);
@@ -763,6 +770,8 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			LinkedHashMap<String, Object> params =
 				new LinkedHashMap<String, Object>();
 
+			params.put("inherit", Boolean.TRUE);
+
 			Group group = themeDisplay.getScopeGroup();
 			Layout layout = themeDisplay.getLayout();
 
@@ -778,23 +787,64 @@ public class ContactsCenterPortlet extends MVCPortlet {
 					});
 			}
 
-			if (portletName.equals(PortletKeys.MEMBERS)) {
+			if (portletId.equals(PortletKeys.MEMBERS)) {
 				params.put("usersGroups", group.getGroupId());
 			}
 			else if (filterBy.startsWith(ContactsConstants.FILTER_BY_GROUP)) {
 				params.put("usersGroups", ContactsUtil.getGroupId(filterBy));
 			}
 
-			int usersCount = UserLocalServiceUtil.searchCount(
-				themeDisplay.getCompanyId(), keywords,
-				WorkflowConstants.STATUS_APPROVED, params);
+			List<User> users = new UniqueList<User>();
 
-			jsonObject.put("count", usersCount);
+			if (filterBy.equals(ContactsConstants.FILTER_BY_ADMINS)) {
+				Role siteAdministratorRole = RoleLocalServiceUtil.getRole(
+					group.getCompanyId(), RoleConstants.SITE_ADMINISTRATOR);
 
-			List<User> users = UserLocalServiceUtil.search(
-				themeDisplay.getCompanyId(), keywords,
-				WorkflowConstants.STATUS_APPROVED, params, start, end,
-				new UserLastNameComparator(true));
+				params.put(
+					"userGroupRole",
+					new Long[] {
+						new Long(group.getGroupId()),
+						new Long(siteAdministratorRole.getRoleId())
+					});
+
+				users.addAll(
+					UserLocalServiceUtil.search(
+						themeDisplay.getCompanyId(), keywords,
+						WorkflowConstants.STATUS_APPROVED, params,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						(OrderByComparator)null));
+
+				Role siteOwnerRole = RoleLocalServiceUtil.getRole(
+					group.getCompanyId(), RoleConstants.SITE_OWNER);
+
+				params.put(
+					"userGroupRole",
+					new Long[] {
+						new Long(group.getGroupId()),
+						new Long(siteOwnerRole.getRoleId())
+					});
+
+				users.addAll(
+					UserLocalServiceUtil.search(
+						themeDisplay.getCompanyId(), keywords,
+						WorkflowConstants.STATUS_APPROVED, params,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						(OrderByComparator)null));
+
+				ListUtil.sort(users, new UserLastNameComparator(true));
+			}
+			else {
+				int usersCount = UserLocalServiceUtil.searchCount(
+					themeDisplay.getCompanyId(), keywords,
+					WorkflowConstants.STATUS_APPROVED, params);
+
+				jsonObject.put("count", usersCount);
+
+				users = UserLocalServiceUtil.search(
+					themeDisplay.getCompanyId(), keywords,
+					WorkflowConstants.STATUS_APPROVED, params, start, end,
+					new UserLastNameComparator(true));
+			}
 
 			for (User user : users) {
 				JSONObject userJSONObject = getUserJSONObject(
@@ -816,17 +866,12 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		entry = entry.toEscapedModel();
 
-		JSONObject contactJSONObject = JSONFactoryUtil.createJSONObject();
+		JSONObject jsonObject = ContactsUtil.getEntryJSONObject(entry);
 
-		contactJSONObject.put("emailAddress", entry.getEmailAddress());
-		contactJSONObject.put("entryId", String.valueOf(entry.getEntryId()));
-		contactJSONObject.put("comments", entry.getComments());
-		contactJSONObject.put("fullName", entry.getFullName());
-		contactJSONObject.put("portalUser", false);
-		contactJSONObject.put(
+		jsonObject.put(
 			"portraitURL",
 			themeDisplay.getPathImage() + "/user_male_portrait?img_id=0");
-		contactJSONObject.put("redirect", redirect);
+		jsonObject.put("redirect", redirect);
 
 		LiferayPortletResponse liferayPortletResponse =
 			(LiferayPortletResponse)portletResponse;
@@ -841,9 +886,9 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		viewSummaryURL.setParameter("portalUser", Boolean.FALSE.toString());
 		viewSummaryURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-		contactJSONObject.put("viewSummaryURL", viewSummaryURL.toString());
+		jsonObject.put("viewSummaryURL", viewSummaryURL.toString());
 
-		return contactJSONObject;
+		return jsonObject;
 	}
 
 	protected String getRelationMessage(ActionRequest actionRequest) {
@@ -919,22 +964,10 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		user = user.toEscapedModel();
 
-		JSONObject userJSONObject = JSONFactoryUtil.createJSONObject();
+		JSONObject jsonObject = ContactsUtil.getUserJSONObject(
+			themeDisplay.getUserId(), user);
 
-		boolean block = SocialRelationLocalServiceUtil.hasRelation(
-			themeDisplay.getUserId(), user.getUserId(),
-			SocialRelationConstants.TYPE_UNI_ENEMY);
-
-		userJSONObject.put("block", block);
-
-		userJSONObject.put("emailAddress", user.getEmailAddress());
-		userJSONObject.put("firstName", user.getFirstName());
-		userJSONObject.put("fullName", user.getFullName());
-		userJSONObject.put("jobTitle", user.getJobTitle());
-		userJSONObject.put("lastName", user.getLastName());
-		userJSONObject.put("portalUser", true);
-		userJSONObject.put("portraitURL", user.getPortraitURL(themeDisplay));
-		userJSONObject.put("userId", String.valueOf(user.getUserId()));
+		jsonObject.put("portraitURL", user.getPortraitURL(themeDisplay));
 
 		LiferayPortletResponse liferayPortletResponse =
 			(LiferayPortletResponse)portletResponse;
@@ -947,71 +980,37 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		viewSummaryURL.setParameter("portalUser", Boolean.TRUE.toString());
 		viewSummaryURL.setWindowState(LiferayWindowState.EXCLUSIVE);
 
-		userJSONObject.put("viewSummaryURL", viewSummaryURL.toString());
+		jsonObject.put("viewSummaryURL", viewSummaryURL.toString());
 
-		if (!SocialRelationLocalServiceUtil.hasRelation(
-				user.getUserId(), themeDisplay.getUserId(),
-				SocialRelationConstants.TYPE_UNI_ENEMY) &&
-			!SocialRelationLocalServiceUtil.hasRelation(
-				themeDisplay.getUserId(), user.getUserId(),
-				SocialRelationConstants.TYPE_UNI_ENEMY)) {
-
-			boolean connectionRequested =
-				SocialRequestLocalServiceUtil.hasRequest(
-					themeDisplay.getUserId(), User.class.getName(),
-					themeDisplay.getUserId(),
-					SocialRelationConstants.TYPE_BI_CONNECTION,
-					user.getUserId(), SocialRequestConstants.STATUS_PENDING);
-
-			userJSONObject.put("connectionRequested", connectionRequested);
-
-			boolean connected =
-				!connectionRequested &&
-				SocialRelationLocalServiceUtil.hasRelation(
-					themeDisplay.getUserId(), user.getUserId(),
-					SocialRelationConstants.TYPE_BI_CONNECTION);
-
-			userJSONObject.put("connected", connected);
-
-			boolean following =
-				SocialRelationLocalServiceUtil.hasRelation(
-					themeDisplay.getUserId(), user.getUserId(),
-					SocialRelationConstants.TYPE_UNI_FOLLOWER);
-
-			userJSONObject.put("following", following);
-		}
-
-		return userJSONObject;
+		return jsonObject;
 	}
 
-	protected void sendNotificationEvent(
-			SocialRequest socialRequest, ThemeDisplay themeDisplay)
+	protected void sendNotificationEvent(SocialRequest socialRequest)
 		throws Exception {
 
-		JSONObject notificationEventJSONObject =
-			JSONFactoryUtil.createJSONObject();
+		if (UserNotificationManagerUtil.isDeliver(
+				socialRequest.getReceiverUserId(), PortletKeys.CONTACTS_CENTER,
+				0, SocialRelationConstants.SOCIAL_RELATION_REQUEST,
+				UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
 
-		SocialRequestFeedEntry socialRequestFeedEntry =
-			SocialRequestInterpreterLocalServiceUtil.interpret(
-				socialRequest, themeDisplay);
+			JSONObject notificationEventJSONObject =
+				JSONFactoryUtil.createJSONObject();
 
-		notificationEventJSONObject.put("portletId", "1_WAR_contactsportlet");
-		notificationEventJSONObject.put(
-			"requestId", socialRequest.getRequestId());
-		notificationEventJSONObject.put(
-			"title", socialRequestFeedEntry.getTitle());
-		notificationEventJSONObject.put("userId", socialRequest.getUserId());
+			notificationEventJSONObject.put(
+				"classPK", socialRequest.getRequestId());
+			notificationEventJSONObject.put(
+				"userId", socialRequest.getUserId());
 
-		NotificationEvent notificationEvent =
-			NotificationEventFactoryUtil.createNotificationEvent(
-				System.currentTimeMillis(), "6_WAR_soportlet",
-				notificationEventJSONObject);
+			NotificationEvent notificationEvent =
+				NotificationEventFactoryUtil.createNotificationEvent(
+					System.currentTimeMillis(), PortletKeys.CONTACTS_CENTER,
+					notificationEventJSONObject);
 
-		notificationEvent.setDeliveryRequired(0);
+			notificationEvent.setDeliveryRequired(0);
 
-		ChannelHubManagerUtil.sendNotificationEvent(
-			socialRequest.getCompanyId(), socialRequest.getReceiverUserId(),
-			notificationEvent);
+			UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+				socialRequest.getReceiverUserId(), notificationEvent);
+		}
 	}
 
 	protected void updateAdditionalEmailAddresses(ActionRequest actionRequest)
@@ -1125,12 +1124,6 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		int birthdayMonth = cal.get(Calendar.MONTH);
 		int birthdayYear = cal.get(Calendar.YEAR);
 
-		List<UserGroupRole> userGroupRoles =
-			UserGroupRoleLocalServiceUtil.getUserGroupRoles(user.getUserId());
-
-		List<EmailAddress> emailAddresses =
-			EmailAddressServiceUtil.getEmailAddresses(
-				Contact.class.getName(), contact.getContactId());
 		List<AnnouncementsDelivery> announcementsDeliveries =
 			AnnouncementsDeliveryLocalServiceUtil.getUserDeliveries(
 				user.getUserId());
@@ -1146,10 +1139,9 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			user.isMale(), birthdayMonth, birthdayDay, birthdayYear, smsSn,
 			aimSn, facebookSn, icqSn, jabberSn, msnSn, mySpaceSn, skypeSn,
 			twitterSn, ymSn, jobTitle, user.getGroupIds(),
-			user.getOrganizationIds(), user.getRoleIds(), userGroupRoles,
-			user.getUserGroupIds(), user.getAddresses(), emailAddresses,
-			user.getPhones(), user.getWebsites(), announcementsDeliveries,
-			new ServiceContext());
+			user.getOrganizationIds(), user.getRoleIds(), null,
+			user.getUserGroupIds(), user.getAddresses(), null, user.getPhones(),
+			user.getWebsites(), announcementsDeliveries, new ServiceContext());
 	}
 
 	protected void updateWebsites(ActionRequest actionRequest)

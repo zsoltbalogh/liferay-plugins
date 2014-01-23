@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,14 +14,21 @@
  */
 --%>
 
+<portlet:renderURL var="addProducerURL">
+	<portlet:param name="mvcPath" value="/admin/edit_producer.jsp" />
+	<portlet:param name="redirect" value="<%= currentURL %>" />
+</portlet:renderURL>
+
+<aui:button href="<%= addProducerURL %>" value="add-producer" />
+
 <liferay-ui:search-container
 	emptyResultsMessage="there-are-no-producers"
 	headerNames="name"
 	iteratorURL="<%= portletURL %>"
+	total="<%= WSRPProducerLocalServiceUtil.getWSRPProducersCount(company.getCompanyId()) %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= WSRPProducerLocalServiceUtil.getWSRPProducers(company.getCompanyId(), searchContainer.getStart(), searchContainer.getEnd()) %>"
-		total="<%= WSRPProducerLocalServiceUtil.getWSRPProducersCount(company.getCompanyId()) %>"
 	/>
 
 	<liferay-ui:search-container-row
@@ -62,12 +69,6 @@
 			valign="top"
 		/>
 	</liferay-ui:search-container-row>
-
-	<div>
-		<input type="button" value="<liferay-ui:message key="add-producer" />" onClick="location.href = '<portlet:renderURL><portlet:param name="mvcPath" value="/admin/edit_producer.jsp" /><portlet:param name="redirect" value="<%= currentURL %>" /></portlet:renderURL>';" />
-	</div>
-
-	<br />
 
 	<liferay-ui:search-iterator />
 </liferay-ui:search-container>

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -51,10 +51,10 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 			orderByCol="<%= orderByCol %>"
 			orderByComparator="<%= KnowledgeBaseUtil.getKBArticleOrderByComparator(orderByCol, orderByType) %>"
 			orderByType="<%= orderByType %>"
+			total="<%= KBArticleServiceUtil.getSiblingKBArticlesCount(scopeGroupId, parentResourcePrimKey, status) %>"
 		>
 			<liferay-ui:search-container-results
 				results="<%= KBArticleServiceUtil.getSiblingKBArticles(scopeGroupId, parentResourcePrimKey, status, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>"
-				total="<%= KBArticleServiceUtil.getSiblingKBArticlesCount(scopeGroupId, parentResourcePrimKey, status) %>"
 			/>
 
 			<liferay-ui:search-container-row
@@ -95,7 +95,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 					href="<%= rowURL %>"
 					name="status"
 					orderable="<%= true %>"
-					value='<%= curKBArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(curKBArticle.getStatus())) + ")" %>'
+					value='<%= curKBArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(curKBArticle.getStatus())) + ")" %>'
 				/>
 
 				<liferay-ui:search-container-column-text
@@ -116,8 +116,8 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 			</liferay-ui:search-container-row>
 
 			<c:if test="<%= oldParentResourcePrimKey != KBArticleConstants.DEFAULT_PARENT_RESOURCE_PRIM_KEY %>">
-				<aui:button-row>
-					<%= BeanPropertiesUtil.getString(KBArticleServiceUtil.getLatestKBArticle(oldParentResourcePrimKey, status), "title") %>
+				<aui:button-row cssClass="input-append">
+					<liferay-ui:input-resource url='<%= BeanPropertiesUtil.getString(KBArticleServiceUtil.getLatestKBArticle(oldParentResourcePrimKey, status), "title") %>' />
 
 					<liferay-util:buffer var="html">
 						<liferay-util:include page="/admin/new_parent.jsp" servletContext="<%= application %>">

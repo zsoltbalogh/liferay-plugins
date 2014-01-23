@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -50,13 +50,14 @@ public class MarketplaceMessageListener extends BaseMessageListener {
 			return;
 		}
 
-		App app = AppLocalServiceUtil.fetchRemoteApp(remoteAppId);
+		String title = properties.getProperty("title");
+		String description = properties.getProperty("description");
+		String category = properties.getProperty("category");
+		String iconURL = properties.getProperty("icon-url");
 
-		if (app != null) {
-			return;
-		}
-
-		app = AppLocalServiceUtil.addApp(0, remoteAppId, version, null);
+		App app = AppLocalServiceUtil.updateApp(
+			0, remoteAppId, title, description, category, iconURL, version,
+			null);
 
 		String[] contextNames = StringUtil.split(
 			properties.getProperty("context-names"));

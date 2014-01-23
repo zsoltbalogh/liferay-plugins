@@ -1,5 +1,6 @@
 {
-	"layouts": [
+	"layoutTemplateId": "2_columns_ii",
+	"privatePages": [
 		{
 			"columns": [
 				[
@@ -29,7 +30,7 @@
 		{
 			"columns": [
 				[
-					"The 7 Cogs Promise.html"
+					"The Zoe Promise.html"
 				],
 				[
 					{
@@ -132,6 +133,5 @@
 			"name": "Contact Us",
 			"title": "Contact Us"
 		}
-	],
-	"layoutTemplateId": "2_columns_ii"
+	]
 }

@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -47,6 +47,14 @@ String secureToken = ShindigUtil.createSecurityToken(ownerId, themeDisplay.getUs
 String userPrefsKey = ShindigUtil.getColumnUserPrefs(renderResponse.getNamespace(), themeDisplay);
 
 JSONObject userPrefsJSONObject = ExpandoValueServiceUtil.getJSONData(themeDisplay.getCompanyId(), Layout.class.getName(), ShindigUtil.getTableOpenSocial(), userPrefsKey, themeDisplay.getPlid());
+
+String userPrefsJSON = "{}";
+
+if (userPrefsJSONObject != null) {
+	userPrefsJSON = String.valueOf(userPrefsJSONObject);
+
+	userPrefsJSON = userPrefsJSON.replace(StringPool.BACK_SLASH, StringPool.DOUBLE_BACK_SLASH);
+}
 %>
 
 <div class="gadgets-gadget-chrome" id="<portlet:namespace />gadget"></div>
@@ -55,6 +63,7 @@ JSONObject userPrefsJSONObject = ExpandoValueServiceUtil.getJSONData(themeDispla
 	new Liferay.OpenSocial.Gadget(
 		{
 			appId: '<%= gadget.getUrl() %>',
+			baseRenderURL: '<%= PortletURLFactoryUtil.create(request, portletDisplay.getId(), themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>',
 			checksum: '<%= gadgetSpec.getChecksum() %>',
 			country: '<%= locale.getCountry() %>',
 			debug: <%= PortletPropsValues.SHINDIG_JS_DEBUG %>,
@@ -67,14 +76,14 @@ JSONObject userPrefsJSONObject = ExpandoValueServiceUtil.getJSONData(themeDispla
 			requiresPubsub: <%= requiresPubsub %>,
 			scrolling: <%= modulePrefs.getScrolling() %>,
 			secureToken: '<%= secureToken %>',
-			serverBase: '<%= renderRequest.getContextPath() %>/gadgets/',
+			serverBase: '<%= PortalUtil.getPathContext(renderRequest) %>/gadgets/',
 			specUrl: '<%= gadget.getUrl() %>',
 			store: new Liferay.OpenSocial.Store.Expando(
 				{
 					userPrefsKey: '<%= userPrefsKey %>'
 				}
 			),
-			userPrefs: A.JSON.parse('<%= String.valueOf(userPrefsJSONObject) %>'),
+			userPrefs: A.JSON.parse('<%= userPrefsJSON %>'),
 			view: '<%= view %>',
 			viewParams: '<%= ParamUtil.getString(renderRequest, "viewParams") %>'
 		}
@@ -87,7 +96,7 @@ private String _getLanguage(Locale locale) {
 
 	// See http://docs.opensocial.org/display/OSREF/Gadgets+XML+Reference
 
-	if (language.equals(Locale.CHINESE.getLanguage())) {
+	if (language.equals(LocaleUtil.CHINESE.getLanguage())) {
 		language = language + StringPool.DASH + locale.getCountry();
 	}
 

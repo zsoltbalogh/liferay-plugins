@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,12 +17,10 @@ package com.liferay.so.service;
 import com.liferay.portal.service.ServiceWrapper;
 
 /**
- * <p>
- * This class is a wrapper for {@link MemberRequestLocalService}.
- * </p>
+ * Provides a wrapper for {@link MemberRequestLocalService}.
  *
- * @author    Brian Wing Shun Chan
- * @see       MemberRequestLocalService
+ * @author Brian Wing Shun Chan
+ * @see MemberRequestLocalService
  * @generated
  */
 public class MemberRequestLocalServiceWrapper
@@ -40,6 +38,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the member request that was added
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest addMemberRequest(
 		com.liferay.so.model.MemberRequest memberRequest)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -52,6 +51,7 @@ public class MemberRequestLocalServiceWrapper
 	* @param memberRequestId the primary key for the new member request
 	* @return the new member request
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest createMemberRequest(
 		long memberRequestId) {
 		return _memberRequestLocalService.createMemberRequest(memberRequestId);
@@ -65,6 +65,7 @@ public class MemberRequestLocalServiceWrapper
 	* @throws PortalException if a member request with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest deleteMemberRequest(
 		long memberRequestId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -79,12 +80,14 @@ public class MemberRequestLocalServiceWrapper
 	* @return the member request that was removed
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest deleteMemberRequest(
 		com.liferay.so.model.MemberRequest memberRequest)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.deleteMemberRequest(memberRequest);
 	}
 
+	@Override
 	public com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
 		return _memberRequestLocalService.dynamicQuery();
 	}
@@ -96,6 +99,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
@@ -107,7 +111,7 @@ public class MemberRequestLocalServiceWrapper
 	* Performs a dynamic query on the database and returns a range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.so.model.impl.MemberRequestModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -116,6 +120,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -127,7 +132,7 @@ public class MemberRequestLocalServiceWrapper
 	* Performs a dynamic query on the database and returns an ordered range of the matching rows.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.so.model.impl.MemberRequestModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param dynamicQuery the dynamic query
@@ -137,6 +142,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the ordered range of matching rows
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	@SuppressWarnings("rawtypes")
 	public java.util.List dynamicQuery(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery, int start,
@@ -154,12 +160,31 @@ public class MemberRequestLocalServiceWrapper
 	* @return the number of rows that match the dynamic query
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public long dynamicQueryCount(
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	@Override
+	public long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _memberRequestLocalService.dynamicQueryCount(dynamicQuery,
+			projection);
+	}
+
+	@Override
 	public com.liferay.so.model.MemberRequest fetchMemberRequest(
 		long memberRequestId)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -174,6 +199,7 @@ public class MemberRequestLocalServiceWrapper
 	* @throws PortalException if a member request with the primary key could not be found
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest getMemberRequest(
 		long memberRequestId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -181,6 +207,7 @@ public class MemberRequestLocalServiceWrapper
 		return _memberRequestLocalService.getMemberRequest(memberRequestId);
 	}
 
+	@Override
 	public com.liferay.portal.model.PersistedModel getPersistedModel(
 		java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -192,7 +219,7 @@ public class MemberRequestLocalServiceWrapper
 	* Returns a range of all the member requests.
 	*
 	* <p>
-	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set.
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link com.liferay.so.model.impl.MemberRequestModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	* </p>
 	*
 	* @param start the lower bound of the range of member requests
@@ -200,6 +227,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the range of member requests
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public java.util.List<com.liferay.so.model.MemberRequest> getMemberRequests(
 		int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -212,6 +240,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the number of member requests
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public int getMemberRequestsCount()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.getMemberRequestsCount();
@@ -224,6 +253,7 @@ public class MemberRequestLocalServiceWrapper
 	* @return the member request that was updated
 	* @throws SystemException if a system exception occurred
 	*/
+	@Override
 	public com.liferay.so.model.MemberRequest updateMemberRequest(
 		com.liferay.so.model.MemberRequest memberRequest)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -235,6 +265,7 @@ public class MemberRequestLocalServiceWrapper
 	*
 	* @return the Spring bean ID for this bean
 	*/
+	@Override
 	public java.lang.String getBeanIdentifier() {
 		return _memberRequestLocalService.getBeanIdentifier();
 	}
@@ -244,10 +275,12 @@ public class MemberRequestLocalServiceWrapper
 	*
 	* @param beanIdentifier the Spring bean ID for this bean
 	*/
+	@Override
 	public void setBeanIdentifier(java.lang.String beanIdentifier) {
 		_memberRequestLocalService.setBeanIdentifier(beanIdentifier);
 	}
 
+	@Override
 	public java.lang.Object invokeMethod(java.lang.String name,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable {
@@ -255,6 +288,7 @@ public class MemberRequestLocalServiceWrapper
 			arguments);
 	}
 
+	@Override
 	public com.liferay.so.model.MemberRequest addMemberRequest(long userId,
 		long groupId, long receiverUserId,
 		java.lang.String receiverEmailAddress, long invitedRoleId,
@@ -267,6 +301,7 @@ public class MemberRequestLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
 	public void addMemberRequests(long userId, long groupId,
 		long[] receiverUserIds, long invitedRoleId, long invitedTeamId,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -276,6 +311,7 @@ public class MemberRequestLocalServiceWrapper
 			receiverUserIds, invitedRoleId, invitedTeamId, serviceContext);
 	}
 
+	@Override
 	public void addMemberRequests(long userId, long groupId,
 		java.lang.String[] emailAddresses, long invitedRoleId,
 		long invitedTeamId,
@@ -286,6 +322,7 @@ public class MemberRequestLocalServiceWrapper
 			emailAddresses, invitedRoleId, invitedTeamId, serviceContext);
 	}
 
+	@Override
 	public com.liferay.so.model.MemberRequest getMemberRequest(long groupId,
 		long receiverUserId, int status)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -294,6 +331,7 @@ public class MemberRequestLocalServiceWrapper
 			receiverUserId, status);
 	}
 
+	@Override
 	public java.util.List<com.liferay.so.model.MemberRequest> getReceiverMemberRequest(
 		long receiverUserId, int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -301,11 +339,13 @@ public class MemberRequestLocalServiceWrapper
 			start, end);
 	}
 
+	@Override
 	public int getReceiverMemberRequestCount(long receiverUserId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.getReceiverMemberRequestCount(receiverUserId);
 	}
 
+	@Override
 	public java.util.List<com.liferay.so.model.MemberRequest> getReceiverStatusMemberRequest(
 		long receiverUserId, int status, int start, int end)
 		throws com.liferay.portal.kernel.exception.SystemException {
@@ -313,24 +353,28 @@ public class MemberRequestLocalServiceWrapper
 			status, start, end);
 	}
 
+	@Override
 	public int getReceiverStatusMemberRequestCount(long receiverUserId,
 		int status) throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.getReceiverStatusMemberRequestCount(receiverUserId,
 			status);
 	}
 
+	@Override
 	public boolean hasPendingMemberRequest(long groupId, long receiverUserId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _memberRequestLocalService.hasPendingMemberRequest(groupId,
 			receiverUserId);
 	}
 
+	@Override
 	public com.liferay.so.model.MemberRequest updateMemberRequest(long userId,
 		long memberRequestId, int status) throws java.lang.Exception {
 		return _memberRequestLocalService.updateMemberRequest(userId,
 			memberRequestId, status);
 	}
 
+	@Override
 	public com.liferay.so.model.MemberRequest updateMemberRequest(
 		java.lang.String key, long receiverUserId)
 		throws com.liferay.portal.kernel.exception.PortalException,
@@ -340,24 +384,28 @@ public class MemberRequestLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #getWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #getWrappedService}
 	 */
+	@Deprecated
 	public MemberRequestLocalService getWrappedMemberRequestLocalService() {
 		return _memberRequestLocalService;
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #setWrappedService}
+	 * @deprecated As of 6.1.0, replaced by {@link #setWrappedService}
 	 */
+	@Deprecated
 	public void setWrappedMemberRequestLocalService(
 		MemberRequestLocalService memberRequestLocalService) {
 		_memberRequestLocalService = memberRequestLocalService;
 	}
 
+	@Override
 	public MemberRequestLocalService getWrappedService() {
 		return _memberRequestLocalService;
 	}
 
+	@Override
 	public void setWrappedService(
 		MemberRequestLocalService memberRequestLocalService) {
 		_memberRequestLocalService = memberRequestLocalService;

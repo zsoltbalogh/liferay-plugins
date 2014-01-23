@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -30,12 +30,17 @@ IPInfo ipInfo = IPGeocoderUtil.getIPInfo(originalRequest.getRemoteAddr());
 
 <c:choose>
 	<c:when test="<%= ipInfo != null %>">
+		City: <%= ipInfo.getCity() %><br />
+		Country Code: <%= ipInfo.getCountryCode() %><br />
+		Country Name: <%= ipInfo.getCountryName() %><br />
 		IP: <%= ipInfo.getIpAddress() %><br />
 		Latitude: <%= ipInfo.getLatitude() %><br />
-		Longitude: <%= ipInfo.getLongitude() %>
+		Longitude: <%= ipInfo.getLongitude() %><br />
+		Postal Code: <%= ipInfo.getPostalCode() %><br />
+		Region: <%= ipInfo.getRegion() %>
 	</c:when>
 	<c:otherwise>
-		<div class="portlet-msg-error">
+		<div class="alert alert-error">
 			<a href="http://www.maxmind.com/app/geolitecity" target="_blank"><liferay-ui:message key="install-and-configure-maxmind-geoip-city-or-geolite-city-to-enable-this-portlet" /></a>
 		</div>
 	</c:otherwise>

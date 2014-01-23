@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,10 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.scripting.ScriptingUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignment;
 import com.liferay.portal.workflow.kaleo.runtime.ExecutionContext;
-import com.liferay.portal.workflow.kaleo.runtime.util.ScriptingContextBuilder;
+import com.liferay.portal.workflow.kaleo.runtime.util.ScriptingContextBuilderUtil;
+import com.liferay.portal.workflow.kaleo.util.WorkflowContextUtil;
+
+import java.io.Serializable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,13 +35,14 @@ import java.util.Set;
 public class ScriptingLanguagesTaskAssignmentSelector
 	extends BaseTaskAssignmentSelector {
 
+	@Override
 	public Collection<KaleoTaskAssignment> calculateTaskAssignments(
 			KaleoTaskAssignment kaleoTaskAssignment,
 			ExecutionContext executionContext, ClassLoader... classLoaders)
 		throws PortalException, SystemException {
 
 		Map<String, Object> inputObjects =
-			ScriptingContextBuilder.buildScriptingContext(executionContext);
+			ScriptingContextBuilderUtil.buildScriptingContext(executionContext);
 
 		String assigneeScript = kaleoTaskAssignment.getAssigneeScript();
 
@@ -49,6 +53,13 @@ public class ScriptingLanguagesTaskAssignmentSelector
 			null, inputObjects, _outputNames, assigneeScriptingLanguage,
 			assigneeScript, classLoaders);
 
+		Map<String, Serializable> resultsWorkflowContext =
+			(Map<String, Serializable>)results.get(
+				WorkflowContextUtil.WORKFLOW_CONTEXT_NAME);
+
+		WorkflowContextUtil.mergeWorkflowContexts(
+			executionContext, resultsWorkflowContext);
+
 		return getKaleoTaskAssignments(results);
 	}
 
@@ -57,6 +68,7 @@ public class ScriptingLanguagesTaskAssignmentSelector
 	static {
 		_outputNames.add(ROLES_ASSIGNMENT);
 		_outputNames.add(USER_ASSIGNMENT);
+		_outputNames.add(WorkflowContextUtil.WORKFLOW_CONTEXT_NAME);
 	}
 
 }

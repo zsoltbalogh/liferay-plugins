@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,13 +26,11 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * <p>
- * This class provides a SOAP utility for the
+ * Provides the SOAP utility for the
  * {@link com.liferay.calendar.service.CalendarServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
- * </p>
  *
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
@@ -61,10 +59,10 @@ import java.util.Map;
  * The SOAP utility is only generated for remote services.
  * </p>
  *
- * @author    Eduardo Lundgren
- * @see       CalendarServiceHttp
- * @see       com.liferay.calendar.model.CalendarSoap
- * @see       com.liferay.calendar.service.CalendarServiceUtil
+ * @author Eduardo Lundgren
+ * @see CalendarServiceHttp
+ * @see com.liferay.calendar.model.CalendarSoap
+ * @see com.liferay.calendar.service.CalendarServiceUtil
  * @generated
  */
 public class CalendarServiceSoap {
@@ -74,7 +72,7 @@ public class CalendarServiceSoap {
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
 		java.lang.String[] descriptionMapValues, int color,
-		boolean defaultCalendar,
+		boolean defaultCalendar, boolean enableComments, boolean enableRatings,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
@@ -85,7 +83,8 @@ public class CalendarServiceSoap {
 
 			com.liferay.calendar.model.Calendar returnValue = CalendarServiceUtil.addCalendar(groupId,
 					calendarResourceId, nameMap, descriptionMap, color,
-					defaultCalendar, serviceContext);
+					defaultCalendar, enableComments, enableRatings,
+					serviceContext);
 
 			return com.liferay.calendar.model.CalendarSoap.toSoapModel(returnValue);
 		}
@@ -102,6 +101,21 @@ public class CalendarServiceSoap {
 			com.liferay.calendar.model.Calendar returnValue = CalendarServiceUtil.deleteCalendar(calendarId);
 
 			return com.liferay.calendar.model.CalendarSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static java.lang.String exportCalendar(long calendarId,
+		java.lang.String type) throws RemoteException {
+		try {
+			java.lang.String returnValue = CalendarServiceUtil.exportCalendar(calendarId,
+					type);
+
+			return returnValue;
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -130,6 +144,49 @@ public class CalendarServiceSoap {
 			com.liferay.calendar.model.Calendar returnValue = CalendarServiceUtil.getCalendar(calendarId);
 
 			return com.liferay.calendar.model.CalendarSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.calendar.model.CalendarSoap[] getCalendarResourceCalendars(
+		long groupId, long calendarResourceId) throws RemoteException {
+		try {
+			java.util.List<com.liferay.calendar.model.Calendar> returnValue = CalendarServiceUtil.getCalendarResourceCalendars(groupId,
+					calendarResourceId);
+
+			return com.liferay.calendar.model.CalendarSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static com.liferay.calendar.model.CalendarSoap[] getCalendarResourceCalendars(
+		long groupId, long calendarResourceId, boolean defaultCalendar)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.calendar.model.Calendar> returnValue = CalendarServiceUtil.getCalendarResourceCalendars(groupId,
+					calendarResourceId, defaultCalendar);
+
+			return com.liferay.calendar.model.CalendarSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void importCalendar(long calendarId, java.lang.String data,
+		java.lang.String type) throws RemoteException {
+		try {
+			CalendarServiceUtil.importCalendar(calendarId, data, type);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
@@ -291,7 +348,7 @@ public class CalendarServiceSoap {
 		java.lang.String[] nameMapValues,
 		java.lang.String[] descriptionMapLanguageIds,
 		java.lang.String[] descriptionMapValues, int color,
-		boolean defaultCalendar,
+		boolean defaultCalendar, boolean enableComments, boolean enableRatings,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
@@ -302,7 +359,7 @@ public class CalendarServiceSoap {
 
 			com.liferay.calendar.model.Calendar returnValue = CalendarServiceUtil.updateCalendar(calendarId,
 					nameMap, descriptionMap, color, defaultCalendar,
-					serviceContext);
+					enableComments, enableRatings, serviceContext);
 
 			return com.liferay.calendar.model.CalendarSoap.toSoapModel(returnValue);
 		}

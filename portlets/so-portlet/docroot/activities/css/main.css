@@ -1,55 +1,365 @@
 @import "compass";
 
+$default-border-color: #E7E7E7;
+
 .so-portlet-activities {
+	display: block;
+	width: 100%;
+
 	.activity-item {
-		margin-bottom: .5em;
-		min-height: 38px;
+		border-bottom: 1px solid $default-border-color;
+		min-height: 45px;
+		padding: 1em;
+
+		.control-group {
+			margin-bottom: 0;
+			margin-left: 35px;
+			padding: 0 5px;
+
+			input {
+				display: block;
+				margin-bottom: 0;
+				padding-left: 0;
+				padding-right: 0;
+				text-indent: 0.5em;
+				width: 100%;
+			}
+		}
 	}
 
 	.user-portrait {
 		float: left;
-		height: 38px;
+		height: 45px;
 		position: relative;
-		width: 38px;
+		width: 45px;
 
 		.avatar {
 			display: block;
-			height: 30px;
+			height: 45px;
 			overflow: hidden;
 
 			img {
-				max-width: 30px;
+				max-width: 45px;
 			}
-		}
-
-		.icon {
-			bottom: 0;
-			position: absolute;
-			right: 0;
 		}
 	}
 
 	.activity-data {
-		margin-left: 45px;
+		margin-left: 55px;
+		word-wrap: break-word;
 	}
 
-	.activity-body a {
-		border-right: 1px solid #C7D0DA;
-		padding-right: 5px;
+	.activity-header {
+		margin-bottom: 0.4em;
 
-		&:last-child {
-			border-right-width: 0;
-			padding-right: 0;
+		a {
+			font-weight: bold;
 		}
+	}
+
+	.activity-time {
+		color: #999;
+		float: right;
+		font-size: 0.9em;
+		line-height: 0.9em;
+		margin-left: 1em;
+	}
+
+	.activity-action {
+		color: #333333;
+		margin-bottom: 0.8em;
+	}
+
+	.activity-body, .grouped-activity-body-container {
+		border: 1px solid $default-border-color;
+
+		@include hyphenation;
+
+		margin: 0.8em 0 0;
+
+		span {
+			line-height: 1em;
+			padding-right: 10px;
+			vertical-align: middle;
+		}
+
+		.icon {
+			height: 16px;
+			width: 16px;
+		}
+
+		.title {
+			border-right-width: 0;
+			display: block;
+			font-weight: bold;
+			overflow: hidden;
+			padding-bottom: 0.4em;
+
+			.event-title {
+				float: left;
+				line-height: 1.5em;
+			}
+
+			.date {
+				float: right;
+				line-height: 1.5em;
+				padding-right: 0;
+			}
+		}
+	}
+
+	.activity-body {
+		padding: 0.6em 0.9em;
+
+		&.document {
+			min-height: 75px;
+			padding: 0;
+			position: relative;
+
+			.document-thumbnail {
+				overflow: hidden;
+				padding-right: 0;
+				position: absolute;
+				width: 75px;
+
+				img {
+					height: 75px;
+				}
+			}
+
+			.document-container {
+				margin: 0.6em 0.9em 0.6em 85px;
+			}
+
+			.title {
+				float: left;
+			}
+
+			.version {
+				color: #8F0920;
+				float: right;
+			}
+
+			.document-content {
+				clear: both;
+			}
+		}
+	}
+
+	.grouped-activity-body-container {
+		max-height: 107px;
+		overflow: hidden;
+
+		.activity-subentry {
+			border-bottom: 1px solid $default-border-color;
+			height: 2.5em;
+			overflow: hidden;
+			padding: 0 0.9em;
+
+			&:last-child {
+				border-bottom-width: 0;
+			}
+
+			&.tasks {
+				height: auto;
+				padding: 0;
+
+				.activity-body {
+					border-width: 0;
+					margin: 0;
+				}
+			}
+		}
+
+		.activity-subentry-body, .activity-subentry-title {
+			display: inline;
+			line-height: 2.5em;
+			overflow: hidden;
+		}
+	}
+
+	.microblogs-portlet-activity {
+		.activity-body {
+			overflow: hidden;
+			padding: 0;
+
+			.user-portrait {
+				padding: 2px
+			}
+
+			.microblog-content {
+				display: block;
+				line-height: 1.5em;
+				padding: 0.75em 0.75em 0.75em 45px;
+			}
+		}
+	}
+
+	.tasks-portlet-activity {
+		.activity-body-container {
+			&.high {
+				border-left: 6px solid #B20000;
+			}
+
+			&.low {
+				border-left: 6px solid $default-border-color;
+			}
+
+			&.normal {
+				border-left: 6px solid #008C00;
+			}
+
+			.activity-body {
+				border-left-width: 0;
+				padding: 0.3em 0.9em;
+			}
+		}
+
+		.grouped-activity-body-container {
+			max-height: 149px;
+		}
+	}
+
+	.activity-footer-toolbar {
+		background: #EAEAEA;
+		padding: 0.5em 1em;
+
+		.action {
+			border-left: 1px solid #2571AD;
+			display: inline-block;
+			height: 16px;
+			padding: 0 0.5em 0 0.6em;
+
+			&:first-child {
+				border-left-width: 0;
+				padding-left: 0;
+			}
+		}
+
+		a {
+			font-size: 0.9em;
+		}
+	}
+
+	.comments-container, .microblogs-portlet-activity .activity-body {
+		.user-portrait {
+			height: 32px;
+			width: 32px;
+
+			.avatar {
+				height: 32px;
+			}
+
+			img {
+				max-width: 32px;
+			}
+		}
+	}
+
+	.comment-entry, .comments-container .form {
+		background: #EAEAEA;
+		border-top: 1px solid #FFF;
+		padding: 2px;
+	}
+
+	.comment-entry {
+		.comment-body, .comment-info {
+			line-height: 1.3em;
+			margin-left: 36px;
+
+			span {
+				margin-right: 0.5em;
+			}
+		}
+
+		.user-name {
+			font-weight: bold;
+		}
+
+		.post-date {
+			color: #999;
+		}
+
+		.comment-info {
+			margin-top: 2px;
+		}
+	}
+
+	.comment-form {
+		.field-content {
+			overflow: hidden;
+		}
+
+		.field-element {
+			border: 1px solid #C7D0DA;
+
+			@include border-radius(5px);
+			@include box-shadow(0 1px 3px #C9C9C9 inset);
+
+			display: block;
+			margin: 2px;
+
+			&:hover {
+				border-color: #2571AD;
+			}
+
+			&:focus {
+				outline-color: #E59700;
+			}
+		}
+
+		.field-input-text {
+			border-width: 0;
+
+			@include box-shadow(none);
+
+			padding: 5px 0;
+			text-indent: 5px;
+			width: 100%;
+		}
+	}
+
+	.toggler-content-collapsed .activity-footer-toolbar {
+		border-top: 1px solid #EFEFEF;
+
+		@include box-shadow(0 -1px 15px -5px rgba(0, 0, 0, 0.8));
+
+		margin-top: -2px;
+	}
+
+	.loading-bar {
+		display: block;
+		background: transparent url(@theme_image_path@/aui/loading_indicator.gif) 45% center no-repeat;
+		font-style: italic;
+		height: 100px;
+		margin-left: 25px;
+		width: 100%;
+	}
+
+	.loading-bar.loaded {
+		display: none;
+	}
+
+	.manual-loader, .no-activities {
+		padding: 10px;
+		text-align: center;
 	}
 }
 
-.ie .so-portlet-activities {
-	.activity-item {
-		height: 38px;
+/* ---------- Internet explorer ---------- */
+
+.ie7 {
+	.so-portlet-activities .grouped-activity-body-container {
+		height: 107px;
+		max-height: none;
+
+		.activity-subentry-title {
+			float: left;
+			margin: 7px 0;
+		}
 	}
 
-	.user-portrait .avatar img {
-		width: 30px;
+	.tasks-portlet-activity .grouped-activity-body-container {
+		height: 126px;
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,6 +23,7 @@ import java.util.Date;
 
 /**
  * @author Amos Fong
+ * @author Peter Shin
  */
 public class AkismetDataLocalServiceImpl
 	extends AkismetDataLocalServiceBaseImpl {
@@ -31,25 +32,31 @@ public class AkismetDataLocalServiceImpl
 		akismetDataPersistence.removeByLtModifiedDate(modifiedDate);
 	}
 
-	public void deleteMBMessageAkismetData(long mbMessageId)
+	public void deleteAkismetData(String className, long classPK)
 		throws PortalException, SystemException {
 
-		akismetDataPersistence.removeByMBMessageId(mbMessageId);
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		akismetDataPersistence.removeByC_C(classNameId, classPK);
 	}
 
-	public AkismetData fetchMBMessageAkismetData(long mbMessageId)
+	public AkismetData fetchAkismetData(String className, long classPK)
 		throws SystemException {
 
-		return akismetDataPersistence.fetchByMBMessageId(mbMessageId);
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		return akismetDataPersistence.fetchByC_C(classNameId, classPK);
 	}
 
 	public AkismetData updateAkismetData(
-			long mbMessageId, String type, String permalink, String referrer,
-			String userAgent, String userIP, String userURL)
+			String className, long classPK, String type, String permalink,
+			String referrer, String userAgent, String userIP, String userURL)
 		throws SystemException {
 
-		AkismetData akismetData = akismetDataPersistence.fetchByMBMessageId(
-			mbMessageId);
+		long classNameId = classNameLocalService.getClassNameId(className);
+
+		AkismetData akismetData = akismetDataPersistence.fetchByC_C(
+			classNameId, classPK);
 
 		if (akismetData == null) {
 			long akismetDataId = counterLocalService.increment();
@@ -58,7 +65,8 @@ public class AkismetDataLocalServiceImpl
 		}
 
 		akismetData.setModifiedDate(new Date());
-		akismetData.setMbMessageId(mbMessageId);
+		akismetData.setClassNameId(classNameId);
+		akismetData.setClassPK(classPK);
 		akismetData.setType(type);
 		akismetData.setPermalink(permalink);
 		akismetData.setReferrer(referrer);

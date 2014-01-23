@@ -3,23 +3,21 @@
 .so-portlet-dockbar-notifications .menu-button {
 	background-image: none;
 	padding: 5px;
-}
 
-.so-portlet-dockbar-notifications .menu-button .notification-count {
-	@include border-radius(4px);
-
-	background-color: #2C2F34;
-	color: #FFF;
-	display: block;
-	padding: 0 5px;
-	text-shadow: none;
+	.notification-count {
+		background-color: #2C2F34;
+		color: #FFF;
+		display: block;
+		padding: 0 5px;
+		text-shadow: none;
+	}
 }
 
 .menu-button-active .so-portlet-dockbar-notifications .menu-button .notification-count {
 	background-color: transparent;
 }
 
-.dockbar .user-notification-events {
+.user-notification-events {
 	.user-notification-event-content {
 		color: #2C2F34;
 		cursor: pointer;
@@ -73,7 +71,7 @@
 		}
 	}
 
-	.user-notification-event-footer, .user-notification-event-content {
+	.user-notification-event-content, .user-notification-event-footer {
 		&:after {
 			clear: both;
 			content: "";
@@ -88,8 +86,8 @@
 		padding: 0;
 
 		.dismiss-notifications, .view-all {
-			float: left;
 			display: block;
+			float: left;
 			width: 50%;
 
 			a {
@@ -101,7 +99,7 @@
 		}
 	}
 
-	.user-notification-event-content.aui-focus, .user-notification-event-content.aui-focus a, .user-notification-event-content.aui-focus a:hover, .user-notification-event-footer .dismiss-notifications a:hover, .user-notification-event-footer .view-all a:hover {
+	.user-notification-event-content.focus, .user-notification-event-content.focus a, .user-notification-event-content.focus a:hover, .user-notification-event-footer .dismiss-notifications a:hover, .user-notification-event-footer .view-all a:hover {
 		background: #5B677D;
 		color: #FFF;
 		text-shadow: none;
@@ -124,4 +122,10 @@
 			background-image: url(@theme_image_path@/common/deactivate.png);
 		}
 	}
+}
+
+/* ---------- Extras ---------- */
+
+.so-portlet-dockbar-notifications .menu-button .notification-count {
+	@include border-radius(4px);
 }

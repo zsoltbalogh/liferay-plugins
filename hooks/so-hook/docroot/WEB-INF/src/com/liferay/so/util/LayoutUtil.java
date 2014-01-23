@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -135,6 +135,9 @@ public class LayoutUtil {
 			if (portletId.startsWith("1_WAR_eventsdisplayportlet")) {
 				updatePortletTitle(layout, portletId, "Events");
 			}
+			else if (portletId.startsWith("1_WAR_soannouncementsportlet")) {
+				updatePortletTitle(layout, portletId, "Announcements");
+			}
 			else if (portletId.startsWith("1_WAR_wysiwygportlet")) {
 				updatePortletTitle(layout, portletId, "Welcome");
 			}
@@ -157,10 +160,10 @@ public class LayoutUtil {
 				configureMessageBoards(layout);
 				removePortletBorder(layout, portletId);
 			}
-			else if (portletId.equals(PortletKeys.CALENDAR) ||
-					 portletId.equals(PortletKeys.DOCUMENT_LIBRARY) ||
+			else if (portletId.equals(PortletKeys.DOCUMENT_LIBRARY) ||
 					 portletId.equals(PortletKeys.BLOGS) ||
 					 portletId.equals(PortletKeys.WIKI) ||
+					 portletId.equals("1_WAR_calendarportlet") ||
 					 portletId.contains("_WAR_microblogsportlet") ||
 					 portletId.equals("1_WAR_privatemessagingportlet") ||
 					 portletId.contains("1_WAR_tasksportlet")) {

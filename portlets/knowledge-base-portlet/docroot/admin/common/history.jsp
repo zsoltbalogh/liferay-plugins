@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -50,6 +50,8 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 		RowChecker rowChecker = new RowChecker(renderResponse);
 
 		rowChecker.setAllRowIds(null);
+
+		int selStatus = KBArticlePermission.contains(permissionChecker, kbArticle, ActionKeys.UPDATE) ? WorkflowConstants.STATUS_ANY : status;
 		%>
 
 		<liferay-ui:search-container
@@ -59,17 +61,11 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 			orderByComparator="<%= KnowledgeBaseUtil.getKBArticleOrderByComparator(orderByCol, orderByType) %>"
 			orderByType="<%= orderByType %>"
 			rowChecker="<%= rowChecker %>"
+			total="<%= KBArticleServiceUtil.getKBArticleVersionsCount(scopeGroupId, kbArticle.getResourcePrimKey(), selStatus) %>"
 		>
-			<liferay-ui:search-container-results>
-
-				<%
-				int selStatus = KBArticlePermission.contains(permissionChecker, kbArticle, ActionKeys.UPDATE) ? WorkflowConstants.STATUS_ANY : status;
-
-				pageContext.setAttribute("results", KBArticleServiceUtil.getKBArticleVersions(scopeGroupId, kbArticle.getResourcePrimKey(), selStatus, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()));
-				pageContext.setAttribute("total", KBArticleServiceUtil.getKBArticleVersionsCount(scopeGroupId, kbArticle.getResourcePrimKey(), selStatus));
-				%>
-
-			</liferay-ui:search-container-results>
+			<liferay-ui:search-container-results
+				results="<%= KBArticleServiceUtil.getKBArticleVersions(scopeGroupId, kbArticle.getResourcePrimKey(), selStatus, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>"
+			/>
 
 			<liferay-ui:search-container-row
 				className="com.liferay.knowledgebase.model.KBArticle"
@@ -113,13 +109,13 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 					property="userName"
 				/>
 
-				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-date
 					cssClass="kb-column-no-wrap"
 					href="<%= rowURL %>"
 					name="date"
 					orderable="<%= true %>"
 					orderableProperty="modified-date"
-					value='<%= dateFormatDate.format(curKBArticle.getModifiedDate()) + "<br />" + dateFormatTime.format(curKBArticle.getModifiedDate()) %>'
+					value="<%= curKBArticle.getModifiedDate() %>"
 				/>
 
 				<c:if test="<%= (status == WorkflowConstants.STATUS_ANY) || KBArticlePermission.contains(permissionChecker, kbArticle, ActionKeys.UPDATE) %>">
@@ -128,7 +124,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 						href="<%= rowURL %>"
 						name="status"
 						orderable="<%= true %>"
-						value='<%= curKBArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(curKBArticle.getStatus())) + ")" %>'
+						value='<%= curKBArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(curKBArticle.getStatus())) + ")" %>'
 					/>
 				</c:if>
 
@@ -197,7 +193,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 				<%= AdminUtil.getKBArticleDiff(kbArticle.getResourcePrimKey(), sourceVersion, targetVersion, "content") %>
 			</div>
 
-			<aui:button-row>
+			<aui:button-row cssClass="kb-bulk-action-button-holder">
 				<aui:button type="submit" value="compare-versions" />
 			</aui:button-row>
 

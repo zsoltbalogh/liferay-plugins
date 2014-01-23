@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -18,6 +18,7 @@
 package com.liferay.so.hook.listeners;
 
 import com.liferay.portal.ModelListenerException;
+import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.model.BaseModelListener;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Organization;
@@ -27,6 +28,7 @@ import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.persistence.impl.TableMapper;
 import com.liferay.so.service.SocialOfficeServiceUtil;
 import com.liferay.so.util.LayoutSetPrototypeUtil;
 import com.liferay.so.util.RoleConstants;
@@ -158,6 +160,18 @@ public class RoleListener extends BaseModelListener<Role> {
 					continue;
 				}
 
+				FinderCacheUtil.clearCache(
+					_MAPPING_TABLE_USERS_ROLES_NAME_LEFT_TO_RIGHT);
+				FinderCacheUtil.clearCache(
+					_MAPPING_TABLE_USERS_ROLES_NAME_RIGHT_TO_LEFT);
+
+				if (UserLocalServiceUtil.hasRoleUser(
+						user.getCompanyId(), RoleConstants.SOCIAL_OFFICE_USER,
+						user.getUserId(), true)) {
+
+					continue;
+				}
+
 				LayoutSetPrototypeUtil.removeLayoutSetPrototype(
 					userGroup, false,
 					SocialOfficeConstants.LAYOUT_SET_PROTOTYPE_KEY_USER_PUBLIC);
@@ -173,5 +187,17 @@ public class RoleListener extends BaseModelListener<Role> {
 			throw new ModelListenerException(e);
 		}
 	}
+
+	/**
+	 * {@link com.liferay.portal.service.persistence.impl.TableMapperImpl}
+	 */
+	private static final String _MAPPING_TABLE_USERS_ROLES_NAME_LEFT_TO_RIGHT =
+		TableMapper.class.getName() + "-Users_Roles-LeftToRight";
+
+	/**
+	 * {@link com.liferay.portal.service.persistence.impl.TableMapperImpl}
+	 */
+	private static final String _MAPPING_TABLE_USERS_ROLES_NAME_RIGHT_TO_LEFT =
+		TableMapper.class.getName() + "-Users_Roles-RightToLeft";
 
 }

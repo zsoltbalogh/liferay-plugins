@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,6 +14,7 @@
 
 package com.liferay.portal.workflow.kaleo;
 
+import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionManager;
@@ -23,8 +24,7 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.runtime.WorkflowEngine;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalServiceUtil;
-
-import java.io.InputStream;
+import com.liferay.portal.workflow.kaleo.util.WorkflowModelUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,9 @@ import java.util.List;
 public class WorkflowDefinitionManagerImpl
 	implements WorkflowDefinitionManager {
 
+	@Override
 	public WorkflowDefinition deployWorkflowDefinition(
-			long companyId, long userId, String title, InputStream inputStream)
+			long companyId, long userId, String title, byte[] bytes)
 		throws WorkflowException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -46,9 +47,10 @@ public class WorkflowDefinitionManagerImpl
 		serviceContext.setUserId(userId);
 
 		return _workflowEngine.deployWorkflowDefinition(
-			title, inputStream, serviceContext);
+			title, new UnsyncByteArrayInputStream(bytes), serviceContext);
 	}
 
+	@Override
 	public int getActiveWorkflowDefinitionCount(long companyId)
 		throws WorkflowException {
 
@@ -65,6 +67,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public int getActiveWorkflowDefinitionCount(long companyId, String name)
 		throws WorkflowException {
 
@@ -81,6 +84,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public List<WorkflowDefinition> getActiveWorkflowDefinitions(
 			long companyId, int start, int end,
 			OrderByComparator orderByComparator)
@@ -108,6 +112,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public List<WorkflowDefinition> getActiveWorkflowDefinitions(
 			long companyId, String name, int start, int end,
 			OrderByComparator orderByComparator)
@@ -129,6 +134,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public WorkflowDefinition getLatestKaleoDefinition(
 			long companyId, String name)
 		throws WorkflowException {
@@ -142,13 +148,14 @@ public class WorkflowDefinitionManagerImpl
 				KaleoDefinitionLocalServiceUtil.getLatestKaleoDefinition(
 					name, serviceContext);
 
-			return new WorkflowDefinitionAdapter(kaleoDefinition);
+			return WorkflowModelUtil.toWorkflowDefinition(kaleoDefinition);
 		}
 		catch (Exception e) {
 			throw new WorkflowException(e);
 		}
 	}
 
+	@Override
 	public WorkflowDefinition getWorkflowDefinition(
 			long companyId, String name, int version)
 		throws WorkflowException {
@@ -162,13 +169,14 @@ public class WorkflowDefinitionManagerImpl
 				KaleoDefinitionLocalServiceUtil.getKaleoDefinition(
 					name, version, serviceContext);
 
-			return new WorkflowDefinitionAdapter(kaleoDefinition);
+			return WorkflowModelUtil.toWorkflowDefinition(kaleoDefinition);
 		}
 		catch (Exception e) {
 			throw new WorkflowException(e);
 		}
 	}
 
+	@Override
 	public int getWorkflowDefinitionCount(long companyId)
 		throws WorkflowException {
 
@@ -185,6 +193,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public int getWorkflowDefinitionCount(long companyId, String name)
 		throws WorkflowException {
 
@@ -201,6 +210,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public List<WorkflowDefinition> getWorkflowDefinitions(
 			long companyId, int start, int end,
 			OrderByComparator orderByComparator)
@@ -222,6 +232,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public List<WorkflowDefinition> getWorkflowDefinitions(
 			long companyId, String name, int start, int end,
 			OrderByComparator orderByComparator)
@@ -247,6 +258,7 @@ public class WorkflowDefinitionManagerImpl
 		_workflowEngine = workflowEngine;
 	}
 
+	@Override
 	public void undeployWorkflowDefinition(
 			long companyId, long userId, String name, int version)
 		throws WorkflowException {
@@ -265,6 +277,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public WorkflowDefinition updateActive(
 			long companyId, long userId, String name, int version,
 			boolean active)
@@ -292,6 +305,7 @@ public class WorkflowDefinitionManagerImpl
 		}
 	}
 
+	@Override
 	public WorkflowDefinition updateTitle(
 			long companyId, long userId, String name, int version, String title)
 		throws WorkflowException {
@@ -306,17 +320,19 @@ public class WorkflowDefinitionManagerImpl
 				KaleoDefinitionLocalServiceUtil.updateTitle(
 					name, version, title, serviceContext);
 
-			return new WorkflowDefinitionAdapter(kaleoDefinition);
+			return WorkflowModelUtil.toWorkflowDefinition(kaleoDefinition);
 		}
 		catch (Exception e) {
 			throw new WorkflowException(e);
 		}
 	}
 
-	public void validateWorkflowDefinition(InputStream inputStream)
+	@Override
+	public void validateWorkflowDefinition(byte[] bytes)
 		throws WorkflowException {
 
-		_workflowEngine.validateWorkflowDefinition(inputStream);
+		_workflowEngine.validateWorkflowDefinition(
+			new UnsyncByteArrayInputStream(bytes));
 	}
 
 	protected List<WorkflowDefinition> toWorkflowDefinitions(
@@ -327,7 +343,7 @@ public class WorkflowDefinitionManagerImpl
 
 		for (KaleoDefinition kaleoDefinition : kaleoDefinitions) {
 			workflowDefinitions.add(
-				new WorkflowDefinitionAdapter(kaleoDefinition));
+				WorkflowModelUtil.toWorkflowDefinition(kaleoDefinition));
 		}
 
 		return workflowDefinitions;

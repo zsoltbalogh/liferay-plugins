@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,42 +22,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
  */
 public class CalendarBookingWorkflowConstants extends WorkflowConstants {
 
-	public static final String LABEL_ACCEPTED = "accepted";
-
-	public static final String LABEL_DECLINED = "declined";
-
-	public static final String LABEL_MAYBE = "maybe";
-
-	public static final int STATUS_MAYBE = 8;
-
-	public static String toLabel(int status) {
-		if (status == STATUS_APPROVED) {
-			return LABEL_ACCEPTED;
-		}
-		else if (status == STATUS_DENIED) {
-			return LABEL_DECLINED;
-		}
-		else if (status == STATUS_MAYBE) {
-			return LABEL_MAYBE;
-		}
-		else {
-			return WorkflowConstants.toLabel(status);
-		}
-	}
-
-	public static int toStatus(String label) {
-		if (label.equals(LABEL_ACCEPTED)) {
-			return STATUS_APPROVED;
-		}
-		else if (label.equals(LABEL_DECLINED)) {
-			return STATUS_DENIED;
-		}
-		else if (label.equals(LABEL_MAYBE)) {
-			return STATUS_MAYBE;
-		}
-		else {
-			return WorkflowConstants.toStatus(label);
-		}
-	}
+	public static final int STATUS_MAYBE = 9;
 
 }
